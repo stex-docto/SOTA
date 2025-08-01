@@ -20,16 +20,4 @@ export const auth = getAuth(app);
 // Initialize Firestore
 export const db = getFirestore(app);
 
-// Connect to emulators in development
-if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
-  const authEmulatorHost = import.meta.env.VITE_FIREBASE_AUTH_EMULATOR_HOST;
-  const firestoreEmulatorHost = import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_HOST;
-  
-  if (authEmulatorHost) {
-    connectAuthEmulator(auth, `http://${authEmulatorHost}`);
-  }
-  
-  if (firestoreEmulatorHost) {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-  }
-}
+// No emulator setup - using dedicated testing Firebase project
