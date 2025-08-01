@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Events - public read, authenticated create, admin write
+    match /events/{eventId} {
+      allow read: if true; // Public events are readable by anyone
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && 
+        (request.auth.uid in resource.data.adminIds);
+    }
+    
+    // Locations - public read, admin write
+    match /events/{eventId}/locations/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds;
+    }
+    
+    // Talk proposals - public read, authenticated create/update own, admin manage all
+    match /events/{eventId}/talks/{talkId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds);
+      allow delete: if request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds;
+    }
+    
+    // User profiles - authenticated users can read/write their own
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
