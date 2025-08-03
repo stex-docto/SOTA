@@ -22,7 +22,7 @@ if (
   import.meta.env.DEV &&
   import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true'
 ) {
-  connectAuthEmulator(auth, import.meta.env.VITE_FIREBASE_AUTH_EMULATOR_URL)
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099')
 }
 
 export default app
