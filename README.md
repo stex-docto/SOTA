@@ -92,32 +92,46 @@ npm run build
 
 This application runs in SPA (Single Page Application) mode and generates static assets for deployment.
 
-### Static Hosting Deployment
-
-The app can be deployed to any static hosting platform:
+### Build for Production
 
 ```bash
 npm run build
 ```
 
-Deploy the `build/client/` directory to:
-- **Netlify**
-- **Vercel** 
-- **GitHub Pages**
-- **Firebase Hosting**
-- **AWS S3 + CloudFront**
-- **Any CDN or static web server**
+This creates optimized static files in the `build/client/` directory.
 
+### Firebase Hosting Deployment
+
+Deploy to Firebase Hosting using the Firebase CLI:
+
+```bash
+# Build the application
+npm run build
+
+# Deploy to Firebase Hosting
+npx firebase deploy --only hosting
+```
+
+Your app will be available at `https://your-project-id.web.app`
 
 ### Environment Variables
 
-For deployment, make sure to set the Firebase environment variables in your hosting platform:
-- `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`  
-- `VITE_FIREBASE_PROJECT_ID`
-- `VITE_FIREBASE_STORAGE_BUCKET`
-- `VITE_FIREBASE_MESSAGING_SENDER_ID`
-- `VITE_FIREBASE_APP_ID`
+The Firebase configuration is embedded in the build. Make sure your `.env.local` contains your Firebase project settings before building:
+
+```bash
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+```
+
+### Domain Configuration
+
+After deployment, add your production domain to Firebase Authentication's authorized domains:
+1. Go to Firebase Console > Authentication > Settings
+2. Add your domain to "Authorized domains"
 
 ## Styling
 
