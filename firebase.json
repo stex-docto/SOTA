@@ -1,0 +1,24 @@
+{
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true,
+    "hosting": {
+      "port": 5000
+    }
+  },
+  "hosting": {
+    "public": "build/client",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
