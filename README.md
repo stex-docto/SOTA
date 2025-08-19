@@ -1,4 +1,4 @@
-# Open Talk Session App
+# Simple Open Talk App
 
 A Progressive Web App (PWA) for organizing and participating in open talk sessions. Built with TypeScript, React, and Firebase, following hexagonal architecture principles.
 
@@ -31,7 +31,7 @@ This application follows hexagonal architecture (Ports & Adapters) with clean se
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - Docker and Docker Compose
 - Firebase CLI
 
@@ -52,28 +52,25 @@ This application follows hexagonal architecture (Ports & Adapters) with clean se
 3. **Start Development Environment**
    ```bash
    # Using Docker Compose (recommended)
-   docker-compose up
+   docker compose up
 
    # Or manually
-   npm install
-   npm run dev
+   yarn install
+   yarn dev
    ```
 
 4. **Access the Application**
    - App: http://localhost:3000
-   - Firebase Emulator UI: http://localhost:4000
 
 ### Available Scripts
 
-- `npm run dev` - Start Vite development server
-- `npm run build` - Build for production with TypeScript compilation
-- `npm run preview` - Preview production build locally
-- `npm test` - Run tests with Vitest
-- `npm run test:ui` - Run tests with Vitest UI
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
-- `npm run firebase:emulator` - Start Firebase emulators
-- `npm run dev:full` - Start both Vite dev server and Firebase emulators
+- `yarn dev` - Start Vite development server
+- `yarn build` - Build for production with TypeScript compilation
+- `yarn preview` - Preview production build locally
+- `yarn test` - Run tests with Vitest
+- `yarn test:ui` - Run tests with Vitest UI
+- `yarn lint` - Run ESLint
+- `yarn type-check` - Run TypeScript type checking
 
 ## Project Structure
 

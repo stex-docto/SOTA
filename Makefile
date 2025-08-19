@@ -28,3 +28,7 @@ help: ## Prints this help
 
 firebase.deploy: ## Push configuration to firebase
 	@docker compose run --rm --workdir "/firebase" firebase-tools firebase deploy
+
+dev: ## Stars dev server
+	@docker compose up -d
+	@echo "Go to http://127.0.0.1:3000"
