@@ -1,4 +1,4 @@
-switc# Open Talk Session App - Use Cases & Architecture
+# Open Talk Session App - Use Cases & Architecture
 
 ## Overview
 An open-source PWA (Progressive Web App) deployed via GitHub Pages with Firebase backend for managing open talk sessions. Features multi-tier access control and public participation capabilities.

@@ -26,9 +26,7 @@ export class FirebaseAuthAdapter implements AuthenticationPort {
     );
 
     const user = UserEntity.create(
-      credentials.email,
       displayName,
-      'email',
       UserId.from(userCredential.user.uid)
     );
 
@@ -60,9 +58,7 @@ export class FirebaseAuthAdapter implements AuthenticationPort {
     if (!user) {
       // Create new user
       user = UserEntity.create(
-        firebaseUser.email!,
         firebaseUser.displayName || firebaseUser.email!.split('@')[0],
-        'google',
         UserId.from(firebaseUser.uid)
       );
       await this.userRepository.save(user);

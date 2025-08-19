@@ -1,70 +1,32 @@
 import { UserId } from '../value-objects/UserId';
-import { EventId } from '../value-objects/EventId';
-
-export type AuthMethod = 'email' | 'google';
 
 export interface User {
   id: UserId;
-  email: string;
-  displayName: string;
-  authMethod: AuthMethod;
-  registrationDate: Date;
-  adminEventIds: EventId[];
+  savedEventUrls: string[];
 }
 
 export class UserEntity implements User {
   constructor(
     public readonly id: UserId,
-    public readonly email: string,
-    public readonly displayName: string,
-    public readonly authMethod: AuthMethod,
-    public readonly registrationDate: Date,
-    public readonly adminEventIds: EventId[]
+    public readonly savedEventUrls: string[] = []
   ) {}
 
-  static create(
-    email: string,
-    displayName: string,
-    authMethod: AuthMethod,
-    id?: UserId
-  ): UserEntity {
+  static create(id?: UserId): UserEntity {
     return new UserEntity(
       id || UserId.generate(),
-      email,
-      displayName,
-      authMethod,
-      new Date(),
       []
     );
   }
 
-  addAdminEvent(eventId: EventId): UserEntity {
-    if (this.isAdminOf(eventId)) {
+  addSavedEventUrl(eventUrl: string): UserEntity {
+    if (this.savedEventUrls.includes(eventUrl)) {
       return this;
     }
-
-    return new UserEntity(
-      this.id,
-      this.email,
-      this.displayName,
-      this.authMethod,
-      this.registrationDate,
-      [...this.adminEventIds, eventId]
-    );
+    return new UserEntity(this.id, [...this.savedEventUrls, eventUrl]);
   }
 
-  isAdminOf(eventId: EventId): boolean {
-    return this.adminEventIds.some(adminEventId => adminEventId.equals(eventId));
-  }
-
-  updateProfile(displayName?: string): UserEntity {
-    return new UserEntity(
-      this.id,
-      this.email,
-      displayName ?? this.displayName,
-      this.authMethod,
-      this.registrationDate,
-      this.adminEventIds
-    );
+  removeSavedEventUrl(eventUrl: string): UserEntity {
+    const updatedUrls = this.savedEventUrls.filter(url => url !== eventUrl);
+    return new UserEntity(this.id, updatedUrls);
   }
 }

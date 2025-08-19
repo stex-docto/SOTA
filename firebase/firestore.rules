@@ -27,9 +27,15 @@ service cloud.firestore {
         request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds;
     }
 
-    // User profiles - authenticated users can read/write their own
+    // User private data - only the user can access their own
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User public profiles - readable by all, writable only by owner
+    match /profiles/{userId} {
+      allow read: if true; // Anyone can read public profiles
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
