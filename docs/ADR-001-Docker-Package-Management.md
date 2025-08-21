@@ -36,7 +36,7 @@ docker-compose run --rm frontend yarn <script-name>
 ### Positive
 - Ensures consistent Node.js and yarn versions across all environments
 - Prevents "works on my machine" issues
-- Dependencies are installed in the correct container environment
+- DependencyContext are installed in the correct container environment
 - Maintains Docker volume consistency
 
 ### Negative  

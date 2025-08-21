@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { useDependencies } from '../context/DependencyContext';
+import { useDependencies } from '../hooks/useDependencies';
 import { useAuth } from '../hooks/useAuth';
 import {
   CODE_LENGTH,

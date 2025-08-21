@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {UserEntity} from '@domain';
-import {useDependencies} from '../context/DependencyContext';
+import {useDependencies} from './useDependencies';
 
 export interface Auth {
     currentUser: UserEntity | null | undefined;

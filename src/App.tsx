@@ -1,5 +1,5 @@
 import {HashRouter as Router, Route, Routes} from 'react-router-dom';
-import {DependencyProvider} from './presentation/context/DependencyContext';
+import {DependencyProvider} from '@presentation/context/DependencyProvider.tsx';
 import Header from './presentation/components/Header';
 import HomePage from './presentation/pages/HomePage';
 import EventPage from './presentation/pages/EventPage';
