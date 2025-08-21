@@ -1,17 +1,24 @@
-import {useState} from 'react';
-import {Link, useLocation} from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {SignInModal} from './SignInModal';
 
 function Header() {
     const {currentUser, shouldShowAuthModal} = useAuth();
     const [showSignInModal, setShowSignInModal] = useState(false);
+    const [hasUserDismissedModal, setHasUserDismissedModal] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    // Reset dismissal flag when user navigates to a different page
+    useEffect(() => {
+        setHasUserDismissedModal(false);
+    }, [location.pathname]);
 
     // Auto-show modal if auth is required for certain pages
     const authRequiredPages = ['/create-event'];
     const isAuthRequired = authRequiredPages.includes(location.pathname);
-    const shouldAutoShowModal = shouldShowAuthModal(isAuthRequired);
+    const shouldAutoShowModal = shouldShowAuthModal(isAuthRequired) && !hasUserDismissedModal;
 
     return (
         <header className="header">
@@ -63,7 +70,13 @@ function Header() {
 
             <SignInModal
                 isOpen={showSignInModal || shouldAutoShowModal}
-                onClose={() => setShowSignInModal(false)}
+                onClose={() => {
+                    setShowSignInModal(false);
+                    if (isAuthRequired) {
+                        setHasUserDismissedModal(true);
+                        navigate('/');
+                    }
+                }}
             />
         </header>
     );

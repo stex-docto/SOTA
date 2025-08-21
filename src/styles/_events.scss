@@ -1,0 +1,144 @@
+@import 'variables';
+@import 'mixins';
+
+// Event Page Styles
+.event-page,
+.create-event-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-2xl;
+  gap: $spacing-xl;
+}
+
+.event-title-section {
+  flex: 1;
+
+  h1 {
+    margin: 0 0 $spacing-sm 0;
+    font-size: $font-size-4xl;
+    color: $color-gray-900;
+  }
+}
+
+.event-id {
+  font-size: 0.9rem;
+  color: $color-secondary;
+  margin: 0 0 $spacing-md 0;
+  font-family: monospace;
+  background: $color-gray-100;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  display: inline-block;
+}
+
+.event-description {
+  font-size: $font-size-lg;
+  color: $color-gray-700;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.creator-controls {
+  flex-shrink: 0;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.event-content {
+  @include flex-column($spacing-2xl);
+}
+
+.management-section {
+  background: $color-gray-50;
+  padding: $spacing-xl;
+  border-radius: $radius-xl;
+  border: 1px solid $color-gray-200;
+  margin-bottom: $spacing-xl;
+}
+
+.management-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-xl;
+}
+
+.action-group {
+  @include flex-column(0.75rem);
+
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    color: $color-gray-900;
+    font-size: $font-size-lg;
+  }
+}
+
+.event-stats {
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    color: $color-gray-900;
+    font-size: $font-size-lg;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.stat-card {
+  text-align: center;
+  padding: $spacing-md;
+  background: $color-gray-50;
+  border-radius: $radius-lg;
+
+  h3 {
+    font-size: $font-size-4xl;
+    color: $color-primary;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.participation-note {
+  background: $color-green-light;
+  border: 1px solid $color-green-border;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  color: $color-green-text;
+  margin-bottom: $spacing-lg;
+  font-size: 0.95rem;
+}
+
+.info-card,
+.admin-section {
+  @include card;
+}
+
+// Auth Styles
+.auth-required {
+  @include card;
+  text-align: center;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin: $spacing-xl auto;
+  @include card;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    text-align: center;
+    margin-bottom: $spacing-lg;
+    color: $color-black;
+  }
+}

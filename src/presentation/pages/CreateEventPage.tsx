@@ -1,20 +1,41 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
+import {useDependencies} from '../hooks/useDependencies';
+import {CreateEventUseCase} from '@application';
 
 function CreateEventPage() {
     const navigate = useNavigate();
     const {currentUser} = useAuth();
+    const {eventRepository, userRepository} = useDependencies();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string>('');
 
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        date: '',
-        location: '',
-        maxTalks: 10,
-        timeSlotDuration: 15,
-        isPublic: true
+        talkRules: `# Talk rules
+
+## The Four Principles
+
+**Whoever comes are the right people** — The people who show up are exactly who need to be there.
+
+**Whatever happens is the only thing that could have happened** — Don't worry about what might have been; focus on what is.
+
+**When it starts is the right time to start** — Things begin when they're ready, not before.
+
+**When it's over, it's over** — When the energy for a topic is gone, move on.
+
+## The Law of Two Feet
+
+**Use your feet!** If you're not learning or contributing, go somewhere else. No hard feelings.
+
+This creates engaged, passionate discussions where everyone participates by choice.
+
+More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations`,
+        startDate: '',
+        endDate: '',
+        location: ''
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -35,20 +56,32 @@ function CreateEventPage() {
 
         setIsSubmitting(true);
 
+        // Validate dates
+        if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+            setError('End date must be after start date');
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            // TODO: Implement event creation logic
-            console.log('Creating event:', formData);
+            setError('');
+            
+            const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository);
+            const result = await createEventUseCase.execute({
+                title: formData.title,
+                description: formData.description,
+                talkRules: formData.talkRules,
+                startDate: new Date(formData.startDate),
+                endDate: new Date(formData.endDate),
+                location: formData.location
+            });
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Navigate to the created event (for now, using a mock ID)
-            const mockEventId = 'evt_' + Date.now();
-            navigate(`/event/${mockEventId}`);
+            // Navigate to the created event
+            navigate(`/event/${result.event.id.value}`);
 
         } catch (error) {
             console.error('Failed to create event:', error);
-            alert('Failed to create event. Please try again.');
+            setError(error instanceof Error ? error.message : 'Failed to create event. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -62,6 +95,8 @@ function CreateEventPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="create-event-form">
+
+                
                 <div className="form-section">
                     <h2>Basic Information</h2>
 
@@ -80,25 +115,52 @@ function CreateEventPage() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="description">Description</label>
+                        <label htmlFor="description">Description (Markdown supported)</label>
                         <textarea
                             id="description"
                             name="description"
                             value={formData.description}
                             onChange={handleInputChange}
-                            placeholder="Describe your event..."
+                            placeholder="Describe your event... (Markdown formatting supported)"
                             rows={4}
                             className="form-textarea"
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="date">Event Date & Time *</label>
+                        <label htmlFor="talkRules">Talk Rules (Markdown supported)</label>
+                        <textarea
+                            id="talkRules"
+                            name="talkRules"
+                            value={formData.talkRules}
+                            onChange={handleInputChange}
+                            placeholder="Rules for talk sessions..."
+                            rows={10}
+                            className="form-textarea"
+                        />
+                        <small className="help-text">These guidelines will be shown to participants about how the talk sessions work.</small>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="startDate">Start Date & Time *</label>
                         <input
-                            id="date"
-                            name="date"
+                            id="startDate"
+                            name="startDate"
                             type="datetime-local"
-                            value={formData.date}
+                            value={formData.startDate}
+                            onChange={handleInputChange}
+                            className="form-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="endDate">End Date & Time *</label>
+                        <input
+                            id="endDate"
+                            name="endDate"
+                            type="datetime-local"
+                            value={formData.endDate}
                             onChange={handleInputChange}
                             className="form-input"
                             required
@@ -119,53 +181,11 @@ function CreateEventPage() {
                     </div>
                 </div>
 
-                <div className="form-section">
-                    <h2>Event Settings</h2>
-
-                    <div className="form-group">
-                        <label htmlFor="maxTalks">Maximum Number of Talks</label>
-                        <input
-                            id="maxTalks"
-                            name="maxTalks"
-                            type="number"
-                            value={formData.maxTalks}
-                            onChange={handleInputChange}
-                            min="1"
-                            max="50"
-                            className="form-input"
-                        />
+                {error && (
+                    <div className="error-message">
+                        {error}
                     </div>
-
-                    <div className="form-group">
-                        <label htmlFor="timeSlotDuration">Default Time Slot Duration (minutes)</label>
-                        <select
-                            id="timeSlotDuration"
-                            name="timeSlotDuration"
-                            value={formData.timeSlotDuration}
-                            onChange={handleInputChange}
-                            className="form-select"
-                        >
-                            <option value="5">5 minutes</option>
-                            <option value="10">10 minutes</option>
-                            <option value="15">15 minutes</option>
-                            <option value="20">20 minutes</option>
-                            <option value="30">30 minutes</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group checkbox-group">
-                        <label className="checkbox-label">
-                            <input
-                                name="isPublic"
-                                type="checkbox"
-                                checked={formData.isPublic}
-                                onChange={handleInputChange}
-                                className="form-checkbox"
-                            />
-                            Make this event public (visible to everyone)
-                        </label>
-                    </div>
-                </div>
+                )}
 
                 <div className="form-actions">
                     <button

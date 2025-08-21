@@ -1,9 +1,10 @@
 import {createContext} from 'react';
-import {CredentialRepository, UserRepository} from '@domain';
+import {CredentialRepository, EventRepository, UserRepository} from '@domain';
 
 export interface DependencyContext {
     userRepository: UserRepository;
     credentialRepository: CredentialRepository;
+    eventRepository: EventRepository;
 }
 
 export const Dependencies = createContext<DependencyContext | undefined>(undefined);

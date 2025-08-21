@@ -1,0 +1,65 @@
+@import 'variables';
+@import 'mixins';
+
+.form-group {
+  margin-bottom: $spacing-lg;
+
+  label {
+    display: block;
+    margin-bottom: $spacing-sm;
+    font-weight: 600;
+    color: $color-gray-700;
+  }
+
+  .help-text {
+    display: block;
+    margin-top: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $color-gray-500;
+    font-style: italic;
+  }
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  @include form-input;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+}
+
+.form-checkbox {
+  width: auto;
+}
+
+.form-actions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+  margin-top: $spacing-xl;
+}
+
+.form-section {
+  @include card;
+  margin-bottom: $spacing-xl;
+}
+
+.error-message {
+  @include error-message;
+  margin-bottom: $spacing-lg;
+}

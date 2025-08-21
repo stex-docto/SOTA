@@ -1,8 +1,12 @@
-import {EventEntity, EventRepository, UserEntity, UserId, UserRepository} from '@domain';
+import {EventEntity, EventRepository, UserEntity, UserRepository} from '@domain';
 
 export interface CreateEventCommand {
-    name: string;
-    createdBy: UserId;
+    title: string;
+    description: string;
+    talkRules: string;
+    startDate: Date;
+    endDate: Date;
+    location: string;
 }
 
 export interface CreateEventResult {
@@ -18,13 +22,21 @@ export class CreateEventUseCase {
 
     async execute(command: CreateEventCommand): Promise<CreateEventResult> {
         // Verify user exists
-        const user = await this.userRepository.getUser(command.createdBy);
+        const user = await this.userRepository.getCurrentUser();
         if (!user) {
             throw new Error('User not found');
         }
 
         // Create new event
-        const event = EventEntity.create(command.name, command.createdBy);
+        const event = EventEntity.create(
+            command.title,
+            command.description,
+            command.talkRules,
+            command.startDate,
+            command.endDate,
+            command.location,
+            user.id
+        );
 
         // Save event
         await this.eventRepository.save(event);

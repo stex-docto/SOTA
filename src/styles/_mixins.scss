@@ -1,0 +1,110 @@
+@import 'variables';
+
+// Button base mixin
+@mixin button-base {
+  border: none;
+  border-radius: $radius-md;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-decoration: none;
+  display: inline-block;
+}
+
+// Primary button style
+@mixin button-primary {
+  @include button-base;
+  background: $color-primary;
+  color: $color-white;
+  padding: 0.75rem $spacing-lg;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    background: $color-gray-400;
+    cursor: not-allowed;
+  }
+}
+
+// Secondary button style
+@mixin button-secondary {
+  @include button-base;
+  background: transparent;
+  color: $color-secondary;
+  padding: 0.75rem $spacing-lg;
+  border: 1px solid $color-gray-300;
+
+  &:hover {
+    background: $color-gray-50;
+    border-color: $color-gray-400;
+  }
+}
+
+// Card style
+@mixin card {
+  background: $color-white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  padding: $spacing-xl;
+}
+
+// Form input style
+@mixin form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  transition: border-color $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+}
+
+// Flex center
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flex column
+@mixin flex-column($gap: $spacing-lg) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+// Hover lift effect
+@mixin hover-lift {
+  transition: transform $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// Error message style
+@mixin error-message {
+  padding: $spacing-md;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: $radius-md;
+  color: $color-red;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  &::before {
+    content: '⚠️';
+    font-size: $font-size-base;
+  }
+}

@@ -25,7 +25,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@domain": ["./src/domain"],
-      "@application/*": ["./src/application/*"],
+      "@application": ["./src/application"],
       "@infrastructure/*": ["./src/infrastructure/*"],
       "@presentation/*": ["./src/presentation/*"],
       "@shared/*": ["./src/shared/*"]

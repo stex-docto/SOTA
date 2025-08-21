@@ -1,0 +1,49 @@
+@import 'variables';
+
+// Mobile Responsive
+@media (max-width: $breakpoint-mobile) {
+  .container {
+    padding: 0 $spacing-sm;
+  }
+
+  .page-title {
+    font-size: $font-size-4xl;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  .hero-section {
+    h1 {
+      font-size: $font-size-4xl;
+    }
+  }
+
+  .dashboard-actions,
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-boxes {
+    grid-template-columns: 1fr;
+    margin: $spacing-xl 0;
+  }
+
+  .action-box {
+    padding: $spacing-lg;
+  }
+
+  .action-icon {
+    font-size: $font-size-4xl;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .management-actions {
+    grid-template-columns: 1fr;
+  }
+}

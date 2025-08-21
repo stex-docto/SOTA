@@ -12,6 +12,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
+    "lint:all": "yarn lint:fix && yarn type-check",
     "deploy": "yarn build && gh-pages -d dist"
   },
   "dependencies": {

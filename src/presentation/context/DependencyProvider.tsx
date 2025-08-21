@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {UserRepository} from '@domain';
+import {EventRepository, UserRepository} from '@domain';
 import {FirebaseUserDatastore} from '@infrastructure/datastores/FirebaseUserDatastore';
+import {FirebaseEventDatastore} from '@infrastructure/datastores/FirebaseEventDatastore';
 import {Firebase} from "@infrastructure/firebase.ts";
 import {LoadingScreen} from "@presentation/components/LoadingScreen.tsx";
 import {LocalCredentialDataStore} from "@infrastructure/datastores/LocalCredentialDataStore.ts";
@@ -13,10 +14,12 @@ interface DependencyProviderProps {
 async function initDependencies() {
     const firebase = Firebase.getInstance()
     const userRepository: UserRepository = new FirebaseUserDatastore(firebase.auth, firebase.firestore);
+    const eventRepository: EventRepository = new FirebaseEventDatastore(firebase.firestore);
 
     return {
         userRepository,
-        credentialRepository: new LocalCredentialDataStore()
+        credentialRepository: new LocalCredentialDataStore(),
+        eventRepository
     };
 }
 
