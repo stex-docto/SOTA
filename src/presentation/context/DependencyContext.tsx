@@ -1,12 +1,13 @@
-import React, { createContext, useContext } from 'react';
-import { AuthenticationPort } from '@application/ports/AuthenticationPort';
-import { FirebaseAuthAdapter } from '@infrastructure/auth/FirebaseAuthAdapter';
-import { UserRepository } from '@domain/repositories/UserRepository';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {CredentialRepository, UserRepository} from '@domain';
 import { FirebaseUserDatastore } from '@infrastructure/datastores/FirebaseUserDatastore';
+import {Firebase} from "@infrastructure/firebase.ts";
+import {LoadingScreen} from "@presentation/components/LoadingScreen.tsx";
+import {LocalCredentialDataStore} from "@infrastructure/datastores/LocalCredentialDataStore.ts";
 
 interface Dependencies {
-  authService: AuthenticationPort;
   userRepository: UserRepository;
+  credentialRepository: CredentialRepository;
 }
 
 const DependencyContext = createContext<Dependencies | undefined>(undefined);
@@ -23,18 +24,22 @@ interface DependencyProviderProps {
   children: React.ReactNode;
 }
 
-export function DependencyProvider({ children }: DependencyProviderProps) {
-  const userRepository: UserRepository = new FirebaseUserDatastore();
-  const authService = new FirebaseAuthAdapter(userRepository);
+async function initDependencies() {
+  const firebase = Firebase.getInstance()
+  const userRepository: UserRepository = new FirebaseUserDatastore(firebase.auth, firebase.firestore);
 
-  const dependencies: Dependencies = {
-    authService,
-    userRepository
+  return {
+    userRepository,
+    credentialRepository: new LocalCredentialDataStore()
   };
+}
 
-  return (
-    <DependencyContext.Provider value={dependencies}>
-      {children}
-    </DependencyContext.Provider>
-  );
+export function DependencyProvider({ children }: DependencyProviderProps) {
+  const  [dependencies, setDependencies] = useState<Dependencies>();
+
+  useEffect(() => {
+    initDependencies().then(setDependencies)
+  }, [])
+
+  return dependencies ? <DependencyContext.Provider value={dependencies}>{children}</DependencyContext.Provider> : <LoadingScreen />
 }

@@ -1,63 +1,136 @@
-import { UserRepository } from '@domain/repositories/UserRepository';
-import { UserEntity } from '@domain/entities/User';
-import { UserId } from '@domain/value-objects/UserId';
-import { db } from '../firebase/config';
-import { doc, getDoc, setDoc, deleteDoc, onSnapshot, DocumentSnapshot, collection, query, where, documentId, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import {Credential, PrivateUser, PublicUser, UserEntity, UserId, UserRepository} from '@domain';
+import {Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, User} from 'firebase/auth';
+import {collection, deleteDoc, doc, Firestore, getDoc, setDoc, onSnapshot} from "firebase/firestore";
+
+type FirebaseCredential = { email: string; password: string }
+
+function mapCredential(credential: Credential): FirebaseCredential {
+    return {
+        email: `${credential.codes[0]}-${credential.codes[1]}@sota.example`,
+        password: `${credential.codes[2]}${credential.codes[3]}`,
+    }
+}
+
+type UserListener = (user: UserEntity | null) => Promise<void>;
 
 export class FirebaseUserDatastore implements UserRepository {
-  private readonly collection = 'users';
+    protected listeners = new Set<UserListener>()
+    private currentUserUnsubscribe : (() => void) | null = null
 
-  async save(user: UserEntity): Promise<void> {
-    const userDoc = doc(db, this.collection, user.id.value);
-    await setDoc(userDoc, {
-      savedEventUrls: user.savedEventUrls
-    });
-  }
-
-  async findById(id: UserId): Promise<UserEntity | null> {
-    const userDoc = doc(db, this.collection, id.value);
-    const docSnap = await getDoc(userDoc);
-    
-    if (!docSnap.exists()) {
-      return null;
+    constructor(
+        private readonly auth: Auth,
+        private readonly firestore: Firestore
+    ) {
+        this.initListener();
     }
 
-    const data = docSnap.data();
-    return new UserEntity(id, data.savedEventUrls || []);
-  }
+    protected get collection() {
+        return collection(this.firestore, 'users')
+    }
 
-  subscribeToUser(id: UserId, callback: (user: UserEntity | null) => void): () => void {
-    const userDoc = doc(db, this.collection, id.value);
-    
-    return onSnapshot(userDoc, (doc: DocumentSnapshot) => {
-      if (!doc.exists()) {
-        callback(null);
-        return;
-      }
+    async getCurrentUser(): Promise<UserEntity | null> {
+        const currentUser = this.auth.currentUser;
+        if( !currentUser) return null;
+        let user = await  this.getUser(UserId.from(currentUser.uid))
+        if (!user) {
+            user = await this.saveUser(new UserEntity(UserId.from(currentUser.uid)))
+        }
+        return user;
+    }
 
-      const data = doc.data();
-      const user = new UserEntity(id, data?.savedEventUrls || []);
-      callback(user);
-    });
-  }
+    async getUser(uid: UserId): Promise<UserEntity | null> {
+        try {
+            const userPublicData = (await getDoc(this.getPublicUserRef(uid))).data() as PublicUser;
+            let userPrivateData: Partial<PrivateUser> = {}
+            if (this.auth.currentUser?.uid === uid.value) {
+                userPrivateData = (await getDoc(this.getPrivateUserRef(uid))).data() as PrivateUser;
+            }
+            return {
+                id: uid,
+                displayName: userPublicData.displayName,
+                savedEventUrls: userPrivateData?.savedEventUrls || [],
+            }
+        } catch (err) {
+            return null;
+        }
+    }
 
+    async saveUser(user: UserEntity): Promise<UserEntity> {
+        const currentUser = this.auth.currentUser;
+        if (!currentUser) throw new Error('No authenticated user');
+        if (currentUser.uid !== user.id.value) throw new Error('Can only save current user data');
 
-  async addSavedEventUrl(userId: UserId, eventUrl: string): Promise<void> {
-    const userDoc = doc(db, this.collection, userId.value);
-    await updateDoc(userDoc, {
-      savedEventUrls: arrayUnion(eventUrl)
-    });
-  }
+        await setDoc(this.getPrivateUserRef(user.id), {id: currentUser.uid, savedEventUrls: user.savedEventUrls});
+        await setDoc(this.getPublicUserRef(user.id), {id: currentUser.uid, displayName: user.displayName});
 
-  async removeSavedEventUrl(userId: UserId, eventUrl: string): Promise<void> {
-    const userDoc = doc(db, this.collection, userId.value);
-    await updateDoc(userDoc, {
-      savedEventUrls: arrayRemove(eventUrl)
-    });
-  }
+        return {
+            id: user.id,
+            displayName: user.displayName,
+            savedEventUrls: user?.savedEventUrls || [],
+        }
+    }
 
-  async delete(id: UserId): Promise<void> {
-    const userDoc = doc(db, this.collection, id.value);
-    await deleteDoc(userDoc);
-  }
+    triggerListeners(user: UserEntity | null) {
+        this.listeners.forEach((listener) => listener(user));
+    }
+
+    initListener() {
+        this.auth.onAuthStateChanged((async (firebaseUser) => {
+            this.triggerListeners(firebaseUser ? await this.getCurrentUser() : null);
+            this.subscribeToUserDoc(firebaseUser)
+        }))
+    }
+
+    protected subscribeToUserDoc(user: User | null){
+        this.currentUserUnsubscribe?.()
+        this.currentUserUnsubscribe = null
+        if (user){
+            const publicUnsubScribe = onSnapshot(this.getPublicUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
+            const privateUnsubScribe = onSnapshot(this.getPrivateUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
+            this.currentUserUnsubscribe = () => {
+                publicUnsubScribe()
+                privateUnsubScribe()
+            }
+        }
+    }
+
+    subscribeToCurrentUser(callback: UserListener): () => void {
+        this.listeners.add(callback)
+        return () => this.listeners.delete(callback)
+    }
+
+    async deleteCurrentUser(credential: Credential): Promise<void> {
+        const currentUser = this.auth.currentUser;
+        if (!currentUser) throw new Error('No authenticated user');
+
+        // Recent sign-in is required for account deletion
+        await this.signIn(credential)
+        await deleteDoc(this.getPrivateUserRef(UserId.from(currentUser.uid)));
+        await deleteDoc(this.getPublicUserRef(UserId.from(currentUser.uid)));
+        this.auth.currentUser?.delete()
+    }
+
+    async signOut(): Promise<void> {
+        await this.auth.signOut()
+    }
+
+    async signIn(credential: Credential): Promise<void> {
+        const {email, password} = mapCredential(credential)
+        try {
+            await signInWithEmailAndPassword(this.auth, email, password)
+        } catch (error) {
+            await createUserWithEmailAndPassword(this.auth, email, password)
+        }
+        console.log(`User ${this.auth.currentUser?.uid} connected`)
+    }
+
+    private getPublicUserRef(uid: UserId) {
+        return doc(this.collection, uid.value)
+    }
+
+    private getPrivateUserRef(uid: UserId) {
+        return doc(this.collection, uid.value, "private", "user")
+    }
+
 }
+

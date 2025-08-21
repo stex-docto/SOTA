@@ -1,7 +1,9 @@
-import { EventEntity } from '@domain/entities/Event';
-import { EventRepository } from '@domain/repositories/EventRepository';
-import { UserRepository } from '@domain/repositories/UserRepository';
-import { UserId } from '@domain/value-objects/UserId';
+import {
+  EventEntity,
+  EventRepository,
+  UserRepository,
+  UserId
+} from '@domain';
 
 export interface CreateEventCommand {
   name: string;

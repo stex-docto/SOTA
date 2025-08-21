@@ -1,32 +1,21 @@
-import { UserId } from '../value-objects/UserId';
+import { UserId } from '@/domain';
 
-export interface User {
+export type PublicUser = {
+  id: UserId;
+  displayName: string;
+}
+
+export type PrivateUser = {
   id: UserId;
   savedEventUrls: string[];
 }
 
+export type User = PublicUser & PrivateUser
+
 export class UserEntity implements User {
   constructor(
-    public readonly id: UserId,
-    public readonly savedEventUrls: string[] = []
+    public readonly id: UserId = UserId.generate(),
+    public readonly savedEventUrls: string[] = [],
+    public readonly displayName: string = ""
   ) {}
-
-  static create(id?: UserId): UserEntity {
-    return new UserEntity(
-      id || UserId.generate(),
-      []
-    );
-  }
-
-  addSavedEventUrl(eventUrl: string): UserEntity {
-    if (this.savedEventUrls.includes(eventUrl)) {
-      return this;
-    }
-    return new UserEntity(this.id, [...this.savedEventUrls, eventUrl]);
-  }
-
-  removeSavedEventUrl(eventUrl: string): UserEntity {
-    const updatedUrls = this.savedEventUrls.filter(url => url !== eventUrl);
-    return new UserEntity(this.id, updatedUrls);
-  }
 }

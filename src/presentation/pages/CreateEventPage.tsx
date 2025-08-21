@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { FirebaseAuthUI } from '../components/FirebaseAuthUI';
+import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { SignInModal } from '../components/SignInModal.tsx';
 
 function CreateEventPage() {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser } = useAuthWithProfile();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -61,7 +62,16 @@ function CreateEventPage() {
         <div className="auth-required">
           <h2>Sign In to Create Event</h2>
           <p>You need to authenticate to create and manage events.</p>
-          <FirebaseAuthUI />
+          <button 
+            onClick={() => setShowSignInModal(true)}
+            className="sign-in-button"
+          >
+            Sign In
+          </button>
+          <SignInModal 
+            isOpen={showSignInModal} 
+            onClose={() => setShowSignInModal(false)} 
+          />
         </div>
       </div>
     );

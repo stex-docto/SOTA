@@ -1,7 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './presentation/context/AuthContext';
-import { DependencyProvider } from './presentation/context/DependencyContext';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {DependencyProvider} from './presentation/context/DependencyContext';
 import Header from './presentation/components/Header';
 import HomePage from './presentation/pages/HomePage';
 import EventPage from './presentation/pages/EventPage';
@@ -10,25 +8,23 @@ import CreateEventPage from './presentation/pages/CreateEventPage';
 import './App.css';
 
 function App() {
-  return (
-    <DependencyProvider>
-      <AuthProvider>
-        <Router>
-          <div className="App">
-            <Header />
-            <main className="container">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/create-event" element={<CreateEventPage />} />
-                <Route path="/event/:eventId" element={<EventPage />} />
-                <Route path="/event/:eventId/admin/:adminToken" element={<AdminPage />} />
-              </Routes>
-            </main>
-          </div>
-        </Router>
-      </AuthProvider>
-    </DependencyProvider>
-  );
+    return (
+        <DependencyProvider>
+            <Router>
+                <div className="App">
+                    <Header/>
+                    <main className="container">
+                        <Routes>
+                            <Route path="/" element={<HomePage/>}/>
+                            <Route path="/create-event" element={<CreateEventPage/>}/>
+                            <Route path="/event/:eventId" element={<EventPage/>}/>
+                            <Route path="/event/:eventId/admin/:adminToken" element={<AdminPage/>}/>
+                        </Routes>
+                    </main>
+                </div>
+            </Router>
+        </DependencyProvider>
+    );
 }
 
 export default App;

@@ -1,41 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Events - public read, authenticated create, admin write
-    match /events/{eventId} {
-      allow read: if true; // Public events are readable by anyone
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null &&
-        (request.auth.uid in resource.data.adminIds);
+    match /session/{sessionId} {
+      allow read: if true;
+      allow list: if false;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.creator;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.creator;
     }
 
-    // Locations - public read, admin write
-    match /events/{eventId}/locations/{locationId} {
+    match /session/{sessionId}/event/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null &&
-        request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds;
-    }
-
-    // Talk proposals - public read, authenticated create/update own, admin manage all
-    match /events/{eventId}/talks/{talkId} {
-      allow read: if true;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      allow update: if request.auth != null &&
-        (request.auth.uid == resource.data.userId ||
-         request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds);
-      allow delete: if request.auth != null &&
-        request.auth.uid in get(/databases/$(database)/documents/events/$(eventId)).data.adminIds;
+      allow list: if false;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.creator;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.creator;
     }
 
     // User private data - only the user can access their own
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // User public profiles - readable by all, writable only by owner
-    match /profiles/{userId} {
-      allow read: if true; // Anyone can read public profiles
+      allow read: if true;
+      allow list: if false;
       allow write: if request.auth != null && request.auth.uid == userId;
+
+      match /private/user {
+        allow list: if false;
+        allow read, write:if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }

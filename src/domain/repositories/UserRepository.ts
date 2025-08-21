@@ -1,11 +1,17 @@
-import { UserEntity } from '../entities/User';
-import { UserId } from '../value-objects/UserId';
+import {Credential, UserEntity, UserId} from '@/domain';
 
 export interface UserRepository {
-  save(user: UserEntity): Promise<void>;
-  findById(id: UserId): Promise<UserEntity | null>;
-  subscribeToUser(id: UserId, callback: (user: UserEntity | null) => void): () => void;
-  addSavedEventUrl(userId: UserId, eventUrl: string): Promise<void>;
-  removeSavedEventUrl(userId: UserId, eventUrl: string): Promise<void>;
-  delete(id: UserId): Promise<void>;
+    getUser(uid: UserId): Promise<UserEntity | null>;
+
+    getCurrentUser(): Promise<UserEntity | null>;
+
+    saveUser(user: UserEntity): Promise<UserEntity>;
+
+    subscribeToCurrentUser(callback: (user: UserEntity | null) => Promise<void>): () => void;
+
+    deleteCurrentUser(credential: Credential): Promise<void>;
+
+    signIn(credential: Credential): Promise<void>;
+
+    signOut(): Promise<void>;
 }

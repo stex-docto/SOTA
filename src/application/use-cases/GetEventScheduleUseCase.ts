@@ -1,10 +1,12 @@
-import { EventEntity } from '@domain/entities/Event';
-import { TalkEntity } from '@domain/entities/Talk';
-import { LocationEntity } from '@domain/entities/Location';
-import { EventRepository } from '@domain/repositories/EventRepository';
-import { TalkRepository } from '@domain/repositories/TalkRepository';
-import { LocationRepository } from '@domain/repositories/LocationRepository';
-import { EventId } from '@domain/value-objects/EventId';
+import {
+  EventEntity,
+  TalkEntity,
+  LocationEntity,
+  EventRepository,
+  TalkRepository,
+  LocationRepository,
+  EventId
+} from '@domain';
 
 export interface GetEventScheduleQuery {
   eventId: EventId;

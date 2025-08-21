@@ -1,11 +1,13 @@
-import { TalkEntity } from '@domain/entities/Talk';
-import { TalkRepository } from '@domain/repositories/TalkRepository';
-import { EventRepository } from '@domain/repositories/EventRepository';
-import { LocationRepository } from '@domain/repositories/LocationRepository';
-import { UserRepository } from '@domain/repositories/UserRepository';
-import { EventId } from '@domain/value-objects/EventId';
-import { LocationId } from '@domain/value-objects/LocationId';
-import { UserId } from '@domain/value-objects/UserId';
+import {
+  TalkEntity,
+  TalkRepository,
+  EventRepository,
+  LocationRepository,
+  UserRepository,
+  EventId,
+  LocationId,
+  UserId
+} from '@domain';
 
 export interface SubmitTalkCommand {
   eventId: EventId;

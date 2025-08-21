@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { ProfileSection } from '../components/ProfileSection';
 
 function HomePage() {
-  const { currentUser } = useAuth();
+  const { currentUser } = useAuthWithProfile();
 
   return (
     <div className="home-page">
@@ -28,6 +29,9 @@ function HomePage() {
       {currentUser && (
         <div className="user-dashboard">
           <h2>Your Dashboard</h2>
+          
+          <ProfileSection />
+          
           <div className="dashboard-actions">
             <Link to="/create-event" className="action-card">
               <h3>Create New Event</h3>
@@ -60,31 +64,6 @@ function HomePage() {
           </div>
         </div>
       )}
-
-      <div className="features-section">
-        <h2>Why Choose Open Talk Sessions?</h2>
-        <div className="features-grid">
-          <div className="feature-card">
-            <h3>Easy Organization</h3>
-            <p>Create and manage talk sessions with just a few clicks</p>
-          </div>
-          
-          <div className="feature-card">
-            <h3>Community Driven</h3>
-            <p>Connect with like-minded individuals and share knowledge</p>
-          </div>
-          
-          <div className="feature-card">
-            <h3>Flexible Scheduling</h3>
-            <p>Accommodate different time zones and availability</p>
-          </div>
-          
-          <div className="feature-card">
-            <h3>Topic Diversity</h3>
-            <p>Explore a wide range of subjects and expertise areas</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

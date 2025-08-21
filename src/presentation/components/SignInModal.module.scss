@@ -1,0 +1,346 @@
+// Color variables
+$color-overlay: rgba(0, 0, 0, 0.5);
+$color-white: white;
+$color-gray-50: #f9fafb;
+$color-gray-100: #f3f4f6;
+$color-gray-200: #e5e7eb;
+$color-gray-300: #d1d5db;
+$color-gray-400: #9ca3af;
+$color-gray-500: #6b7280;
+$color-gray-700: #374151;
+$color-gray-900: #111827;
+$color-blue-50: #eff6ff;
+$color-blue-100: #dbeafe;
+$color-blue-200: #bfdbfe;
+$color-blue-500: #3b82f6;
+$color-blue-600: #2563eb;
+$color-blue-700: #1d4ed8;
+$color-blue-800: #1e40af;
+$color-red-500: #ef4444;
+$color-red-600: #dc2626;
+$color-sky-50: #f0f9ff;
+$color-sky-200: #bae6fd;
+
+// Spacing variables
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+
+// Font families
+$font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+
+// Border radius
+$border-radius-sm: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 8px;
+$border-radius-xl: 12px;
+
+// Button base mixin
+@mixin button-base {
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-lg;
+}
+
+// Flexbox column mixin
+@mixin flex-column($gap: $spacing-lg) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $color-overlay;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  padding: $spacing-2xl;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  background: none;
+  border: none;
+  font-size: $spacing-2xl;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: $border-radius-sm;
+  color: $color-gray-500;
+  
+  &:hover {
+    background-color: $color-gray-100;
+    color: $color-gray-700;
+  }
+}
+
+.title {
+  margin: 0 0 $spacing-2xl 0;
+  font-size: $spacing-2xl;
+  font-weight: 600;
+  color: $color-gray-900;
+}
+
+.content {
+  @include flex-column;
+}
+
+.description {
+  margin: 0;
+  color: $color-gray-500;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.loading {
+  text-align: center;
+  padding: $spacing-xl;
+  color: $color-gray-500;
+}
+
+.primaryButton {
+  @include button-base;
+  background-color: $color-blue-500;
+  color: $color-white;
+  font-size: 16px;
+
+  &:hover:not(:disabled) {
+    background-color: $color-blue-600;
+  }
+
+  &:disabled {
+    background-color: $color-gray-400;
+    cursor: not-allowed;
+  }
+}
+
+.secondaryButton {
+  @include button-base;
+  background-color: $color-gray-100;
+  color: $color-gray-700;
+  border-radius: $border-radius-md;
+  font-size: 14px;
+  font-weight: normal;
+
+  &:hover {
+    background-color: $color-gray-200;
+  }
+}
+
+.dangerButton {
+  @include button-base;
+  background-color: $color-red-500;
+  color: $color-white;
+  font-size: 16px;
+
+  &:hover {
+    background-color: $color-red-600;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: $spacing-lg 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: $color-gray-200;
+  }
+
+  span {
+    padding: 0 $spacing-lg;
+    color: $color-gray-500;
+    font-size: 14px;
+  }
+}
+
+.formGroup {
+  @include flex-column($spacing-sm);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: $color-gray-700;
+}
+
+.codeInput {
+  padding: $spacing-md;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 16px;
+  font-family: $font-mono;
+  letter-spacing: 2px;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue-500;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &::placeholder {
+    color: $color-gray-400;
+    letter-spacing: 1px;
+  }
+}
+
+.sharingActive {
+  @include flex-column;
+  padding: $spacing-lg;
+  background-color: $color-sky-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-sky-200;
+}
+
+.sharingInactive {
+  @include flex-column;
+}
+
+.credentialDisplay {
+  font-family: $font-mono;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  padding: $spacing-lg;
+  background-color: $color-white;
+  border-radius: $border-radius-md;
+  border: 2px solid $color-blue-500;
+  letter-spacing: 2px;
+  color: $color-blue-800;
+  user-select: all;
+  cursor: text;
+}
+
+.userSection {
+  border-top: 1px solid $color-gray-200;
+  padding-top: $spacing-lg;
+  margin-top: $spacing-sm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.userInfo {
+  margin: 0;
+  font-size: 14px;
+  color: $color-gray-500;
+  flex: 1;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.profileSection {
+  padding: $spacing-lg;
+  background-color: $color-gray-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+  margin-bottom: $spacing-lg;
+}
+
+.sectionTitle {
+  margin: 0 0 $spacing-lg 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: $color-gray-900;
+}
+
+.profileInput {
+  width: 100%;
+  padding: $spacing-md;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: $color-blue-500;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.editMode {
+  @include flex-column($spacing-md);
+}
+
+.profileActions {
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: flex-end;
+}
+
+.displayMode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background-color: $color-white;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.displayValue {
+  font-size: 16px;
+  color: $color-gray-900;
+  font-weight: 500;
+}
+
+.editButton {
+  @include button-base;
+  background-color: transparent;
+  color: $color-blue-500;
+  border: 1px solid $color-blue-500;
+  font-size: 14px;
+  font-weight: normal;
+  padding: $spacing-xs $spacing-md;
+  
+  &:hover {
+    background-color: $color-blue-500;
+    color: $color-white;
+  }
+}
+
+.helpText {
+  margin: $spacing-sm 0 0 0;
+  font-size: 14px;
+  color: $color-gray-500;
+  font-style: italic;
+}
