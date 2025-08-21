@@ -1,5 +1,5 @@
 import {EventEntity, EventId, EventRepository, UserId} from '@domain';
-import {collection, deleteDoc, doc, Firestore, getDoc, setDoc} from "firebase/firestore";
+import {collection, deleteDoc, doc, Firestore, getDoc, onSnapshot, setDoc} from "firebase/firestore";
 
 type FirebaseEventDocument = {
     id: string;
@@ -52,6 +52,29 @@ export class FirebaseEventDatastore implements EventRepository {
         } catch (_err) {
             return null;
         }
+    }
+
+    subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void {
+        const documentRef = doc(this.collection, id.value);
+        
+        return onSnapshot(documentRef, (docSnapshot) => {
+            if (!docSnapshot.exists()) {
+                callback(null);
+                return;
+            }
+
+            try {
+                const data = docSnapshot.data() as FirebaseEventDocument;
+                const event = this.mapToEntity(data);
+                callback(event);
+            } catch (error) {
+                console.error('Error mapping event data:', error);
+                callback(null);
+            }
+        }, (error) => {
+            console.error('Error in event subscription:', error);
+            callback(null);
+        });
     }
 
     async delete(id: EventId): Promise<void> {

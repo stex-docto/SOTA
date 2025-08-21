@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {CreateEventUseCase} from '@application';
@@ -10,29 +11,27 @@ function CreateEventPage() {
     const {eventRepository, userRepository} = useDependencies();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string>('');
+    const [descriptionPreview, setDescriptionPreview] = useState(false);
+    const [talkRulesPreview, setTalkRulesPreview] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        talkRules: `# Talk rules
+        talkRules: `# The Four Principles
 
-## The Four Principles
+1. **Whoever comes are the right people** — The people who show up are exactly who need to be there.
+1. **Whatever happens is the only thing that could have happened** — Don't worry about what might have been; focus on what is.
+1. **When it starts is the right time to start** — Things begin when they're ready, not before.
+1. **When it's over, it's over** — When the energy for a topic is gone, move on.
 
-**Whoever comes are the right people** — The people who show up are exactly who need to be there.
-
-**Whatever happens is the only thing that could have happened** — Don't worry about what might have been; focus on what is.
-
-**When it starts is the right time to start** — Things begin when they're ready, not before.
-
-**When it's over, it's over** — When the energy for a topic is gone, move on.
-
-## The Law of Two Feet
+# The Law of Two Feet
 
 **Use your feet!** If you're not learning or contributing, go somewhere else. No hard feelings.
 
 This creates engaged, passionate discussions where everyone participates by choice.
 
-More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations`,
+---
+_More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations_`,
         startDate: '',
         endDate: '',
         location: ''
@@ -115,29 +114,63 @@ More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="description">Description (Markdown supported)</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            placeholder="Describe your event... (Markdown formatting supported)"
-                            rows={4}
-                            className="form-textarea"
-                        />
+                        <div className="field-header">
+                            <label htmlFor="description">Description (Markdown supported)</label>
+                            <button
+                                type="button"
+                                onClick={() => setDescriptionPreview(!descriptionPreview)}
+                                className="preview-toggle"
+                            >
+                                {descriptionPreview ? 'Edit' : 'Preview'}
+                            </button>
+                        </div>
+                        {descriptionPreview ? (
+                            <div className="markdown-preview">
+                                {formData.description ? (
+                                    <ReactMarkdown>{formData.description}</ReactMarkdown>
+                                ) : (
+                                    <p className="preview-placeholder">No description provided</p>
+                                )}
+                            </div>
+                        ) : (
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                placeholder="Describe your event... (Markdown formatting supported)"
+                                rows={4}
+                                className="form-textarea"
+                            />
+                        )}
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="talkRules">Talk Rules (Markdown supported)</label>
-                        <textarea
-                            id="talkRules"
-                            name="talkRules"
-                            value={formData.talkRules}
-                            onChange={handleInputChange}
-                            placeholder="Rules for talk sessions..."
-                            rows={10}
-                            className="form-textarea"
-                        />
+                        <div className="field-header">
+                            <label htmlFor="talkRules">Talk Rules (Markdown supported)</label>
+                            <button
+                                type="button"
+                                onClick={() => setTalkRulesPreview(!talkRulesPreview)}
+                                className="preview-toggle"
+                            >
+                                {talkRulesPreview ? 'Edit' : 'Preview'}
+                            </button>
+                        </div>
+                        {talkRulesPreview ? (
+                            <div className="markdown-preview large">
+                                <ReactMarkdown>{formData.talkRules}</ReactMarkdown>
+                            </div>
+                        ) : (
+                            <textarea
+                                id="talkRules"
+                                name="talkRules"
+                                value={formData.talkRules}
+                                onChange={handleInputChange}
+                                placeholder="Rules for talk sessions..."
+                                rows={10}
+                                className="form-textarea"
+                            />
+                        )}
                         <small className="help-text">These guidelines will be shown to participants about how the talk sessions work.</small>
                     </div>
 

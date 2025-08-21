@@ -1,48 +1,108 @@
 import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import {useAuth} from '../hooks/useAuth';
+import {useDependencies} from '../hooks/useDependencies';
+import {GetEventUseCase} from '@application';
+import {EventEntity} from '@domain';
 
 function EventPage() {
     const {eventId} = useParams<{ eventId: string }>();
+    const navigate = useNavigate();
     const {currentUser} = useAuth();
+    const {eventRepository} = useDependencies();
+    const [event, setEvent] = useState<EventEntity | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string>('');
     const [isEventCreator, setIsEventCreator] = useState(false);
     const [showManagement, setShowManagement] = useState(false);
 
-    // Mock event data - replace with actual data fetching
-    const [eventData, setEventData] = useState({
-        title: 'Loading...',
-        description: 'Loading event details...',
-        creator: null as string | null,
-        date: null as string | null
-    });
-
     useEffect(() => {
-        // TODO: Load actual event data from Firestore
-        // For now, simulate loading
-        setTimeout(() => {
-            setEventData({
-                title: 'Open Talk Session #' + eventId,
-                description: 'Share your ideas and learn from others in this open talk session.',
-                creator: 'mockCreatorId', // This would come from Firestore
-                date: new Date().toISOString()
-            });
-        }, 1000);
-    }, [eventId]);
+        if (!eventId) {
+            setError('Event ID is required');
+            setLoading(false);
+            return;
+        }
+
+        const getEventUseCase = new GetEventUseCase(eventRepository);
+
+        // Set up real-time subscription
+        const unsubscribe = getEventUseCase.subscribe(
+            {eventId},
+            (result) => {
+                setEvent(result.event);
+                setLoading(false);
+
+                if (!result.event) {
+                    setError('Event not found');
+                }
+            }
+        );
+
+        // Cleanup subscription on unmount
+        return () => {
+            unsubscribe();
+        };
+    }, [eventId, eventRepository]);
 
     useEffect(() => {
         // Check if current user is the event creator
-        if (currentUser && eventData.creator) {
-            setIsEventCreator(currentUser.id.value === eventData.creator);
+        if (currentUser && event) {
+            setIsEventCreator(currentUser.id.value === event.createdBy.value);
         }
-    }, [currentUser, eventData.creator]);
+    }, [currentUser, event]);
+
+    const formatDate = (date: Date) => {
+        return new Intl.DateTimeFormat(undefined, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    };
+
+    if (loading) {
+        return (
+            <div className="event-page">
+                <div className="loading-message">
+                    <h2>Loading event...</h2>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !event) {
+        return (
+            <div className="event-page">
+                <div className="error-section">
+                    <h2>Event not found</h2>
+                    <p>{error || 'The event you are looking for does not exist.'}</p>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="back-button"
+                    >
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="event-page">
             <div className="event-header">
                 <div className="event-title-section">
-                    <h1>{eventData.title}</h1>
+                    <h1>{event.title}</h1>
                     <p className="event-id">Event ID: {eventId}</p>
-                    <p className="event-description">{eventData.description}</p>
+                    <div className="event-dates">
+                        <p><strong>Start:</strong> {formatDate(event.startDate)}</p>
+                        <p><strong>End:</strong> {formatDate(event.endDate)}</p>
+                    </div>
+                    {event.location && (
+                        <p className="event-location"><strong>Location:</strong> {event.location}</p>
+                    )}
                 </div>
 
                 {isEventCreator && (
@@ -87,11 +147,16 @@ function EventPage() {
                 )}
 
                 <div className="event-info">
-                    <h2>Event Information</h2>
-                    <div className="info-card">
-                        <h3>{eventData.title}</h3>
-                        <p>{eventData.description}</p>
-                        <p><strong>Anyone can participate!</strong> Just share this event URL with them.</p>
+                    <h2>Description</h2>
+                    <div className="event-description">
+                        <ReactMarkdown>{event.description}</ReactMarkdown>
+                    </div>
+                </div>
+
+                <div className="talk-rules">
+                    <h2>Talk Rules</h2>
+                    <div className="rules-content">
+                        <ReactMarkdown>{event.talkRules}</ReactMarkdown>
                     </div>
                 </div>
 
