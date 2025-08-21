@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { useDependencies } from '../context/DependencyContext';
-import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { useAuth } from '../hooks/useAuth';
 import {
   CODE_LENGTH,
   CODE_BLOCK_ITERATION,
@@ -16,7 +16,7 @@ interface SignInModalProps {
 
 export function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const { userRepository, credentialRepository } = useDependencies();
-  const { currentUser } = useAuthWithProfile();
+  const { currentUser } = useAuth();
 
   const [phrase, setPhrase] = useState<string>('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -24,6 +24,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [displayName, setDisplayName] = useState('');
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [credentialError, setCredentialError] = useState<string>('');
 
   useEffect(() => {
     setCredential(credentialRepository.get)
@@ -39,7 +40,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
     try {
       setIsLoggingIn(true);
       const credential = credentialRepository.create()
-      await userRepository.signIn(credential);
+      await userRepository.signIn(credential, true);
       setCredential(credential);
     } catch (error) {
       console.error('Login failed:', error);
@@ -103,6 +104,11 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
     const cleanValue = value.toLowerCase().replace(/[^a-z]/g, '');
     setPhrase(cleanValue);
     
+    // Clear error message when user starts typing
+    if (credentialError) {
+      setCredentialError('');
+    }
+    
     if (cleanValue.length === CODE_TOTAL_LENGTH) {
       try {
         const codes = [];
@@ -117,6 +123,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
         setPhrase('');
       } catch (error) {
         console.error('Invalid credential:', error);
+        setCredentialError('Invalid credential. Please check your sharing code and try again.');
         setPhrase('');
         credentialRepository.delete();
       }
@@ -182,6 +189,11 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
                 placeholder="xxxxx-xxxxx-xxxxx-xxxxx"
                 maxLength={CODE_TOTAL_LENGTH + 3} // +3 for dashes
               />
+              {credentialError && (
+                <div className={styles.errorMessage}>
+                  {credentialError}
+                </div>
+              )}
             </div>
           </div>
         ) : (

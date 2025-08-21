@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { useAuth } from '../hooks/useAuth';
 
 function HomePage() {
-  const { currentUser } = useAuthWithProfile();
+  const { currentUser } = useAuth();
 
   return (
     <div className="home-page">

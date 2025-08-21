@@ -11,7 +11,7 @@ export interface UserRepository {
 
     deleteCurrentUser(credential: Credential): Promise<void>;
 
-    signIn(credential: Credential): Promise<void>;
+    signIn(credential: Credential, signup?: boolean): Promise<void>;
 
     signOut(): Promise<void>;
 }

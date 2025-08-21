@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { SignInModal } from './SignInModal';
 
 function Header() {
-  const { currentUser } = useAuthWithProfile();
+  const { currentUser, shouldShowAuthModal } = useAuth();
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const location = useLocation();
+  
+  // Auto-show modal if auth is required for certain pages
+  const authRequiredPages = ['/create-event'];
+  const isAuthRequired = authRequiredPages.includes(location.pathname);
+  const shouldAutoShowModal = shouldShowAuthModal(isAuthRequired);
 
   return (
     <header className="header">
@@ -56,7 +62,7 @@ function Header() {
       </div>
       
       <SignInModal 
-        isOpen={showSignInModal} 
+        isOpen={showSignInModal || shouldAutoShowModal} 
         onClose={() => setShowSignInModal(false)} 
       />
     </header>

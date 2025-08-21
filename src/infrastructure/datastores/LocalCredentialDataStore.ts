@@ -19,7 +19,7 @@ export class LocalCredentialDataStore implements CredentialRepository {
             const localChain = localStorage.getItem(LOCAL_STORAGE_KEY)
             const codes = localChain?.split(LOCAL_STORAGE_SEPARATOR) || []
             return new Credential(codes)
-        } catch (e) {
+        } catch (_e) {
             return null
         }
     }

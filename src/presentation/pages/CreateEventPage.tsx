@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
-import { SignInModal } from '../components/SignInModal.tsx';
+import { useAuth } from '../hooks/useAuth';
 
 function CreateEventPage() {
   const navigate = useNavigate();
-  const { currentUser } = useAuthWithProfile();
+  const { currentUser } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSignInModal, setShowSignInModal] = useState(false);
-
-  // Automatically show sign-in modal if user is not authenticated
-  useEffect(() => {
-    if (currentUser === null) {
-      setShowSignInModal(true);
-    }
-  }, [currentUser]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -61,14 +52,6 @@ function CreateEventPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleModalClose = () => {
-    if (!currentUser) {
-      // If user closes modal without signing in, redirect to home
-      navigate('/');
-    }
-    setShowSignInModal(false);
   };
 
   return (
@@ -202,11 +185,6 @@ function CreateEventPage() {
           </button>
         </div>
       </form>
-      
-      <SignInModal 
-        isOpen={showSignInModal} 
-        onClose={handleModalClose} 
-      />
     </div>
   );
 }

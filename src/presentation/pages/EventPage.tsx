@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { useAuth } from '../hooks/useAuth';
 
 function EventPage() {
   const { eventId } = useParams<{ eventId: string }>();
-  const { currentUser } = useAuthWithProfile();
+  const { currentUser } = useAuth();
   const [isEventCreator, setIsEventCreator] = useState(false);
   const [showManagement, setShowManagement] = useState(false);
 

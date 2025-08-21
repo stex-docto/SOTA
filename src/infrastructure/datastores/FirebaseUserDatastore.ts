@@ -1,6 +1,7 @@
 import {Credential, PrivateUser, PublicUser, UserEntity, UserId, UserRepository} from '@domain';
 import {Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, User} from 'firebase/auth';
-import {collection, deleteDoc, doc, Firestore, getDoc, setDoc, onSnapshot} from "firebase/firestore";
+import {collection, deleteDoc, doc, Firestore, getDoc, onSnapshot, setDoc} from "firebase/firestore";
+import {FirebaseError} from 'firebase/app';
 
 type FirebaseCredential = { email: string; password: string }
 
@@ -15,7 +16,7 @@ type UserListener = (user: UserEntity | null) => Promise<void>;
 
 export class FirebaseUserDatastore implements UserRepository {
     protected listeners = new Set<UserListener>()
-    private currentUserUnsubscribe : (() => void) | null = null
+    private currentUserUnsubscribe: (() => void) | null = null
 
     constructor(
         private readonly auth: Auth,
@@ -30,8 +31,8 @@ export class FirebaseUserDatastore implements UserRepository {
 
     async getCurrentUser(): Promise<UserEntity | null> {
         const currentUser = this.auth.currentUser;
-        if( !currentUser) return null;
-        let user = await  this.getUser(UserId.from(currentUser.uid))
+        if (!currentUser) return null;
+        let user = await this.getUser(UserId.from(currentUser.uid))
         if (!user) {
             user = await this.saveUser(new UserEntity(UserId.from(currentUser.uid)))
         }
@@ -50,7 +51,7 @@ export class FirebaseUserDatastore implements UserRepository {
                 displayName: userPublicData.displayName,
                 savedEventUrls: userPrivateData?.savedEventUrls || [],
             }
-        } catch (err) {
+        } catch (_err) {
             return null;
         }
     }
@@ -81,19 +82,6 @@ export class FirebaseUserDatastore implements UserRepository {
         }))
     }
 
-    protected subscribeToUserDoc(user: User | null){
-        this.currentUserUnsubscribe?.()
-        this.currentUserUnsubscribe = null
-        if (user){
-            const publicUnsubScribe = onSnapshot(this.getPublicUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
-            const privateUnsubScribe = onSnapshot(this.getPrivateUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
-            this.currentUserUnsubscribe = () => {
-                publicUnsubScribe()
-                privateUnsubScribe()
-            }
-        }
-    }
-
     subscribeToCurrentUser(callback: UserListener): () => void {
         this.listeners.add(callback)
         return () => this.listeners.delete(callback)
@@ -114,14 +102,31 @@ export class FirebaseUserDatastore implements UserRepository {
         await this.auth.signOut()
     }
 
-    async signIn(credential: Credential): Promise<void> {
+    async signIn(credential: Credential, signUpIfNotExist: boolean = false): Promise<void> {
         const {email, password} = mapCredential(credential)
         try {
             await signInWithEmailAndPassword(this.auth, email, password)
         } catch (error) {
-            await createUserWithEmailAndPassword(this.auth, email, password)
+            if ((error as FirebaseError).code === 'auth/invalid-credential' && signUpIfNotExist) {
+                await createUserWithEmailAndPassword(this.auth, email, password)
+            } else {
+                throw error
+            }
         }
         console.log(`User ${this.auth.currentUser?.uid} connected`)
+    }
+
+    protected subscribeToUserDoc(user: User | null) {
+        this.currentUserUnsubscribe?.()
+        this.currentUserUnsubscribe = null
+        if (user) {
+            const publicUnsubScribe = onSnapshot(this.getPublicUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
+            const privateUnsubScribe = onSnapshot(this.getPrivateUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
+            this.currentUserUnsubscribe = () => {
+                publicUnsubScribe()
+                privateUnsubScribe()
+            }
+        }
     }
 
     private getPublicUserRef(uid: UserId) {
