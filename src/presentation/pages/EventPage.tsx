@@ -1,16 +1,12 @@
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
-import {useDependencies} from '../hooks/useDependencies';
 
 function EventPage() {
     const {eventId} = useParams<{ eventId: string }>();
     const {currentUser} = useAuth();
-    const {userRepository} = useDependencies();
     const [isEventCreator, setIsEventCreator] = useState(false);
     const [showManagement, setShowManagement] = useState(false);
-    const [isEventSaved, setIsEventSaved] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
 
     // Mock event data - replace with actual data fetching
     const [eventData, setEventData] = useState({

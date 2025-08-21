@@ -1,6 +1,4 @@
-import {LocationEntity} from '../entities/Location';
-import {LocationId} from '@/domain';
-import {EventId} from '../value-objects/EventId';
+import {EventId, LocationEntity, LocationId} from '@/domain';
 
 export interface LocationRepository {
     save(location: LocationEntity): Promise<void>;

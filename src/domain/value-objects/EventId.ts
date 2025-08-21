@@ -8,8 +8,4 @@ export class EventId extends EntityId {
     static from(value: string): EventId {
         return new EventId(value);
     }
-
-    static generateToken(): string {
-        return this.generateToken();
-    }
 }

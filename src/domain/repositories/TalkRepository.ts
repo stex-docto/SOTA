@@ -1,7 +1,4 @@
-import {TalkEntity, TalkStatus} from '../entities/Talk';
-import {TalkId} from '../value-objects/TalkId';
-import {EventId} from '../value-objects/EventId';
-import {UserId} from '../value-objects/UserId';
+import {EventId, TalkEntity, TalkId, TalkStatus, UserId} from '@/domain';
 
 export interface TalkRepository {
     save(talk: TalkEntity): Promise<void>;

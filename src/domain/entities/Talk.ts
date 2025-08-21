@@ -1,7 +1,4 @@
-import {TalkId} from '../value-objects/TalkId';
-import {EventId} from '../value-objects/EventId';
-import {LocationId} from '../value-objects/LocationId';
-import {UserId} from '../value-objects/UserId';
+import {EventId, LocationId, TalkId, UserId} from '@/domain';
 
 export type TalkStatus = 'pending' | 'approved' | 'rejected';
 

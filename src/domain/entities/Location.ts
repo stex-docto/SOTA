@@ -1,6 +1,4 @@
-import {LocationId} from '../value-objects/LocationId';
-import {EventId} from '../value-objects/EventId';
-import {UserId} from '../value-objects/UserId';
+import {EventId, LocationId, UserId} from '@/domain';
 
 export interface Location {
     id: LocationId;

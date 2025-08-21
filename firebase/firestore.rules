@@ -4,15 +4,15 @@ service cloud.firestore {
     match /event/{eventId} {
       allow read: if true;
       allow list: if false;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.creator;
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.creator;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.createdBy;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
     }
 
     match /event/{eventId}/talk/{talkId} {
       allow read: if true;
       allow list: if false;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.creator;
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.creator;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.createdBy;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
     }
 
     // User private data - only the user can access their own
