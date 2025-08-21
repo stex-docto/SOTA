@@ -1,6 +1,12 @@
-import {FirebaseApp, initializeApp, getApps} from 'firebase/app'
+import {FirebaseApp, getApps, initializeApp} from 'firebase/app'
 import {Auth, getAuth} from 'firebase/auth'
-import {Firestore, initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,} from 'firebase/firestore'
+import {
+    Firestore,
+    getFirestore,
+    initializeFirestore,
+    persistentLocalCache,
+    persistentMultipleTabManager,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,7 +27,7 @@ export class Firebase {
         // Check if Firebase app already exists
         const existingApps = getApps();
         const existingApp = existingApps.find(app => app.name === 'sota');
-        
+
         if (existingApp) {
             this.app = existingApp;
             this.auth = getAuth(this.app);

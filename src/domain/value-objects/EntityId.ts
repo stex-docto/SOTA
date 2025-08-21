@@ -1,25 +1,25 @@
 export abstract class EntityId {
-  constructor(public readonly value: string) {
-    if (!value || value.trim().length === 0) {
-      throw new Error('EntityId cannot be empty');
+    constructor(public readonly value: string) {
+        if (!value || value.trim().length === 0) {
+            throw new Error('EntityId cannot be empty');
+        }
     }
-  }
 
-  equals(other: EntityId): boolean {
-    return this.value === other.value;
-  }
+    protected static generateId(): string {
+        return crypto.randomUUID();
+    }
 
-  toString(): string {
-    return this.value;
-  }
+    protected static generateToken(): string {
+        return Array.from(crypto.getRandomValues(new Uint8Array(32)))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
 
-  protected static generateId(): string {
-    return crypto.randomUUID();
-  }
+    equals(other: EntityId): boolean {
+        return this.value === other.value;
+    }
 
-  protected static generateToken(): string {
-    return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
+    toString(): string {
+        return this.value;
+    }
 }

@@ -91,7 +91,7 @@ $border-radius-xl: 12px;
   padding: $spacing-xs;
   border-radius: $border-radius-sm;
   color: $color-gray-500;
-  
+
   &:hover {
     background-color: $color-gray-100;
     color: $color-gray-700;
@@ -289,7 +289,7 @@ $border-radius-xl: 12px;
   border-radius: $border-radius-md;
   font-size: 16px;
   transition: border-color 0.2s, box-shadow 0.2s;
-  
+
   &:focus {
     outline: none;
     border-color: $color-blue-500;
@@ -331,7 +331,7 @@ $border-radius-xl: 12px;
   font-size: 14px;
   font-weight: normal;
   padding: $spacing-xs $spacing-md;
-  
+
   &:hover {
     background-color: $color-blue-500;
     color: $color-white;
@@ -357,7 +357,7 @@ $border-radius-xl: 12px;
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  
+
   &::before {
     content: '⚠️';
     font-size: 16px;

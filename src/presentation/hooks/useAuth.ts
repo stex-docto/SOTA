@@ -12,7 +12,7 @@ export function useAuth(): Auth {
     const {userRepository} = useDependencies();
     const [currentUser, setCurrentUser] = useState<UserEntity | null | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     useEffect(() => {
         userRepository.getCurrentUser()
             .then((user) => {
@@ -23,7 +23,7 @@ export function useAuth(): Auth {
                 setCurrentUser(null);
                 setIsLoading(false);
             });
-        
+
         // Subscribe to current user changes
         return userRepository.subscribeToCurrentUser(
             async (user) => {

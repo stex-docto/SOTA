@@ -75,8 +75,8 @@ $breakpoint-mobile: 768px;
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
   line-height: 1.6;
   color: $color-black;
   background-color: $color-background;
@@ -342,7 +342,7 @@ body {
   align-items: center;
   gap: $spacing-xs;
   text-align: center;
-  
+
   .flow-icon {
     font-size: $font-size-xl;
     transition: all 0.3s ease;
@@ -351,7 +351,7 @@ body {
       transform: scale(1.1);
     }
   }
-  
+
   span {
     font-size: $font-size-base;
     font-weight: 600;
