@@ -331,11 +331,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: $spacing-sm;
-  margin: $spacing-xl 0;
+  margin: $spacing-md 0 $spacing-xl 0;
   padding: $spacing-lg;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: $radius-xl;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  transform: scale(1.4);
 }
 
 .flow-item {
