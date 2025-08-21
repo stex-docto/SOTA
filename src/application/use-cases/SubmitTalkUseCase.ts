@@ -38,7 +38,7 @@ export class SubmitTalkUseCase {
     }
 
     // Verify user exists
-    const user = await this.userRepository.findById(command.userId);
+    const user = await this.userRepository.getUser(command.userId);
     if (!user) {
       throw new Error('User not found');
     }

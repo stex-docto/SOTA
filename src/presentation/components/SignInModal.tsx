@@ -16,7 +16,7 @@ interface SignInModalProps {
 
 export function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const { userRepository, credentialRepository } = useDependencies();
-  const { currentUser, loading } = useAuthWithProfile();
+  const { currentUser } = useAuthWithProfile();
 
   const [phrase, setPhrase] = useState<string>('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -137,8 +137,15 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
   if (!isOpen) return null;
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only close if clicking the overlay itself, not the modal content
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         <button className={styles.closeButton} onClick={onClose}>
           ×
@@ -146,9 +153,7 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
         <h2 className={styles.title}>Device Connection</h2>
 
-        {loading ? (
-          <div className={styles.loading}>Loading...</div>
-        ) : !currentUser ? (
+        {!currentUser ? (
           <div className={styles.content}>
             <p className={styles.description}>Anonymous sign in to connect your devices</p>
             

@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'logo192.png', 'logo512.png'],
       manifest: {
-        name: 'Open Talk Sessions',
-        short_name: 'OpenTalk',
-        description: 'Organize and participate in open talk sessions',
+        name: 'SOTA - Simple Open Talk App',
+        short_name: 'SOTA',
+        description: 'Simple Open Talk App for organizing and participating in open talk sessions',
         theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',

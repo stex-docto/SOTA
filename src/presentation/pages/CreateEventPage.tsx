@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
 import { SignInModal } from '../components/SignInModal.tsx';
@@ -8,6 +8,13 @@ function CreateEventPage() {
   const { currentUser } = useAuthWithProfile();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+
+  // Automatically show sign-in modal if user is not authenticated
+  useEffect(() => {
+    if (currentUser === null) {
+      setShowSignInModal(true);
+    }
+  }, [currentUser]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -56,26 +63,13 @@ function CreateEventPage() {
     }
   };
 
-  if (!currentUser) {
-    return (
-      <div className="create-event-page">
-        <div className="auth-required">
-          <h2>Sign In to Create Event</h2>
-          <p>You need to authenticate to create and manage events.</p>
-          <button 
-            onClick={() => setShowSignInModal(true)}
-            className="sign-in-button"
-          >
-            Sign In
-          </button>
-          <SignInModal 
-            isOpen={showSignInModal} 
-            onClose={() => setShowSignInModal(false)} 
-          />
-        </div>
-      </div>
-    );
-  }
+  const handleModalClose = () => {
+    if (!currentUser) {
+      // If user closes modal without signing in, redirect to home
+      navigate('/');
+    }
+    setShowSignInModal(false);
+  };
 
   return (
     <div className="create-event-page">
@@ -208,6 +202,11 @@ function CreateEventPage() {
           </button>
         </div>
       </form>
+      
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={handleModalClose} 
+      />
     </div>
   );
 }

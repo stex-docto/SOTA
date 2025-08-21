@@ -12,7 +12,7 @@ function Header() {
       <div className="header-content">
         <div className="header-left">
           <Link to="/" className="logo">
-            Open Talk Sessions
+            SOTA
           </Link>
         </div>
         

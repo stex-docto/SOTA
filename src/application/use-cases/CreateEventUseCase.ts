@@ -1,6 +1,7 @@
 import {
   EventEntity,
   EventRepository,
+  UserEntity,
   UserRepository,
   UserId
 } from '@domain';
@@ -22,7 +23,7 @@ export class CreateEventUseCase {
 
   async execute(command: CreateEventCommand): Promise<CreateEventResult> {
     // Verify user exists
-    const user = await this.userRepository.findById(command.createdBy);
+    const user = await this.userRepository.getUser(command.createdBy);
     if (!user) {
       throw new Error('User not found');
     }
@@ -33,9 +34,9 @@ export class CreateEventUseCase {
     // Save event
     await this.eventRepository.save(event);
 
-    // Update user with admin privilege for this event
-    const updatedUser = user.addAdminEvent(event.id);
-    await this.userRepository.save(updatedUser);
+    // Save event URL to user's saved events
+    const updatedUser = new UserEntity(user.id, [...user.savedEventUrls, event.publicUrl], user.displayName);
+    await this.userRepository.saveUser(updatedUser);
 
     return { event };
   }

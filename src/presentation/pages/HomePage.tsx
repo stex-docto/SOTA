@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
-import { ProfileSection } from '../components/ProfileSection';
 
 function HomePage() {
   const { currentUser } = useAuthWithProfile();
@@ -8,29 +7,46 @@ function HomePage() {
   return (
     <div className="home-page">
       <div className="hero-section">
-        <h1>Welcome to Open Talk Sessions</h1>
+        <h1>Welcome to SOTA</h1>
         <p className="hero-description">
-          Organize and participate in open talk sessions. Share your knowledge, 
+          Simple Open Talk App - Organize and participate in open talk sessions. Share your knowledge, 
           learn from others, and build a vibrant community of speakers and learners.
         </p>
         
-        {!currentUser && (
-          <div className="hero-actions">
-            <Link to="/create-event" className="cta-button primary">Create Event</Link>
-            <div className="or-divider">or</div>
-            <div className="access-info">
-              <h3>Join an Event</h3>
-              <p>Have a public event URL? Access it directly to participate in talks and discussions.</p>
+        <div className="action-boxes">
+          <div className="action-box participate">
+            <h3><span className="action-icon">👥</span> Join an Event</h3>
+            <p>Got an event URL? Just click it or paste it in your browser. No sign-up needed!</p>
+            <div className="action-footer">
+              <span className="highlight">✨ Zero barriers to participation</span>
             </div>
           </div>
-        )}
+
+          <div className="action-box create">
+            <h3><span className="action-icon">🎤</span> Organize an Event</h3>
+            <p>Create your own open talk session and invite speakers to share their ideas.</p>
+            <div className="action-steps">
+              <div className="step">
+                <span className="step-number">1</span>
+                <span>Create event</span>
+              </div>
+              <div className="step">
+                <span className="step-number">2</span>
+                <span>Share → Done!</span>
+              </div>
+            </div>
+            <div className="action-footer">
+              <Link to="/create-event" className="create-event-btn">
+                Start Organizing
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {currentUser && (
         <div className="user-dashboard">
           <h2>Your Dashboard</h2>
-          
-          <ProfileSection />
           
           <div className="dashboard-actions">
             <Link to="/create-event" className="action-card">
