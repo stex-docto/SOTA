@@ -15,30 +15,42 @@ function HomePage() {
         
         <div className="action-boxes">
           <div className="action-box participate">
-            <h3><span className="action-icon">👥</span> Join an Event</h3>
-            <p>Got an event URL? Just click it or paste it in your browser. No sign-up needed!</p>
-            <div className="action-footer">
-              <span className="highlight">✨ Zero barriers to participation</span>
+            <div className="action-glow participate-glow"></div>
+            <div className="action-content">
+              <h3><span className="action-icon">👥</span> Join an Event</h3>
+              <p>Got an event URL? Just click it or paste it in your browser. No sign-up needed!</p>
+              <div className="action-footer">
+                <span className="highlight">✨ Zero barriers to participation</span>
+              </div>
             </div>
           </div>
 
           <div className="action-box create">
-            <h3><span className="action-icon">🎤</span> Organize an Event</h3>
-            <p>Create your own open talk session and invite speakers to share their ideas.</p>
-            <div className="action-steps">
-              <div className="step">
-                <span className="step-number">1</span>
-                <span>Create event</span>
+            <div className="action-glow create-glow"></div>
+            <div className="action-content">
+              <h3><span className="action-icon">✨</span> Host Your Own</h3>
+              <p>Be the catalyst! Launch your talk session and bring speakers together in minutes.</p>
+              <div className="creation-flow">
+                <div className="flow-item">
+                  <div className="flow-icon">⚡</div>
+                  <span>Quick Setup</span>
+                </div>
+                <div className="flow-separator">•</div>
+                <div className="flow-item">
+                  <div className="flow-icon">📤</div>
+                  <span>Share URL</span>
+                </div>
+                <div className="flow-separator">•</div>
+                <div className="flow-item">
+                  <div className="flow-icon">🎯</div>
+                  <span>Go Live!</span>
+                </div>
               </div>
-              <div className="step">
-                <span className="step-number">2</span>
-                <span>Share → Done!</span>
+              <div className="action-footer">
+                <Link to="/create-event" className="create-event-btn">
+                  <span>🚀 Launch Event</span>
+                </Link>
               </div>
-            </div>
-            <div className="action-footer">
-              <Link to="/create-event" className="create-event-btn">
-                Start Organizing
-              </Link>
             </div>
           </div>
         </div>

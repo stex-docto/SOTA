@@ -322,42 +322,52 @@ body {
 .action-icon {
   font-size: $font-size-3xl;
   margin-right: $spacing-sm;
-  display: inline-block;
+  line-height: 1;
+  vertical-align: baseline;
 }
 
-.action-steps {
-  margin: $spacing-lg 0;
-}
-
-.step {
+.creation-flow {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  margin: 0.75rem 0;
-  padding: $spacing-sm 0;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin: $spacing-xl 0;
+  padding: $spacing-lg;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: $radius-xl;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
 
-  &-number {
-    background: $color-primary;
-    color: $color-white;
-    width: 24px;
-    height: 24px;
-    border-radius: $radius-full;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: $font-size-sm;
-    font-weight: 600;
-    flex-shrink: 0;
+.flow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  text-align: center;
+  
+  .flow-icon {
+    font-size: $font-size-xl;
+    transition: all 0.3s ease;
 
-    .action-box.participate & {
-      background: $color-green;
+    .action-box:hover & {
+      transform: scale(1.1);
     }
   }
-
-  span:last-child {
-    color: $color-gray-700;
+  
+  span {
     font-size: $font-size-base;
+    font-weight: 600;
+    color: $color-gray-700;
+    white-space: nowrap;
   }
+}
+
+.flow-separator {
+  color: $color-primary;
+  font-size: $font-size-lg;
+  font-weight: bold;
+  opacity: 0.6;
+  margin: 0 $spacing-xs;
 }
 
 .action-footer {
