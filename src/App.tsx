@@ -4,6 +4,7 @@ import Header from './presentation/components/Header';
 import HomePage from './presentation/pages/HomePage';
 import EventPage from './presentation/pages/EventPage';
 import CreateEventPage from './presentation/pages/CreateEventPage';
+import EditEventPage from './presentation/pages/EditEventPage';
 import './App.scss';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                             <Route path="/" element={<HomePage/>}/>
                             <Route path="/create-event" element={<CreateEventPage/>}/>
                             <Route path="/event/:eventId" element={<EventPage/>}/>
+                            <Route path="/event/:eventId/edit" element={<EditEventPage/>}/>
                         </Routes>
                     </main>
                 </div>

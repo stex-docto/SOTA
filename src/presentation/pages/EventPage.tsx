@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {GetEventUseCase} from '@application';
@@ -124,7 +125,12 @@ function EventPage() {
                         <div className="management-actions">
                             <div className="action-group">
                                 <h3>Event Actions</h3>
-                                <button className="admin-button secondary">Edit Event Details</button>
+                                <button 
+                                    className="admin-button secondary"
+                                    onClick={() => navigate(`/event/${eventId}/edit`)}
+                                >
+                                    Edit Event Details
+                                </button>
                                 <button className="admin-button primary">Generate Schedule</button>
                                 <button className="admin-button danger">Delete Event</button>
                             </div>
@@ -148,15 +154,15 @@ function EventPage() {
 
                 <div className="event-info">
                     <h2>Description</h2>
-                    <div className="event-description">
-                        <ReactMarkdown>{event.description}</ReactMarkdown>
+                    <div className="markdown-preview">
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{event.description}</ReactMarkdown>
                     </div>
                 </div>
 
                 <div className="talk-rules">
                     <h2>Talk Rules</h2>
-                    <div className="rules-content">
-                        <ReactMarkdown>{event.talkRules}</ReactMarkdown>
+                    <div className="markdown-preview large">
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{event.talkRules}</ReactMarkdown>
                     </div>
                 </div>
 
