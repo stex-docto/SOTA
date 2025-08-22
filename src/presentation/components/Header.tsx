@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {SignInModal} from './SignInModal';
+import CurrentEventsBar from './CurrentEventsBar';
 
 function Header() {
     const {currentUser, shouldShowAuthModal} = useAuth();
@@ -30,8 +31,7 @@ function Header() {
                 </div>
 
                 <nav className="header-nav">
-                    <Link to="/" className="nav-link">Home</Link>
-                    <Link to="/create-event" className="nav-link">Create Event</Link>
+                    <CurrentEventsBar />
                 </nav>
 
                 <div className="header-right">

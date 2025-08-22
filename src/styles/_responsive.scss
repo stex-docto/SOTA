@@ -3,7 +3,7 @@
 // Mobile Responsive
 @media (max-width: $breakpoint-mobile) {
   .container {
-    padding: 0 $spacing-sm;
+    padding: 0 $spacing-md;
   }
 
   .page-title {
@@ -11,8 +11,8 @@
   }
 
   .header-content {
-    flex-direction: column;
-    gap: $spacing-md;
+    padding: $spacing-sm $spacing-md;
+    gap: $spacing-sm;
   }
 
   .hero-section {

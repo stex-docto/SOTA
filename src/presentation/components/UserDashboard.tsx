@@ -1,24 +1,24 @@
 import {Link} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {GetUserEventsUseCase} from '@application';
-import {EventEntity} from '@domain';
+import {GetUserAllEventsUseCase, UserEventItem} from '@application';
 import {useEffect, useState} from 'react';
+import EventList from './EventList';
 
 function UserDashboard() {
     const {currentUser} = useAuth();
     const {eventRepository, userRepository} = useDependencies();
-    const [userEvents, setUserEvents] = useState<EventEntity[]>([]);
+    const [allEvents, setAllEvents] = useState<UserEventItem[]>([]);
     const [loadingEvents, setLoadingEvents] = useState(true);
 
     useEffect(() => {
-        const fetchUserEvents = async () => {
+        const fetchAllEvents = async () => {
             if (!currentUser) return;
 
             try {
-                const getUserEventsUseCase = new GetUserEventsUseCase(eventRepository, userRepository);
-                const result = await getUserEventsUseCase.execute();
-                setUserEvents(result.events);
+                const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository);
+                const result = await getUserAllEventsUseCase.execute();
+                setAllEvents(result.events);
             } catch (error) {
                 console.error('Failed to fetch user events:', error);
             } finally {
@@ -26,8 +26,9 @@ function UserDashboard() {
             }
         };
 
-        fetchUserEvents();
+        fetchAllEvents();
     }, [currentUser, eventRepository, userRepository]);
+
 
     if (!currentUser) {
         return null;
@@ -36,51 +37,70 @@ function UserDashboard() {
     return (
         <div className="home-page">
             <div className="user-dashboard">
-                <h2>Your Dashboard</h2>
+                <div className="dashboard-header">
+                    <h2>Your Events</h2>
+                    <Link to="/create-event" className="create-event-btn">
+                        <span>+ Create Event</span>
+                    </Link>
+                </div>
 
-                <div className="dashboard-actions">
-                    <div className="action-card">
-                        <h3>Your Events ({userEvents.length})</h3>
-                        <p>Manage events you've created</p>
-                        {loadingEvents ? (
+                <div className="events-list">
+                    {loadingEvents ? (
+                        <div className="loading-message">
                             <p>Loading your events...</p>
-                        ) : userEvents.length > 0 ? (
-                            <div className="saved-events-list">
-                                {userEvents.slice(0, 3).map((event, index) => (
-                                    <div key={index} className="saved-event-item">
-                                        <Link to={`/event/${event.id.value}`}>
-                                            {event.title.length > 30 ? `${event.title.substring(0, 30)}...` : event.title}
-                                        </Link>
-                                    </div>
-                                ))}
-                                {userEvents.length > 3 && (
-                                    <p className="more-events">+{userEvents.length - 3} more events</p>
-                                )}
-                            </div>
-                        ) : (
-                            <p>No events created yet.</p>
-                        )}
-                    </div>
+                        </div>
+                    ) : allEvents.length > 0 ? (
+                        (() => {
+                            const now = new Date();
+                            const upcomingEvents = allEvents.filter(eventItem => eventItem.event.endDate > now);
+                            const pastEvents = allEvents.filter(eventItem => eventItem.event.endDate <= now);
 
-                    <div className="action-card">
-                        <h3>Saved Events ({currentUser.savedEventIds.size})</h3>
-                        <p>Access your saved events</p>
-                        {currentUser.savedEventIds.size > 0 && (
-                            <div className="saved-events-list">
-                                {currentUser.savedEventIds.toArray().slice(0, 3).map((eventId, index) => (
-                                    <div key={index} className="saved-event-item">
-                                        <Link to={`/event/${eventId.value}`}>
-                                            Event: {eventId.value.length > 20 ? `${eventId.value.substring(0, 20)}...` : eventId.value}
-                                        </Link>
+                            return (
+                                <>
+                                    {/* Upcoming Events */}
+                                    <div className="events-section">
+                                        <h3>Upcoming Events ({upcomingEvents.length})</h3>
+                                        <EventList 
+                                            events={upcomingEvents}
+                                            isPastEvent={false}
+                                            emptyMessage="No upcoming events"
+                                        />
                                     </div>
-                                ))}
-                                {currentUser.savedEventIds.size > 3 && (
-                                    <p className="more-events">+{currentUser.savedEventIds.size - 3} more
-                                        events</p>
-                                )}
-                            </div>
-                        )}
-                    </div>
+
+                                    {/* Past Events - Collapsible */}
+                                    <div className="events-section">
+                                        <details className="past-events-details">
+                                            <summary>Past Events ({pastEvents.length})</summary>
+                                            <EventList 
+                                                events={pastEvents}
+                                                isPastEvent={true}
+                                                emptyMessage="No past events"
+                                            />
+                                        </details>
+                                    </div>
+
+                                    {/* Empty State */}
+                                    {upcomingEvents.length === 0 && pastEvents.length === 0 && (
+                                        <div className="empty-state">
+                                            <h3>No events yet</h3>
+                                            <p>Create your first event or save events from others to see them here.</p>
+                                            <Link to="/create-event" className="create-event-btn primary">
+                                                Create Your First Event
+                                            </Link>
+                                        </div>
+                                    )}
+                                </>
+                            );
+                        })()
+                    ) : (
+                        <div className="empty-state">
+                            <h3>No events yet</h3>
+                            <p>Create your first event or save events from others to see them here.</p>
+                            <Link to="/create-event" className="create-event-btn primary">
+                                Create Your First Event
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
