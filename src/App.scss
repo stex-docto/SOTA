@@ -1,6 +1,14 @@
-// Import order matters - variables and mixins first, then components
-@import 'styles/variables';
-@import 'styles/mixins';
+// All @use imports must come first
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/layout';
+@use 'styles/buttons';
+@use 'styles/forms';
+@use 'styles/modal';
+@use 'styles/home';
+@use 'styles/events';
+@use 'styles/talks';
+@use 'styles/responsive';
 
 // Base styles
 * {
@@ -17,13 +25,3 @@ body {
   color: $color-black;
   background-color: $color-background;
 }
-
-// Component imports
-@import 'styles/layout';
-@import 'styles/buttons';
-@import 'styles/forms';
-@import 'styles/modal';
-@import 'styles/home';
-@import 'styles/events';
-@import 'styles/talks';
-@import 'styles/responsive';
