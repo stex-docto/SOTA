@@ -29,6 +29,51 @@ help: ## Prints this help
 firebase.deploy: ## Push configuration to firebase
 	@docker compose run --rm --workdir "/firebase" firebase-tools firebase deploy
 
-dev: ## Stars dev server
+dev: ## Start dev server
 	@docker compose up -d
 	@echo "Go to http://127.0.0.1:3000"
+
+lint: ## Lint
+	@docker compose run --rm frontend yarn lint:all
+
+pwa.build: ## Build PWA for production
+	@echo "Building PWA for production..."
+	@docker compose --profile build run --rm build
+	@echo "✅ PWA built successfully in ./dist"
+
+pwa.serve: pwa.build ## Build and serve PWA locally for testing
+	@echo "Starting PWA server..."
+	@docker compose --profile pwa up -d pwa
+	@echo "✅ PWA server started at http://127.0.0.1:4173"
+	@echo ""
+	@echo "🔧 PWA Testing URLs:"
+	@echo "   Main app: http://127.0.0.1:4173"
+	@echo "   Service Worker: http://127.0.0.1:4173/sw.js"
+	@echo "   Manifest: http://127.0.0.1:4173/manifest.webmanifest"
+	@echo ""
+	@echo "📱 To test PWA features:"
+	@echo "   1. Open Chrome DevTools > Application > Service Workers"
+	@echo "   2. Check 'Update on reload' and 'Bypass for network'"
+	@echo "   3. Test offline functionality by going offline in Network tab"
+	@echo "   4. Test install prompt (Chrome > ⋮ > Install SOTA)"
+
+pwa.stop: ## Stop PWA server
+	@docker compose --profile pwa down
+	@echo "✅ PWA server stopped"
+
+pwa.test: ## Test PWA functionality
+	@echo "🔍 Testing PWA functionality..."
+	@docker run --rm -v $(PWD):/app --network host node:22-alpine node /app/scripts/test-pwa.js
+
+pwa.lighthouse: ## Test PWA with lighthouse (requires Chrome/Chromium)
+	@echo "🔍 Testing PWA with Lighthouse..."
+	@echo "Make sure PWA server is running (make pwa.serve)"
+	@docker run --rm --network host node:22-alpine sh -c "npx lighthouse http://127.0.0.1:4173 --only-categories=pwa --chrome-flags='--headless' --output=json --output-path=/tmp/lighthouse.json && cat /tmp/lighthouse.json"
+
+pwa.clean: ## Clean PWA build artifacts
+	@rm -rf ./dist
+	@echo "✅ PWA build artifacts cleaned"
+
+stop: pwa.stop ## Stop all services
+	@docker compose down
+	@echo "✅ All services stopped"
