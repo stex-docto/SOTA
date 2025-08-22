@@ -5,18 +5,22 @@ import remarkBreaks from 'remark-breaks';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {GetEventUseCase} from '@application';
+import {DeleteEventUseCase} from '@application';
 import {EventEntity} from '@domain';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 function EventPage() {
     const {eventId} = useParams<{ eventId: string }>();
     const navigate = useNavigate();
     const {currentUser} = useAuth();
-    const {eventRepository} = useDependencies();
+    const {eventRepository, userRepository} = useDependencies();
     const [event, setEvent] = useState<EventEntity | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>('');
     const [isEventCreator, setIsEventCreator] = useState(false);
     const [showManagement, setShowManagement] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (!eventId) {
@@ -64,6 +68,33 @@ function EventPage() {
         }).format(date);
     };
 
+    const handleDeleteClick = () => {
+        setShowDeleteConfirmation(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!eventId) return;
+
+        setIsDeleting(true);
+        try {
+            const deleteEventUseCase = new DeleteEventUseCase(eventRepository, userRepository);
+            await deleteEventUseCase.execute({ eventId });
+            
+            // Navigate to home page after successful deletion
+            navigate('/');
+        } catch (error) {
+            console.error('Failed to delete event:', error);
+            alert(error instanceof Error ? error.message : 'Failed to delete event. Please try again.');
+        } finally {
+            setIsDeleting(false);
+            setShowDeleteConfirmation(false);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirmation(false);
+    };
+
     if (loading) {
         return (
             <div className="event-page">
@@ -78,14 +109,28 @@ function EventPage() {
         return (
             <div className="event-page">
                 <div className="error-section">
-                    <h2>Event not found</h2>
-                    <p>{error || 'The event you are looking for does not exist.'}</p>
-                    <button
-                        onClick={() => navigate('/')}
-                        className="back-button"
-                    >
-                        Back to Home
-                    </button>
+                    <div className="error-icon">🎪</div>
+                    <h1>Dang, this event doesn't exist!</h1>
+                    <p className="error-message">
+                        Check your link — it might have been deleted or never existed in the first place.
+                    </p>
+                    <p className="error-suggestion">
+                        But hey, no worries! You can create your own amazing event instead.
+                    </p>
+                    <div className="error-actions">
+                        <button
+                            onClick={() => navigate('/')}
+                            className="back-button primary"
+                        >
+                            🏠 Back to Home
+                        </button>
+                        <button
+                            onClick={() => navigate('/create-event')}
+                            className="create-button secondary"
+                        >
+                            ✨ Create New Event
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -132,7 +177,12 @@ function EventPage() {
                                     Edit Event Details
                                 </button>
                                 <button className="admin-button primary">Generate Schedule</button>
-                                <button className="admin-button danger">Delete Event</button>
+                                <button 
+                                    className="admin-button danger"
+                                    onClick={handleDeleteClick}
+                                >
+                                    Delete Event
+                                </button>
                             </div>
 
                             <div className="event-stats">
@@ -226,6 +276,17 @@ function EventPage() {
                     </form>
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={showDeleteConfirmation}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm}
+                title="Delete Event"
+                message={`Are you sure you want to delete "${event.title}"? This action cannot be undone.`}
+                confirmButtonText="Delete Event"
+                isDestructive={true}
+                isLoading={isDeleting}
+            />
         </div>
     );
 }

@@ -124,6 +124,90 @@
   @include card;
 }
 
+// Error Section Styles (matching home page tone)
+.error-section {
+  text-align: center;
+  padding: $spacing-3xl $spacing-xl;
+  max-width: 600px;
+  margin: $spacing-3xl auto;
+
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: $spacing-lg;
+  }
+
+  h1 {
+    font-size: $font-size-4xl;
+    color: $color-gray-900;
+    margin-bottom: $spacing-lg;
+    font-weight: 700;
+  }
+
+  .error-message {
+    font-size: $font-size-xl;
+    color: $color-secondary;
+    margin-bottom: $spacing-md;
+    line-height: 1.6;
+  }
+
+  .error-suggestion {
+    font-size: $font-size-lg;
+    color: $color-gray-700;
+    margin-bottom: $spacing-2xl;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: $spacing-lg;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      @include button-base;
+      padding: $spacing-md $spacing-xl;
+      border-radius: $radius-lg;
+      font-weight: 600;
+      transition: all $transition-normal ease;
+
+      &.primary {
+        @include button-primary;
+        transform: scale(1);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: $shadow-lg;
+        }
+      }
+
+      &.secondary {
+        background-color: $color-gray-100;
+        border: 2px solid $color-gray-300;
+        color: $color-gray-700;
+
+        &:hover {
+          background-color: $color-gray-200;
+          border-color: $color-gray-400;
+          transform: translateY(-2px);
+          box-shadow: $shadow-md;
+        }
+      }
+    }
+  }
+}
+
+// Loading message
+.loading-message {
+  text-align: center;
+  padding: $spacing-3xl;
+
+  h2 {
+    color: $color-gray-700;
+    font-size: $font-size-2xl;
+  }
+}
+
 // Auth Styles
 .auth-required {
   @include card;
