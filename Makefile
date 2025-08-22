@@ -38,18 +38,18 @@ lint: ## Lint
 
 pwa.build: ## Build PWA for production
 	@echo "Building PWA for production..."
-	@docker compose --profile build run --rm build
+	@docker compose -f pwa-test/docker-compose.yml --profile build run --rm build
 	@echo "✅ PWA built successfully in ./dist"
 
 pwa.serve: pwa.build ## Build and serve PWA locally for testing
 	@echo "Starting PWA server..."
-	@docker compose --profile pwa up -d pwa
+	@docker compose -f pwa-test/docker-compose.yml --profile pwa up -d pwa
 	@echo "✅ PWA server started at http://127.0.0.1:4173"
 	@echo ""
 	@echo "🔧 PWA Testing URLs:"
 	@echo "   Main app: http://127.0.0.1:4173"
-	@echo "   Service Worker: http://127.0.0.1:4173/sw.js"
-	@echo "   Manifest: http://127.0.0.1:4173/manifest.webmanifest"
+	@echo "   Service Worker: http://127.0.0.1:4173/SOTA/sw.js"
+	@echo "   Manifest: http://127.0.0.1:4173/SOTA/manifest.webmanifest"
 	@echo ""
 	@echo "📱 To test PWA features:"
 	@echo "   1. Open Chrome DevTools > Application > Service Workers"
@@ -58,12 +58,12 @@ pwa.serve: pwa.build ## Build and serve PWA locally for testing
 	@echo "   4. Test install prompt (Chrome > ⋮ > Install SOTA)"
 
 pwa.stop: ## Stop PWA server
-	@docker compose --profile pwa down
+	@docker compose -f pwa-test/docker-compose.yml --profile pwa down
 	@echo "✅ PWA server stopped"
 
 pwa.test: ## Test PWA functionality
 	@echo "🔍 Testing PWA functionality..."
-	@docker run --rm -v $(PWD):/app --network host node:22-alpine node /app/scripts/test-pwa.js
+	@docker run --rm -v $(PWD):/app --network host node:22-alpine node /app/pwa-test/test-pwa.js
 
 pwa.lighthouse: ## Test PWA with lighthouse (requires Chrome/Chromium)
 	@echo "🔍 Testing PWA with Lighthouse..."
