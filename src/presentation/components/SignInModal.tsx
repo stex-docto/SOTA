@@ -202,6 +202,7 @@ export function SignInModal({isOpen, onClose}: SignInModalProps) {
                                 <div className={styles.credentialDisplay}>
                                     {formatCredentialDisplay(credential.codes)}
                                 </div>
+                                <p className={styles.userInfo}>Signed in as: {String(currentUser.id)}</p>
                             </div>
                         )}
 
@@ -258,7 +259,6 @@ export function SignInModal({isOpen, onClose}: SignInModalProps) {
                         </div>
 
                         <div className={styles.userSection}>
-                            <p className={styles.userInfo}>Signed in as: {String(currentUser.id)}</p>
                             <div className={styles.buttonGroup}>
                                 <button className={styles.secondaryButton} onClick={handleLogout}>
                                     Sign Out

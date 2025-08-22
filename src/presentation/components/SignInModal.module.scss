@@ -158,9 +158,6 @@ $font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 .userSection {
-  border-top: 1px solid $color-gray-200;
-  padding-top: $spacing-lg;
-  margin-top: $spacing-sm;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -188,11 +185,10 @@ $font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   background-color: $color-gray-50;
   border-radius: $radius-lg;
   border: 1px solid $color-gray-200;
-  margin-bottom: $spacing-lg;
 }
 
 .sectionTitle {
-  margin: 0 0 $spacing-lg 0;
+  margin: 0 0 0 0;
   font-size: 18px;
   font-weight: 600;
   color: $color-gray-900;

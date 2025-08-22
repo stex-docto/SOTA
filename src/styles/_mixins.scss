@@ -74,7 +74,7 @@
 }
 
 // Flex column
-@mixin flex-column($gap: $spacing-lg) {
+@mixin flex-column($gap: $spacing-sm) {
   display: flex;
   flex-direction: column;
   gap: $gap;
