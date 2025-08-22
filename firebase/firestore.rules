@@ -2,14 +2,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /events/{eventId} {
-      allow read: if true;
-      allow list: if false;
+      allow get: if true;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.createdBy;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
+      allow list: if request.auth != null && request.auth.uid == resource.data.createdBy;
     }
 
     match /events/{eventId}/talk/{talkId} {
-      allow read: if true;
+      allow get: if true;
       allow list: if false;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.createdBy;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
@@ -17,7 +17,7 @@ service cloud.firestore {
 
     // User private data - only the user can access their own
     match /users/{userId} {
-      allow read: if true;
+      allow get: if true;
       allow list: if false;
       allow write: if request.auth != null && request.auth.uid == userId;
 

@@ -6,6 +6,8 @@ export interface EventRepository {
 
     findById(id: EventId): Promise<EventEntity | null>;
 
+    findByCurrentUser(): Promise<EventEntity[]>;
+
     subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void;
 
     delete(id: EventId): Promise<void>;

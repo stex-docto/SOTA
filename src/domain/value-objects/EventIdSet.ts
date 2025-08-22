@@ -1,4 +1,4 @@
-import {EventId} from './EventId';
+import {EventId} from '@/domain';
 
 export class EventIdSet {
     private readonly eventIds: Map<string, EventId>;

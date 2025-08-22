@@ -41,10 +41,6 @@ export class CreateEventUseCase {
         // Save event
         await this.eventRepository.save(event);
 
-        // Save event ID to user's saved events
-        const updatedUser = user.addSavedEvent(event.id);
-        await this.userRepository.saveUser(updatedUser);
-
         return {event};
     }
 }

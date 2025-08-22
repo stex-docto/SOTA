@@ -14,7 +14,7 @@ interface DependencyProviderProps {
 async function initDependencies() {
     const firebase = Firebase.getInstance()
     const userRepository: UserRepository = new FirebaseUserDatastore(firebase.auth, firebase.firestore);
-    const eventRepository: EventRepository = new FirebaseEventDatastore(firebase.firestore);
+    const eventRepository: EventRepository = new FirebaseEventDatastore(firebase.firestore, firebase.auth);
 
     return {
         userRepository,
