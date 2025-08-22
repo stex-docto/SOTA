@@ -25,8 +25,9 @@ function Header() {
         <header className="header">
             <div className="header-content">
                 <div className="header-left">
-                    <Link to="/" className="logo">
+                    <Link to="/" className="logo" title="Simple Open-Talk App Main page">
                         SOTA
+                        🏠
                     </Link>
                 </div>
 
