@@ -1,4 +1,4 @@
-import {EventEntity, EventRepository, UserEntity, UserRepository} from '@domain';
+import {EventEntity, EventRepository, UserRepository} from '@domain';
 
 export interface CreateEventCommand {
     title: string;
@@ -41,8 +41,8 @@ export class CreateEventUseCase {
         // Save event
         await this.eventRepository.save(event);
 
-        // Save event URL to user's saved events
-        const updatedUser = new UserEntity(user.id, [...user.savedEventUrls, event.publicUrl], user.displayName);
+        // Save event ID to user's saved events
+        const updatedUser = user.addSavedEvent(event.id);
         await this.userRepository.saveUser(updatedUser);
 
         return {event};

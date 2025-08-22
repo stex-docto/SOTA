@@ -1,4 +1,4 @@
-import {UserId} from '@/domain';
+import {UserId, EventId, EventIdSet} from '@/domain';
 
 export type PublicUser = {
     id: UserId;
@@ -7,7 +7,7 @@ export type PublicUser = {
 
 export type PrivateUser = {
     id: UserId;
-    savedEventUrls: string[];
+    savedEventIds: EventIdSet;
 }
 
 export type User = PublicUser & PrivateUser
@@ -15,8 +15,30 @@ export type User = PublicUser & PrivateUser
 export class UserEntity implements User {
     constructor(
         public readonly id: UserId = UserId.generate(),
-        public readonly savedEventUrls: string[] = [],
+        public readonly savedEventIds: EventIdSet = new EventIdSet(),
         public readonly displayName: string = ""
     ) {
+    }
+
+    addSavedEvent(eventId: EventId): UserEntity {
+        const newSavedEvents = this.savedEventIds.add(eventId);
+        return new UserEntity(
+            this.id,
+            newSavedEvents,
+            this.displayName
+        );
+    }
+
+    removeSavedEvent(eventId: EventId): UserEntity {
+        const newSavedEvents = this.savedEventIds.remove(eventId);
+        return new UserEntity(
+            this.id,
+            newSavedEvents,
+            this.displayName
+        );
+    }
+
+    hasEventSaved(eventId: EventId): boolean {
+        return this.savedEventIds.has(eventId);
     }
 }

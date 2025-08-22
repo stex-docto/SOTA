@@ -1,7 +1,7 @@
-import {EventEntity, EventId, EventRepository, UserRepository} from '@/domain';
+import {EventId, EventRepository, UserRepository} from '@/domain';
 
 export interface DeleteEventCommand {
-    eventId: string;
+    eventId: EventId;
 }
 
 export interface DeleteEventResult {
@@ -15,10 +15,8 @@ export class DeleteEventUseCase {
     ) {}
 
     async execute(command: DeleteEventCommand): Promise<DeleteEventResult> {
-        const eventId = new EventId(command.eventId);
-        
         // Get the existing event
-        const existingEvent = await this.eventRepository.findById(eventId);
+        const existingEvent = await this.eventRepository.findById(command.eventId);
         if (!existingEvent) {
             throw new Error('Event not found');
         }
@@ -35,7 +33,7 @@ export class DeleteEventUseCase {
         }
 
         // Delete the event
-        await this.eventRepository.delete(eventId);
+        await this.eventRepository.delete(command.eventId);
 
         return {
             success: true

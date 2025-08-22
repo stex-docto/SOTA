@@ -1,7 +1,7 @@
 import {EventEntity, EventId, EventRepository} from '@/domain';
 
 export interface GetEventQuery {
-    eventId: string;
+    eventId: EventId;
 }
 
 export interface GetEventResult {
@@ -12,8 +12,7 @@ export class GetEventUseCase {
     constructor(private readonly eventRepository: EventRepository) {}
 
     async execute(query: GetEventQuery): Promise<GetEventResult> {
-        const eventId = new EventId(query.eventId);
-        const event = await this.eventRepository.findById(eventId);
+        const event = await this.eventRepository.findById(query.eventId);
         
         return {
             event
@@ -21,9 +20,7 @@ export class GetEventUseCase {
     }
 
     subscribe(query: GetEventQuery, callback: (result: GetEventResult) => void): () => void {
-        const eventId = new EventId(query.eventId);
-        
-        return this.eventRepository.subscribe(eventId, (event) => {
+        return this.eventRepository.subscribe(query.eventId, (event) => {
             callback({ event });
         });
     }

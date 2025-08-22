@@ -3,7 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {GetEventUseCase, UpdateEventUseCase} from '@application';
-import {EventEntity} from '@domain';
+import {EventEntity, EventId} from '@domain';
 import EventForm, {EventFormData} from '../components/EventForm';
 
 function EditEventPage() {
@@ -28,7 +28,7 @@ function EditEventPage() {
         const getEventUseCase = new GetEventUseCase(eventRepository);
 
         const unsubscribe = getEventUseCase.subscribe(
-            {eventId},
+            {eventId: EventId.from(eventId)},
             (result) => {
                 setEvent(result.event);
                 setLoading(false);
@@ -91,7 +91,7 @@ function EditEventPage() {
         try {
             const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository);
             await updateEventUseCase.execute({
-                eventId,
+                eventId: EventId.from(eventId),
                 title: formData.title,
                 description: formData.description,
                 talkRules: formData.talkRules,

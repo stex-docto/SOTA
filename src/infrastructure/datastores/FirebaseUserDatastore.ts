@@ -1,9 +1,19 @@
-import {Credential, PrivateUser, PublicUser, UserEntity, UserId, UserRepository} from '@domain';
+import {Credential, UserEntity, UserId, UserRepository, EventId, EventIdSet} from '@domain';
 import {Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, User} from 'firebase/auth';
 import {collection, deleteDoc, doc, Firestore, getDoc, onSnapshot, setDoc} from "firebase/firestore";
 import {FirebaseError} from 'firebase/app';
 
 type FirebaseCredential = { email: string; password: string }
+
+type FirebasePublicUser = {
+    id: string;
+    displayName: string;
+}
+
+type FirebasePrivateUser = {
+    id: string;
+    savedEventIds: string[];
+}
 
 function mapCredential(credential: Credential): FirebaseCredential {
     return {
@@ -41,19 +51,39 @@ export class FirebaseUserDatastore implements UserRepository {
 
     async getUser(uid: UserId): Promise<UserEntity | null> {
         try {
-            const userPublicData = (await getDoc(this.getPublicUserRef(uid))).data() as PublicUser;
-            let userPrivateData: Partial<PrivateUser> = {}
+            const userPublicData = (await getDoc(this.getPublicUserRef(uid))).data() as FirebasePublicUser;
+            let userPrivateData: Partial<FirebasePrivateUser> = {}
             if (this.auth.currentUser?.uid === uid.value) {
-                userPrivateData = (await getDoc(this.getPrivateUserRef(uid))).data() as PrivateUser;
+                userPrivateData = (await getDoc(this.getPrivateUserRef(uid))).data() as FirebasePrivateUser;
             }
-            return {
-                id: uid,
-                displayName: userPublicData.displayName,
-                savedEventUrls: userPrivateData?.savedEventUrls || [],
-            }
+            return this.mapFromFirebase(uid, userPublicData, userPrivateData);
         } catch (_err) {
             return null;
         }
+    }
+
+    private mapFromFirebase(uid: UserId, publicData: FirebasePublicUser, privateData: Partial<FirebasePrivateUser> = {}): UserEntity {
+        // Convert string array from Firebase to EventIdSet
+        const eventIds = (privateData?.savedEventIds || []).map(id => EventId.from(id));
+        const savedEventIds = new EventIdSet(eventIds);
+        return new UserEntity(
+            uid,
+            savedEventIds,
+            publicData.displayName
+        );
+    }
+
+    private mapToFirebase(user: UserEntity): { publicData: FirebasePublicUser, privateData: FirebasePrivateUser } {
+        return {
+            publicData: {
+                id: user.id.value,
+                displayName: user.displayName
+            },
+            privateData: {
+                id: user.id.value,
+                savedEventIds: user.savedEventIds.toArray().map(eventId => eventId.value)
+            }
+        };
     }
 
     async saveUser(user: UserEntity): Promise<UserEntity> {
@@ -61,14 +91,12 @@ export class FirebaseUserDatastore implements UserRepository {
         if (!currentUser) throw new Error('No authenticated user');
         if (currentUser.uid !== user.id.value) throw new Error('Can only save current user data');
 
-        await setDoc(this.getPrivateUserRef(user.id), {id: currentUser.uid, savedEventUrls: user.savedEventUrls});
-        await setDoc(this.getPublicUserRef(user.id), {id: currentUser.uid, displayName: user.displayName});
+        const { publicData, privateData } = this.mapToFirebase(user);
+        
+        await setDoc(this.getPrivateUserRef(user.id), privateData);
+        await setDoc(this.getPublicUserRef(user.id), publicData);
 
-        return {
-            id: user.id,
-            displayName: user.displayName,
-            savedEventUrls: user?.savedEventUrls || [],
-        }
+        return user;
     }
 
     triggerListeners(user: UserEntity | null) {
@@ -120,8 +148,14 @@ export class FirebaseUserDatastore implements UserRepository {
         this.currentUserUnsubscribe?.()
         this.currentUserUnsubscribe = null
         if (user) {
-            const publicUnsubScribe = onSnapshot(this.getPublicUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
-            const privateUnsubScribe = onSnapshot(this.getPrivateUserRef(UserId.from(user.uid)), async () => this.triggerListeners(await this.getCurrentUser()))
+            const publicUnsubScribe = onSnapshot(
+                this.getPublicUserRef(UserId.from(user.uid)),
+                async () => this.triggerListeners(await this.getCurrentUser())
+            )
+            const privateUnsubScribe = onSnapshot(
+                this.getPrivateUserRef(UserId.from(user.uid)),
+                async () => this.triggerListeners(await this.getCurrentUser())
+            )
             this.currentUserUnsubscribe = () => {
                 publicUnsubScribe()
                 privateUnsubScribe()

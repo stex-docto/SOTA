@@ -1,7 +1,7 @@
 import {EventEntity, EventId, EventRepository, UserRepository} from '@/domain';
 
 export interface UpdateEventCommand {
-    eventId: string;
+    eventId: EventId;
     title: string;
     description: string;
     talkRules: string;
@@ -21,10 +21,8 @@ export class UpdateEventUseCase {
     ) {}
 
     async execute(command: UpdateEventCommand): Promise<UpdateEventResult> {
-        const eventId = new EventId(command.eventId);
-        
         // Get the existing event
-        const existingEvent = await this.eventRepository.findById(eventId);
+        const existingEvent = await this.eventRepository.findById(command.eventId);
         if (!existingEvent) {
             throw new Error('Event not found');
         }

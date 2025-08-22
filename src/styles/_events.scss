@@ -44,8 +44,46 @@
   line-height: 1.6;
 }
 
-.creator-controls {
+.event-controls {
   flex-shrink: 0;
+}
+
+.save-button {
+  @include button-base;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-lg;
+  font-weight: 600;
+  border: 2px solid;
+  transition: all $transition-normal ease;
+
+  &.unsaved {
+    background-color: $color-gray-50;
+    border-color: $color-gray-300;
+    color: $color-gray-700;
+
+    &:hover {
+      background-color: $color-gray-100;
+      border-color: $color-gray-400;
+      transform: translateY(-1px);
+    }
+  }
+
+  &.saved {
+    background-color: $color-red-50;
+    border-color: $color-red-border;
+    color: $color-red-text;
+
+    &:hover {
+      background-color: $color-red-200;
+      transform: translateY(-1px);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
 }
 
 .page-header {

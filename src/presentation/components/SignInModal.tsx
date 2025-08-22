@@ -3,7 +3,8 @@ import {useDependencies} from '../hooks/useDependencies';
 import {useAuth} from '../hooks/useAuth';
 import {CODE_BLOCK_ITERATION, CODE_LENGTH, CODE_TOTAL_LENGTH,} from '@/domain/value-objects/Credential';
 import styles from './SignInModal.module.scss';
-import {Credential, UserEntity} from "@/domain";
+import {Credential} from "@/domain";
+import {UpdateUserProfileUseCase} from '@application';
 
 interface SignInModalProps {
     isOpen: boolean;
@@ -67,19 +68,18 @@ export function SignInModal({isOpen, onClose}: SignInModalProps) {
     };
 
     const handleSaveProfile = async () => {
-        if (!currentUser || !displayName.trim()) return;
+        if (!displayName.trim()) return;
 
         setIsSavingProfile(true);
         try {
-            const updatedUser = new UserEntity(
-                currentUser.id,
-                currentUser.savedEventUrls,
-                displayName.trim()
-            );
-            await userRepository.saveUser(updatedUser);
+            const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository);
+            await updateUserProfileUseCase.execute({
+                displayName: displayName.trim()
+            });
             setIsEditingProfile(false);
         } catch (error) {
             console.error('Failed to save profile:', error);
+            alert(error instanceof Error ? error.message : 'Failed to save profile. Please try again.');
         } finally {
             setIsSavingProfile(false);
         }

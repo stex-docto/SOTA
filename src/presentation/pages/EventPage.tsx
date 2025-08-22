@@ -6,7 +6,8 @@ import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {GetEventUseCase} from '@application';
 import {DeleteEventUseCase} from '@application';
-import {EventEntity} from '@domain';
+import {SaveEventUseCase, RemoveSavedEventUseCase} from '@application';
+import {EventEntity, EventId} from '@domain';
 import ConfirmationModal from '../components/ConfirmationModal';
 
 function EventPage() {
@@ -21,6 +22,8 @@ function EventPage() {
     const [showManagement, setShowManagement] = useState(false);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isEventSaved, setIsEventSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         if (!eventId) {
@@ -33,7 +36,7 @@ function EventPage() {
 
         // Set up real-time subscription
         const unsubscribe = getEventUseCase.subscribe(
-            {eventId},
+            {eventId: EventId.from(eventId)},
             (result) => {
                 setEvent(result.event);
                 setLoading(false);
@@ -57,6 +60,13 @@ function EventPage() {
         }
     }, [currentUser, event]);
 
+    useEffect(() => {
+        // Check if event is saved by current user
+        if (currentUser && eventId) {
+            setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)));
+        }
+    }, [currentUser, eventId]);
+
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat(undefined, {
             weekday: 'long',
@@ -78,7 +88,7 @@ function EventPage() {
         setIsDeleting(true);
         try {
             const deleteEventUseCase = new DeleteEventUseCase(eventRepository, userRepository);
-            await deleteEventUseCase.execute({ eventId });
+            await deleteEventUseCase.execute({ eventId: EventId.from(eventId) });
             
             // Navigate to home page after successful deletion
             navigate('/');
@@ -93,6 +103,34 @@ function EventPage() {
 
     const handleDeleteCancel = () => {
         setShowDeleteConfirmation(false);
+    };
+
+    const handleSaveToggle = async () => {
+        if (!currentUser) {
+            alert('Please sign in to save events');
+            return;
+        }
+
+        if (!eventId) return;
+
+        setIsSaving(true);
+        try {
+            const eventIdObj = EventId.from(eventId);
+            if (isEventSaved) {
+                const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository);
+                await removeSavedEventUseCase.execute({ eventId: eventIdObj });
+                setIsEventSaved(false);
+            } else {
+                const saveEventUseCase = new SaveEventUseCase(userRepository);
+                await saveEventUseCase.execute({ eventId: eventIdObj });
+                setIsEventSaved(true);
+            }
+        } catch (error) {
+            console.error('Failed to toggle save state:', error);
+            alert(error instanceof Error ? error.message : 'Failed to save/unsave event. Please try again.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     if (loading) {
@@ -151,16 +189,25 @@ function EventPage() {
                     )}
                 </div>
 
-                {isEventCreator && (
-                    <div className="creator-controls">
+                <div className="event-controls">
+                    {!isEventCreator && (
+                        <button
+                            className={`save-button ${isEventSaved ? 'saved' : 'unsaved'}`}
+                            onClick={handleSaveToggle}
+                            disabled={isSaving}
+                        >
+                            {isSaving ? '...' : isEventSaved ? '❤️ Saved' : '🤍 Save Event'}
+                        </button>
+                    )}
+                    {isEventCreator && (
                         <button
                             className="admin-button primary"
                             onClick={() => setShowManagement(!showManagement)}
                         >
                             {showManagement ? 'Hide Management' : 'Manage Event'}
                         </button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
 
             <div className="event-content">
