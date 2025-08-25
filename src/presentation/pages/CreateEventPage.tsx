@@ -2,13 +2,12 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {CreateEventUseCase} from '@application';
 import EventForm, {EventFormData} from '../components/EventForm';
 
 function CreateEventPage() {
     const navigate = useNavigate();
     const {currentUser} = useAuth();
-    const {eventRepository, userRepository} = useDependencies();
+    const {createEventUseCase} = useDependencies();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string>('');
 
@@ -29,7 +28,6 @@ function CreateEventPage() {
         }
 
         try {
-            const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository);
             const result = await createEventUseCase.execute({
                 title: formData.title,
                 description: formData.description,

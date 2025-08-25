@@ -1,10 +1,26 @@
 import {createContext} from 'react';
-import {CredentialRepository, EventRepository, UserRepository} from '@domain';
+import {
+    SignInUseCase,
+    CreateEventUseCase,
+    GetEventUseCase,
+    UpdateEventUseCase,
+    DeleteEventUseCase,
+    SaveEventUseCase,
+    RemoveSavedEventUseCase,
+    UpdateUserProfileUseCase,
+    GetUserAllEventsUseCase
+} from '@application';
 
 export interface DependencyContext {
-    userRepository: UserRepository;
-    credentialRepository: CredentialRepository;
-    eventRepository: EventRepository;
+    signInUseCase: SignInUseCase;
+    createEventUseCase: CreateEventUseCase;
+    getEventUseCase: GetEventUseCase;
+    updateEventUseCase: UpdateEventUseCase;
+    deleteEventUseCase: DeleteEventUseCase;
+    saveEventUseCase: SaveEventUseCase;
+    removeSavedEventUseCase: RemoveSavedEventUseCase;
+    updateUserProfileUseCase: UpdateUserProfileUseCase;
+    getUserAllEventsUseCase: GetUserAllEventsUseCase;
 }
 
 export const Dependencies = createContext<DependencyContext | undefined>(undefined);

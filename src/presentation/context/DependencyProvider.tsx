@@ -1,5 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {EventRepository, UserRepository} from '@domain';
+import {
+    SignInUseCase,
+    CreateEventUseCase,
+    GetEventUseCase,
+    UpdateEventUseCase,
+    DeleteEventUseCase,
+    SaveEventUseCase,
+    RemoveSavedEventUseCase,
+    UpdateUserProfileUseCase,
+    GetUserAllEventsUseCase
+} from '@application';
 import {FirebaseUserDatastore} from '@infrastructure/datastores/FirebaseUserDatastore';
 import {FirebaseEventDatastore} from '@infrastructure/datastores/FirebaseEventDatastore';
 import {Firebase} from "@infrastructure/firebase.ts";
@@ -15,11 +26,29 @@ async function initDependencies() {
     const firebase = Firebase.getInstance()
     const userRepository: UserRepository = new FirebaseUserDatastore(firebase.auth, firebase.firestore);
     const eventRepository: EventRepository = new FirebaseEventDatastore(firebase.firestore, firebase.auth);
+    const credentialRepository = new LocalCredentialDataStore();
+    
+    // Initialize use cases
+    const signInUseCase = new SignInUseCase(userRepository, credentialRepository);
+    const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository);
+    const getEventUseCase = new GetEventUseCase(eventRepository);
+    const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository);
+    const deleteEventUseCase = new DeleteEventUseCase(eventRepository, userRepository);
+    const saveEventUseCase = new SaveEventUseCase(userRepository, signInUseCase);
+    const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository);
+    const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository);
+    const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository);
 
     return {
-        userRepository,
-        credentialRepository: new LocalCredentialDataStore(),
-        eventRepository
+        signInUseCase,
+        createEventUseCase,
+        getEventUseCase,
+        updateEventUseCase,
+        deleteEventUseCase,
+        saveEventUseCase,
+        removeSavedEventUseCase,
+        updateUserProfileUseCase,
+        getUserAllEventsUseCase
     };
 }
 

@@ -9,12 +9,12 @@ export interface Auth {
 }
 
 export function useAuth(): Auth {
-    const {userRepository} = useDependencies();
+    const {signInUseCase} = useDependencies();
     const [currentUser, setCurrentUser] = useState<UserEntity | null | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        userRepository.getCurrentUser()
+        signInUseCase.getCurrentUser()
             .then((user) => {
                 setCurrentUser(user);
                 setIsLoading(false);
@@ -25,12 +25,12 @@ export function useAuth(): Auth {
             });
 
         // Subscribe to current user changes
-        return userRepository.subscribeToCurrentUser(
+        return signInUseCase.subscribeToCurrentUser(
             async (user) => {
                 setCurrentUser(user);
                 setIsLoading(false);
             });
-    }, [userRepository]);
+    }, [signInUseCase]);
 
     const shouldShowAuthModal = (authRequired: boolean = false) => {
         return authRequired && !isLoading && currentUser === null;

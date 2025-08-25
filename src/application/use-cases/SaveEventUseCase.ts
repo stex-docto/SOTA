@@ -1,4 +1,5 @@
 import {UserRepository, EventId} from '@/domain';
+import {SignInUseCase} from '@/application';
 
 export interface SaveEventCommand {
     eventId: EventId;
@@ -10,14 +11,14 @@ export interface SaveEventResult {
 }
 
 export class SaveEventUseCase {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly signInUseCase: SignInUseCase
+    ) {}
 
     async execute(command: SaveEventCommand): Promise<SaveEventResult> {
-        // Get current user
-        const currentUser = await this.userRepository.getCurrentUser();
-        if (!currentUser) {
-            throw new Error('User must be authenticated to save events');
-        }
+        // Require current user (will prompt sign-in if needed)
+        const currentUser = await this.signInUseCase.requireCurrentUser();
 
         // Check if already saved
         if (currentUser.hasEventSaved(command.eventId)) {

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useDependencies } from '../hooks/useDependencies';
-import { GetUserAllEventsUseCase, UserEventItem } from '@application';
+import { UserEventItem } from '@application';
 import moment from 'moment';
 
 function CurrentEventsBar() {
     const { currentUser } = useAuth();
-    const { eventRepository, userRepository } = useDependencies();
+    const { getUserAllEventsUseCase } = useDependencies();
     const [currentEvents, setCurrentEvents] = useState<UserEventItem[]>([]);
     const [nextEvent, setNextEvent] = useState<UserEventItem | null>(null);
     const [timeToNext, setTimeToNext] = useState<string>('');
@@ -23,7 +23,6 @@ function CurrentEventsBar() {
             }
 
             try {
-                const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository);
                 const result = await getUserAllEventsUseCase.execute();
                 
                 const now = new Date();
@@ -50,7 +49,7 @@ function CurrentEventsBar() {
         };
 
         fetchEvents();
-    }, [currentUser, eventRepository, userRepository]);
+    }, [currentUser, getUserAllEventsUseCase]);
 
     useEffect(() => {
         if (!nextEvent) {

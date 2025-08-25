@@ -4,9 +4,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {GetEventUseCase} from '@application';
-import {DeleteEventUseCase} from '@application';
-import {SaveEventUseCase, RemoveSavedEventUseCase} from '@application';
 import {EventEntity, EventId} from '@domain';
 import ConfirmationModal from '../components/ConfirmationModal';
 
@@ -14,7 +11,12 @@ function EventPage() {
     const {eventId} = useParams<{ eventId: string }>();
     const navigate = useNavigate();
     const {currentUser} = useAuth();
-    const {eventRepository, userRepository} = useDependencies();
+    const {
+        getEventUseCase,
+        deleteEventUseCase,
+        saveEventUseCase,
+        removeSavedEventUseCase
+    } = useDependencies();
     const [event, setEvent] = useState<EventEntity | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>('');
@@ -31,8 +33,6 @@ function EventPage() {
             setLoading(false);
             return;
         }
-
-        const getEventUseCase = new GetEventUseCase(eventRepository);
 
         // Set up real-time subscription
         const unsubscribe = getEventUseCase.subscribe(
@@ -51,7 +51,7 @@ function EventPage() {
         return () => {
             unsubscribe();
         };
-    }, [eventId, eventRepository]);
+    }, [eventId, getEventUseCase]);
 
     useEffect(() => {
         // Check if current user is the event creator
@@ -87,7 +87,6 @@ function EventPage() {
 
         setIsDeleting(true);
         try {
-            const deleteEventUseCase = new DeleteEventUseCase(eventRepository, userRepository);
             await deleteEventUseCase.execute({ eventId: EventId.from(eventId) });
             
             // Navigate to home page after successful deletion
@@ -106,22 +105,15 @@ function EventPage() {
     };
 
     const handleSaveToggle = async () => {
-        if (!currentUser) {
-            alert('Please sign in to save events');
-            return;
-        }
-
         if (!eventId) return;
 
         setIsSaving(true);
         try {
             const eventIdObj = EventId.from(eventId);
             if (isEventSaved) {
-                const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository);
                 await removeSavedEventUseCase.execute({ eventId: eventIdObj });
                 setIsEventSaved(false);
             } else {
-                const saveEventUseCase = new SaveEventUseCase(userRepository);
                 await saveEventUseCase.execute({ eventId: eventIdObj });
                 setIsEventSaved(true);
             }

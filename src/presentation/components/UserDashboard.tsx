@@ -1,13 +1,13 @@
 import {Link} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {GetUserAllEventsUseCase, UserEventItem} from '@application';
+import {UserEventItem} from '@application';
 import {useEffect, useState} from 'react';
 import EventList from './EventList';
 
 function UserDashboard() {
     const {currentUser} = useAuth();
-    const {eventRepository, userRepository} = useDependencies();
+    const {getUserAllEventsUseCase} = useDependencies();
     const [allEvents, setAllEvents] = useState<UserEventItem[]>([]);
     const [loadingEvents, setLoadingEvents] = useState(true);
 
@@ -16,8 +16,8 @@ function UserDashboard() {
             if (!currentUser) return;
 
             try {
-                const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository);
                 const result = await getUserAllEventsUseCase.execute();
+                console.log(result.events)
                 setAllEvents(result.events);
             } catch (error) {
                 console.error('Failed to fetch user events:', error);
@@ -27,7 +27,7 @@ function UserDashboard() {
         };
 
         fetchAllEvents();
-    }, [currentUser, eventRepository, userRepository]);
+    }, [currentUser, getUserAllEventsUseCase]);
 
 
     if (!currentUser) {

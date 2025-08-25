@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {GetEventUseCase, UpdateEventUseCase} from '@application';
 import {EventEntity, EventId} from '@domain';
 import EventForm, {EventFormData} from '../components/EventForm';
 
@@ -10,7 +9,7 @@ function EditEventPage() {
     const {eventId} = useParams<{ eventId: string }>();
     const navigate = useNavigate();
     const {currentUser} = useAuth();
-    const {eventRepository, userRepository} = useDependencies();
+    const {getEventUseCase, updateEventUseCase} = useDependencies();
     const [event, setEvent] = useState<EventEntity | null>(null);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,8 +23,6 @@ function EditEventPage() {
             setLoading(false);
             return;
         }
-
-        const getEventUseCase = new GetEventUseCase(eventRepository);
 
         const unsubscribe = getEventUseCase.subscribe(
             {eventId: EventId.from(eventId)},
@@ -52,7 +49,7 @@ function EditEventPage() {
         return () => {
             unsubscribe();
         };
-    }, [eventId, eventRepository]);
+    }, [eventId, getEventUseCase]);
 
     // Check permissions after both event and user are loaded
     useEffect(() => {
@@ -89,7 +86,6 @@ function EditEventPage() {
         }
 
         try {
-            const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository);
             await updateEventUseCase.execute({
                 eventId: EventId.from(eventId),
                 title: formData.title,
