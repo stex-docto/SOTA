@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
-import {EventEntity, EventId} from '@domain';
+import {EventEntity, EventId, AuthenticationError, PermissionError, EventNotFoundError} from '@domain';
 import EventForm, {EventFormData} from '../components/EventForm';
 
 function EditEventPage() {
@@ -13,13 +13,13 @@ function EditEventPage() {
     const [event, setEvent] = useState<EventEntity | null>(null);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string>('');
+    const [error, setError] = useState<Error | null>(null);
     const [initialFormData, setInitialFormData] = useState<Partial<EventFormData>>({});
 
     // Load event data
     useEffect(() => {
         if (!eventId) {
-            setError('Event ID is required');
+            setError(new EventNotFoundError('Event ID is required'));
             setLoading(false);
             return;
         }
@@ -31,7 +31,7 @@ function EditEventPage() {
                 setLoading(false);
 
                 if (!result.event) {
-                    setError('Event not found');
+                    setError(new EventNotFoundError());
                 } else {
                     // Prepare initial form data
                     setInitialFormData({
@@ -56,31 +56,31 @@ function EditEventPage() {
         // Only check permissions if we have the event loaded and not still loading
         if (!loading && event) {
             if (!currentUser) {
-                setError('You must be signed in to edit events');
+                setError(AuthenticationError.signInRequired());
                 return;
             }
 
             if (currentUser.id.value !== event.createdBy.value) {
-                setError('Only the event creator can edit this event');
+                setError(PermissionError.onlyCreatorCanEdit());
             } else {
                 // Clear any previous permission errors if user has access
-                setError('');
+                setError(null);
             }
         }
     }, [currentUser, event, loading]);
 
     const handleSubmit = async (formData: EventFormData) => {
         if (!currentUser || !event || !eventId) {
-            setError('Cannot update event');
+            setError(new Error('Cannot update event'));
             return;
         }
 
         setIsSubmitting(true);
-        setError('');
+        setError(null);
 
         // Validate dates
         if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-            setError('End date must be after start date');
+            setError(new Error('End date must be after start date'));
             setIsSubmitting(false);
             return;
         }
@@ -101,7 +101,7 @@ function EditEventPage() {
 
         } catch (error) {
             console.error('Failed to update event:', error);
-            setError(error instanceof Error ? error.message : 'Failed to update event. Please try again.');
+            setError(error instanceof Error ? error : new Error('Failed to update event. Please try again.'));
         } finally {
             setIsSubmitting(false);
         }
@@ -133,17 +133,55 @@ function EditEventPage() {
     }
 
     if (error || !event) {
+        const getErrorIcon = () => {
+            if (error instanceof AuthenticationError) return '🔐';
+            if (error instanceof PermissionError) return '🔒';
+            if (error instanceof EventNotFoundError) return '🎪';
+            return '⚠️';
+        };
+
+        const getErrorSuggestion = () => {
+            if (error instanceof PermissionError) {
+                return 'This event was created by someone else. Only the event creator has permission to make changes.';
+            }
+            if (error instanceof AuthenticationError) {
+                return 'Please sign in with the account that created this event to make changes.';
+            }
+            if (error instanceof EventNotFoundError) {
+                return 'Check your link — it might have been deleted or never existed in the first place.';
+            }
+            return null;
+        };
+
         return (
             <div className="edit-event-page">
                 <div className="error-section">
-                    <h2>Cannot Edit Event</h2>
-                    <p>{error || 'The event you are trying to edit does not exist.'}</p>
-                    <button
-                        onClick={() => navigate('/')}
-                        className="back-button"
-                    >
-                        Back to Home
-                    </button>
+                    <div className="error-icon">{getErrorIcon()}</div>
+                    <h1>Cannot Edit Event</h1>
+                    <p className="error-message">
+                        {error?.message || 'The event you are trying to edit does not exist.'}
+                    </p>
+                    {getErrorSuggestion() && (
+                        <p className="error-suggestion">
+                            {getErrorSuggestion()}
+                        </p>
+                    )}
+                    <div className="error-actions">
+                        {eventId && (
+                            <button
+                                onClick={() => navigate(`/event/${eventId}`)}
+                                className="back-button primary"
+                            >
+                                🔙 View Event
+                            </button>
+                        )}
+                        <button
+                            onClick={() => navigate('/')}
+                            className="home-button secondary"
+                        >
+                            🏠 Back to Home
+                        </button>
+                    </div>
                 </div>
             </div>
         );

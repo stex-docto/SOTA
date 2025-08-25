@@ -16,7 +16,7 @@ export interface EventFormProps {
     onSubmit: (data: EventFormData) => void;
     onCancel: () => void;
     isSubmitting: boolean;
-    error: string;
+    error: Error | string | null;
     submitButtonText?: string;
     title: string;
     subtitle: string;
@@ -205,7 +205,7 @@ function EventForm({
 
                 {error && (
                     <div className="error-message">
-                        {error}
+                        {typeof error === 'string' ? error : error.message}
                     </div>
                 )}
 

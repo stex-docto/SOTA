@@ -9,20 +9,20 @@ function CreateEventPage() {
     const {currentUser} = useAuth();
     const {createEventUseCase} = useDependencies();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string>('');
+    const [error, setError] = useState<Error | null>(null);
 
     const handleSubmit = async (formData: EventFormData) => {
         if (!currentUser) {
-            setError('You must be signed in to create an event');
+            setError(new Error('You must be signed in to create an event'));
             return;
         }
 
         setIsSubmitting(true);
-        setError('');
+        setError(null);
 
         // Validate dates
         if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-            setError('End date must be after start date');
+            setError(new Error('End date must be after start date'));
             setIsSubmitting(false);
             return;
         }
@@ -42,7 +42,7 @@ function CreateEventPage() {
 
         } catch (error) {
             console.error('Failed to create event:', error);
-            setError(error instanceof Error ? error.message : 'Failed to create event. Please try again.');
+            setError(error instanceof Error ? error : new Error('Failed to create event. Please try again.'));
         } finally {
             setIsSubmitting(false);
         }
