@@ -5,7 +5,6 @@ import {useDependencies} from './useDependencies';
 export interface Auth {
     currentUser: UserEntity | null | undefined;
     isLoading: boolean;
-    shouldShowAuthModal: (authRequired?: boolean) => boolean;
 }
 
 export function useAuth(): Auth {
@@ -32,13 +31,8 @@ export function useAuth(): Auth {
             });
     }, [signInUseCase]);
 
-    const shouldShowAuthModal = (authRequired: boolean = false) => {
-        return authRequired && !isLoading && currentUser === null;
-    };
-
     return {
         currentUser,
         isLoading,
-        shouldShowAuthModal
     };
 }
