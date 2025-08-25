@@ -2,6 +2,7 @@ import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import {DependencyProvider} from '@presentation/context/DependencyProvider.tsx';
 import {ProtectedRoute} from './presentation/routing';
 import Header from './presentation/components/Header';
+import Footer from './presentation/components/Footer';
 import HomePage from './presentation/pages/HomePage';
 import EventPage from './presentation/pages/EventPage';
 import CreateEventPage from './presentation/pages/CreateEventPage';
@@ -37,6 +38,7 @@ function App() {
                             />
                         </Routes>
                     </main>
+                    <Footer/>
                 </div>
             </Router>
         </DependencyProvider>
