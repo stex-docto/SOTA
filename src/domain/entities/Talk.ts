@@ -1,4 +1,4 @@
-import {EventId, LocationId, TalkId, UserId} from '@/domain';
+import {EventId, RoomId, TalkId, UserId} from '@/domain';
 
 export type TalkStatus = 'pending' | 'approved' | 'rejected';
 
@@ -9,7 +9,7 @@ export interface Talk {
     name: string;
     pitch: string;
     proposedStartDateTime: Date;
-    locationId: LocationId;
+    roomId: RoomId;
     status: TalkStatus;
     submissionDate: Date;
     approvedStartDateTime?: Date;
@@ -23,7 +23,7 @@ export class TalkEntity implements Talk {
         public readonly name: string,
         public readonly pitch: string,
         public readonly proposedStartDateTime: Date,
-        public readonly locationId: LocationId,
+        public readonly roomId: RoomId,
         public readonly status: TalkStatus,
         public readonly submissionDate: Date,
         public readonly approvedStartDateTime?: Date
@@ -36,7 +36,7 @@ export class TalkEntity implements Talk {
         name: string,
         pitch: string,
         proposedStartDateTime: Date,
-        locationId: LocationId,
+        roomId: RoomId,
         id?: TalkId
     ): TalkEntity {
         return new TalkEntity(
@@ -46,7 +46,7 @@ export class TalkEntity implements Talk {
             name,
             pitch,
             proposedStartDateTime,
-            locationId,
+            roomId,
             'pending',
             new Date()
         );
@@ -60,7 +60,7 @@ export class TalkEntity implements Talk {
             this.name,
             this.pitch,
             this.proposedStartDateTime,
-            this.locationId,
+            this.roomId,
             'approved',
             this.submissionDate,
             approvedStartDateTime || this.proposedStartDateTime
@@ -75,7 +75,7 @@ export class TalkEntity implements Talk {
             this.name,
             this.pitch,
             this.proposedStartDateTime,
-            this.locationId,
+            this.roomId,
             'rejected',
             this.submissionDate,
             this.approvedStartDateTime
@@ -86,7 +86,7 @@ export class TalkEntity implements Talk {
         name?: string,
         pitch?: string,
         proposedStartDateTime?: Date,
-        locationId?: LocationId
+        roomId?: RoomId
     ): TalkEntity {
         return new TalkEntity(
             this.id,
@@ -95,7 +95,7 @@ export class TalkEntity implements Talk {
             name ?? this.name,
             pitch ?? this.pitch,
             proposedStartDateTime ?? this.proposedStartDateTime,
-            locationId ?? this.locationId,
+            roomId ?? this.roomId,
             this.status,
             this.submissionDate,
             this.approvedStartDateTime
