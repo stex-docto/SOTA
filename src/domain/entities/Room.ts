@@ -1,17 +1,17 @@
-import { EventId, LocationId, UserId } from '@/domain'
+import { EventId, RoomId, UserId } from '@/domain'
 
-export interface Location {
-    id: LocationId
-    eventId: EventId
-    name: string
-    description: string
-    createdBy: UserId
-    createdDate: Date
+export interface Room {
+    id: RoomId;
+    eventId: EventId;
+    name: string;
+    description: string;
+    createdBy: UserId;
+    createdDate: Date;
 }
 
-export class LocationEntity implements Location {
+export class RoomEntity implements Room {
     constructor(
-        public readonly id: LocationId,
+        public readonly id: RoomId,
         public readonly eventId: EventId,
         public readonly name: string,
         public readonly description: string,
@@ -24,10 +24,10 @@ export class LocationEntity implements Location {
         name: string,
         description: string,
         createdBy: UserId,
-        id?: LocationId
-    ): LocationEntity {
-        return new LocationEntity(
-            id || LocationId.generate(),
+        id?: RoomId
+    ): RoomEntity {
+        return new RoomEntity(
+            id || RoomId.generate(),
             eventId,
             name,
             description,
@@ -36,8 +36,8 @@ export class LocationEntity implements Location {
         )
     }
 
-    update(name?: string, description?: string): LocationEntity {
-        return new LocationEntity(
+    update(name?: string, description?: string): RoomEntity {
+        return new RoomEntity(
             this.id,
             this.eventId,
             name ?? this.name,
