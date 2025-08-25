@@ -21,7 +21,7 @@ This application follows hexagonal architecture (Ports & Adapters) with clean se
 
 ## Tech Stack
 
-- **Frontend**: React 18 with TypeScript
+- **Frontend**: React 19 with TypeScript
 - **Backend**: Firebase (Firestore, Authentication)
 - **Development**: Docker Compose with Firebase emulators
 - **Deployment**: GitHub Pages
@@ -51,26 +51,21 @@ This application follows hexagonal architecture (Ports & Adapters) with clean se
 
 3. **Start Development Environment**
    ```bash
-   # Using Docker Compose (recommended)
-   docker compose up
-
-   # Or manually
-   yarn install
-   yarn dev
+   # Using Make with Docker Compose (recommended)
+   make dev
    ```
 
 4. **Access the Application**
    - App: http://localhost:3000
 
-### Available Scripts
+### Available Commands
 
-- `yarn dev` - Start Vite development server
-- `yarn build` - Build for production with TypeScript compilation
-- `yarn preview` - Preview production build locally
-- `yarn test` - Run tests with Vitest
-- `yarn test:ui` - Run tests with Vitest UI
-- `yarn lint` - Run ESLint
-- `yarn type-check` - Run TypeScript type checking
+- `make dev` - Start Docker development environment
+- `make lint` - Run linting and type checking in Docker container
+- `make stop` - Stop all Docker services
+- `make firebase.deploy` - Deploy to Firebase
+- `make pwa.build` - Build PWA for production
+- `make pwa.serve` - Build and serve PWA locally for testing
 
 ## Project Structure
 
@@ -127,13 +122,17 @@ The app uses Firestore security rules to enforce role-based access control:
 
 1. **Build the app**
    ```bash
-   npm run build
+   make pwa.build
    ```
 
-2. **Deploy to GitHub Pages**
+2. **Deploy Firebase configuration (rules, etc.)**
    ```bash
-   # Configure Firebase for production
-   firebase deploy --only hosting
+   make firebase.deploy
+   ```
+
+3. **Deploy to GitHub Pages**
+   ```bash
+   yarn deploy
    ```
 
 ### Firebase Configuration
