@@ -1,5 +1,4 @@
-import {EventEntity, EventId, EventRepository, UserId} from '@domain';
-import {Auth} from 'firebase/auth';
+import {EventEntity, EventId, EventRepository, UserId, UserRepository} from '@domain';
 import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, onSnapshot, query, setDoc, where} from "firebase/firestore";
 
 type FirebaseEventDocument = {
@@ -19,7 +18,7 @@ type FirebaseEventDocument = {
 export class FirebaseEventDatastore implements EventRepository {
     constructor(
         private readonly firestore: Firestore,
-        private readonly auth: Auth
+        private readonly userRepository: UserRepository
     ) {}
 
     protected get collection() {
@@ -60,13 +59,13 @@ export class FirebaseEventDatastore implements EventRepository {
 
     async findByCurrentUser(): Promise<EventEntity[]> {
         try {
-            const currentUser = this.auth.currentUser;
+            const currentUser = await this.userRepository.getCurrentUser();
             if (!currentUser) {
                 return [];
             }
 
             // Must use where clause to satisfy Firebase security rules
-            const q = query(this.collection, where("createdBy", "==", currentUser.uid));
+            const q = query(this.collection, where("createdBy", "==", currentUser.id.value));
             const querySnapshot = await getDocs(q);
             
             const events: EventEntity[] = [];

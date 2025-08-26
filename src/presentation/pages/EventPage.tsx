@@ -6,6 +6,7 @@ import {useAuth} from '../hooks/useAuth';
 import {useDependencies} from '../hooks/useDependencies';
 import {EventEntity, EventId} from '@domain';
 import ConfirmationModal from '../components/ConfirmationModal';
+import TalkCreationModal from '../components/TalkCreationModal';
 
 function EventPage() {
     const {eventId} = useParams<{ eventId: string }>();
@@ -26,6 +27,7 @@ function EventPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEventSaved, setIsEventSaved] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [showTalkCreationModal, setShowTalkCreationModal] = useState(false);
 
     useEffect(() => {
         if (!eventId) {
@@ -261,60 +263,23 @@ function EventPage() {
                         <p>Schedule will be displayed here once talks are submitted and approved.</p>
                     </div>
                 </div>
-
-                <div className="submit-talk-section">
-                    <h2>Submit a Talk</h2>
-                    <p className="participation-note">
-                        ✨ No registration needed! Just fill out the form below to propose your talk.
-                    </p>
-                    <form className="talk-form">
-                        <div className="form-group">
-                            <label htmlFor="talkTitle">Talk Title</label>
-                            <input
-                                id="talkTitle"
-                                type="text"
-                                placeholder="Enter your talk title"
-                                className="form-input"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="talkDescription">Description</label>
-                            <textarea
-                                id="talkDescription"
-                                placeholder="Describe your talk..."
-                                rows={4}
-                                className="form-textarea"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="speakerName">Your Name</label>
-                            <input
-                                id="speakerName"
-                                type="text"
-                                placeholder="Enter your name"
-                                className="form-input"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="duration">Duration (minutes)</label>
-                            <select id="duration" className="form-select">
-                                <option value="5">5 minutes</option>
-                                <option value="10">10 minutes</option>
-                                <option value="15">15 minutes</option>
-                                <option value="20">20 minutes</option>
-                                <option value="30">30 minutes</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" className="submit-button">
-                            Submit Talk
-                        </button>
-                    </form>
-                </div>
             </div>
+
+            {/* Floating Action Button */}
+            <button 
+                className="floating-action-button"
+                onClick={() => setShowTalkCreationModal(true)}
+                aria-label="Submit a talk"
+                title="Submit a talk"
+            >
+                +
+            </button>
+
+            <TalkCreationModal
+                isOpen={showTalkCreationModal}
+                onClose={() => setShowTalkCreationModal(false)}
+                eventId={EventId.from(eventId!)}
+            />
 
             <ConfirmationModal
                 isOpen={showDeleteConfirmation}

@@ -1,4 +1,5 @@
 export * from './CreateEventUseCase'
+export * from './CreateTalkUseCase'
 export * from './GetEventUseCase'
 export * from './UpdateEventUseCase'
 export * from './DeleteEventUseCase'

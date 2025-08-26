@@ -1,5 +1,5 @@
 export abstract class EntityId {
-    constructor(public readonly value: string) {
+    protected constructor(public readonly value: string) {
         if (!value || value.trim().length === 0) {
             throw new Error('EntityId cannot be empty');
         }

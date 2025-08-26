@@ -2,7 +2,6 @@ import {
     EventId,
     EventRepository,
     LocationId,
-    LocationRepository,
     TalkEntity,
     TalkRepository,
     UserId,
@@ -11,10 +10,11 @@ import {
 
 export interface SubmitTalkCommand {
     eventId: EventId;
-    userId: UserId;
+    createdBy: UserId;
     name: string;
     pitch: string;
-    proposedStartDateTime: Date;
+    startDateTime: Date;
+    expectedDurationMinutes: number;
     locationId: LocationId;
 }
 
@@ -26,7 +26,6 @@ export class SubmitTalkUseCase {
     constructor(
         private readonly talkRepository: TalkRepository,
         private readonly eventRepository: EventRepository,
-        private readonly locationRepository: LocationRepository,
         private readonly userRepository: UserRepository
     ) {
     }
@@ -39,24 +38,19 @@ export class SubmitTalkUseCase {
         }
 
         // Verify user exists
-        const user = await this.userRepository.getUser(command.userId);
+        const user = await this.userRepository.getUser(command.createdBy);
         if (!user) {
             throw new Error('User not found');
         }
 
-        // Verify location exists and belongs to event
-        const location = await this.locationRepository.findById(command.locationId);
-        if (!location || !location.eventId.equals(command.eventId)) {
-            throw new Error('Location not found or does not belong to this event');
-        }
-
-        // Create talk proposal
+        // Create talk
         const talk = TalkEntity.create(
             command.eventId,
-            command.userId,
+            command.createdBy,
             command.name,
             command.pitch,
-            command.proposedStartDateTime,
+            command.startDateTime,
+            command.expectedDurationMinutes,
             command.locationId
         );
 
