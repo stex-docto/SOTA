@@ -1,5 +1,4 @@
 export type { UserRepository } from './UserRepository'
 export type { EventRepository } from './EventRepository'
-export type { RoomRepository } from './RoomRepository'
 export type { TalkRepository } from './TalkRepository'
 export type { CredentialRepository } from './CredentialRepository'

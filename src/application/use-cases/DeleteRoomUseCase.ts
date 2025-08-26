@@ -1,41 +1,42 @@
-import {RoomRepository, UserRepository, EventRepository, RoomId} from '@domain';
+import {EventRepository, RoomId, UserRepository, EventId} from '@domain';
 
 export interface DeleteRoomCommand {
+    eventId: EventId;
     roomId: RoomId;
+}
+
+export interface DeleteRoomResult {
+    success: boolean;
 }
 
 export class DeleteRoomUseCase {
     constructor(
-        private readonly roomRepository: RoomRepository,
-        private readonly userRepository: UserRepository,
-        private readonly eventRepository: EventRepository
-    ) {
-    }
+        private readonly eventRepository: EventRepository,
+        private readonly userRepository: UserRepository
+    ) {}
 
-    async execute(command: DeleteRoomCommand): Promise<void> {
-        // Verify user exists and is authenticated
-        const user = await this.userRepository.getCurrentUser();
-        if (!user) {
-            throw new Error('User not found');
+    async execute(command: DeleteRoomCommand): Promise<DeleteRoomResult> {
+        const currentUser = await this.userRepository.getCurrentUser();
+        if (!currentUser) {
+            throw new Error('User must be authenticated');
         }
 
-        // Verify room exists
-        const room = await this.roomRepository.findById(command.roomId);
-        if (!room) {
-            throw new Error('Room not found');
-        }
-
-        // Verify event exists and user is the creator
-        const event = await this.eventRepository.findById(room.eventId);
+        const event = await this.eventRepository.findById(command.eventId);
         if (!event) {
             throw new Error('Event not found');
         }
 
-        if (!event.createdBy.equals(user.id)) {
-            throw new Error('Only event creators can delete rooms');
+        if (!event.createdBy.equals(currentUser.id)) {
+            throw new Error('Only event creator can delete rooms');
         }
 
-        // Delete room
-        await this.roomRepository.delete(command.roomId);
+        if (!event.rooms.has(command.roomId)) {
+            throw new Error('Room not found');
+        }
+
+        const updatedEvent = event.removeRoom(command.roomId);
+        await this.eventRepository.save(updatedEvent);
+
+        return { success: true };
     }
 }

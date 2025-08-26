@@ -73,6 +73,7 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
       setError("");
 
       await updateRoomUseCase.execute({
+        eventId,
         roomId: editingRoom.id,
         name: formData.name,
         description: formData.description,
@@ -95,7 +96,10 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
       setIsSubmitting(true);
       setError("");
 
-      await deleteRoomUseCase.execute({ roomId: roomToDelete.id });
+      await deleteRoomUseCase.execute({ 
+        eventId,
+        roomId: roomToDelete.id 
+      });
 
       await loadRooms();
       setShowDeleteConfirmation(false);

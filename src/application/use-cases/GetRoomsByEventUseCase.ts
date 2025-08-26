@@ -1,4 +1,4 @@
-import {RoomEntity, RoomRepository, EventId} from '@domain';
+import {EventId, EventRepository, RoomEntity} from '@domain';
 
 export interface GetRoomsByEventCommand {
     eventId: EventId;
@@ -10,25 +10,16 @@ export interface GetRoomsByEventResult {
 
 export class GetRoomsByEventUseCase {
     constructor(
-        private readonly roomRepository: RoomRepository
-    ) {
-    }
+        private readonly eventRepository: EventRepository
+    ) {}
 
     async execute(command: GetRoomsByEventCommand): Promise<GetRoomsByEventResult> {
-        const rooms = await this.roomRepository.findByEventId(command.eventId);
-        return {rooms};
-    }
+        const event = await this.eventRepository.findById(command.eventId);
+        if (!event) {
+            throw new Error('Event not found');
+        }
 
-    // Real-time subscription method for live updates
-    subscribe(
-        command: GetRoomsByEventCommand,
-        callback: (result: GetRoomsByEventResult) => void
-    ): () => void {
-        // This will be implemented in the datastore layer for real-time updates
-        // For now, just execute once
-        this.execute(command).then(callback);
-        
-        // Return unsubscribe function (placeholder)
-        return () => {};
+        const rooms = event.getRooms();
+        return { rooms };
     }
 }

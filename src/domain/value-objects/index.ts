@@ -6,3 +6,4 @@ export { EventIdSet } from './EventIdSet'
 export * from './Credential.ts'
 export * from './Connection.ts'
 export type * from './Authentication.ts'
+export {RoomSet} from './RoomSet';

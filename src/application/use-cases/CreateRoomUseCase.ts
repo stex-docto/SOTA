@@ -1,4 +1,4 @@
-import {RoomEntity, RoomRepository, UserRepository, EventRepository, EventId} from '@domain';
+import {EventId, EventRepository, RoomEntity, UserRepository} from '@domain';
 
 export interface CreateRoomCommand {
     eventId: EventId;
@@ -12,40 +12,33 @@ export interface CreateRoomResult {
 
 export class CreateRoomUseCase {
     constructor(
-        private readonly roomRepository: RoomRepository,
-        private readonly userRepository: UserRepository,
-        private readonly eventRepository: EventRepository
-    ) {
-    }
+        private readonly eventRepository: EventRepository,
+        private readonly userRepository: UserRepository
+    ) {}
 
     async execute(command: CreateRoomCommand): Promise<CreateRoomResult> {
-        // Verify user exists and is authenticated
-        const user = await this.userRepository.getCurrentUser();
-        if (!user) {
-            throw new Error('User not found');
+        const currentUser = await this.userRepository.getCurrentUser();
+        if (!currentUser) {
+            throw new Error('User must be authenticated');
         }
 
-        // Verify event exists and user is the creator
         const event = await this.eventRepository.findById(command.eventId);
         if (!event) {
             throw new Error('Event not found');
         }
 
-        if (!event.createdBy.equals(user.id)) {
-            throw new Error('Only event creators can add rooms');
+        if (!event.createdBy.equals(currentUser.id)) {
+            throw new Error('Only event creator can create rooms');
         }
 
-        // Create new room
         const room = RoomEntity.create(
-            command.eventId,
             command.name,
-            command.description,
-            user.id
+            command.description
         );
 
-        // Save room
-        await this.roomRepository.save(room);
+        const updatedEvent = event.addRoom(room);
+        await this.eventRepository.save(updatedEvent);
 
-        return {room};
+        return { room };
     }
 }
