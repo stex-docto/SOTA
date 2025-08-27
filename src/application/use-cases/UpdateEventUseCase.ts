@@ -1,17 +1,17 @@
-import {EventEntity, EventId, EventRepository, UserRepository} from '@/domain';
+import { EventEntity, EventId, EventRepository, UserRepository } from '@/domain'
 
 export interface UpdateEventCommand {
-    eventId: EventId;
-    title: string;
-    description: string;
-    talkRules: string;
-    startDate: Date;
-    endDate: Date;
-    location: string;
+    eventId: EventId
+    title: string
+    description: string
+    talkRules: string
+    startDate: Date
+    endDate: Date
+    location: string
 }
 
 export interface UpdateEventResult {
-    event: EventEntity;
+    event: EventEntity
 }
 
 export class UpdateEventUseCase {
@@ -22,20 +22,20 @@ export class UpdateEventUseCase {
 
     async execute(command: UpdateEventCommand): Promise<UpdateEventResult> {
         // Get the existing event
-        const existingEvent = await this.eventRepository.findById(command.eventId);
+        const existingEvent = await this.eventRepository.findById(command.eventId)
         if (!existingEvent) {
-            throw new Error('Event not found');
+            throw new Error('Event not found')
         }
 
         // Get current user to verify permissions
-        const currentUser = await this.userRepository.getCurrentUser();
+        const currentUser = await this.userRepository.getCurrentUser()
         if (!currentUser) {
-            throw new Error('User must be authenticated to update an event');
+            throw new Error('User must be authenticated to update an event')
         }
 
         // Verify the user is the creator of the event
         if (existingEvent.createdBy.value !== currentUser.id.value) {
-            throw new Error('Only the event creator can update this event');
+            throw new Error('Only the event creator can update this event')
         }
 
         // Create updated event with new data but preserve original metadata
@@ -51,12 +51,12 @@ export class UpdateEventUseCase {
             command.location,
             existingEvent.status, // Keep original status
             existingEvent.createdBy // Keep original creator
-        );
+        )
 
-        await this.eventRepository.save(updatedEvent);
+        await this.eventRepository.save(updatedEvent)
 
         return {
             event: updatedEvent
-        };
+        }
     }
 }

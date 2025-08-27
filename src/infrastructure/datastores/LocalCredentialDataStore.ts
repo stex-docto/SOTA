@@ -1,4 +1,4 @@
-import {Code, Credential, CredentialRepository} from "@domain";
+import { Code, Credential, CredentialRepository } from '@domain'
 
 const LOCAL_STORAGE_KEY = 'sharing-cred'
 const LOCAL_STORAGE_SEPARATOR = '-'

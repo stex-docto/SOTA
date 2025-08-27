@@ -1,4 +1,4 @@
-import {Code, Credential} from "@domain"
+import { Code, Credential } from '@domain'
 
 export interface CredentialRepository {
     get(): Credential | null

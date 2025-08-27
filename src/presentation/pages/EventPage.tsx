@@ -1,73 +1,69 @@
-import {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import {useAuth} from '../hooks/useAuth';
-import {useDependencies} from '../hooks/useDependencies';
-import {EventEntity, EventId} from '@domain';
-import ConfirmationModal from '../components/ConfirmationModal';
-import TalkCreationModal from '../components/TalkCreationModal';
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
+import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
+import { EventEntity, EventId } from '@domain'
+import ConfirmationModal from '../components/ConfirmationModal'
+import TalkCreationModal from '../components/TalkCreationModal'
 
 function EventPage() {
-    const {eventId} = useParams<{ eventId: string }>();
-    const navigate = useNavigate();
-    const {currentUser} = useAuth();
-    const {
-        getEventUseCase,
-        deleteEventUseCase,
-        saveEventUseCase,
-        removeSavedEventUseCase
-    } = useDependencies();
-    const [event, setEvent] = useState<EventEntity | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string>('');
-    const [isEventCreator, setIsEventCreator] = useState(false);
-    const [showManagement, setShowManagement] = useState(false);
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isEventSaved, setIsEventSaved] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [showTalkCreationModal, setShowTalkCreationModal] = useState(false);
+    const { eventId } = useParams<{ eventId: string }>()
+    const navigate = useNavigate()
+    const { currentUser } = useAuth()
+    const { getEventUseCase, deleteEventUseCase, saveEventUseCase, removeSavedEventUseCase } =
+        useDependencies()
+    const [event, setEvent] = useState<EventEntity | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string>('')
+    const [isEventCreator, setIsEventCreator] = useState(false)
+    const [showManagement, setShowManagement] = useState(false)
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [isEventSaved, setIsEventSaved] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
+    const [showTalkCreationModal, setShowTalkCreationModal] = useState(false)
 
     useEffect(() => {
         if (!eventId) {
-            setError('Event ID is required');
-            setLoading(false);
-            return;
+            setError('Event ID is required')
+            setLoading(false)
+            return
         }
 
         // Set up real-time subscription
         const unsubscribe = getEventUseCase.subscribe(
-            {eventId: EventId.from(eventId)},
-            (result) => {
-                setEvent(result.event);
-                setLoading(false);
+            { eventId: EventId.from(eventId) },
+            result => {
+                setEvent(result.event)
+                setLoading(false)
 
                 if (!result.event) {
-                    setError('Event not found');
+                    setError('Event not found')
                 }
             }
-        );
+        )
 
         // Cleanup subscription on unmount
         return () => {
-            unsubscribe();
-        };
-    }, [eventId, getEventUseCase]);
+            unsubscribe()
+        }
+    }, [eventId, getEventUseCase])
 
     useEffect(() => {
         // Check if current user is the event creator
         if (currentUser && event) {
-            setIsEventCreator(currentUser.id.value === event.createdBy.value);
+            setIsEventCreator(currentUser.id.value === event.createdBy.value)
         }
-    }, [currentUser, event]);
+    }, [currentUser, event])
 
     useEffect(() => {
         // Check if event is saved by current user
         if (currentUser && eventId) {
-            setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)));
+            setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)))
         }
-    }, [currentUser, eventId]);
+    }, [currentUser, eventId])
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat(undefined, {
@@ -77,55 +73,61 @@ function EventPage() {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        }).format(date);
-    };
+        }).format(date)
+    }
 
     const handleDeleteClick = () => {
-        setShowDeleteConfirmation(true);
-    };
+        setShowDeleteConfirmation(true)
+    }
 
     const handleDeleteConfirm = async () => {
-        if (!eventId) return;
+        if (!eventId) return
 
-        setIsDeleting(true);
+        setIsDeleting(true)
         try {
-            await deleteEventUseCase.execute({ eventId: EventId.from(eventId) });
-            
+            await deleteEventUseCase.execute({ eventId: EventId.from(eventId) })
+
             // Navigate to home page after successful deletion
-            navigate('/');
+            navigate('/')
         } catch (error) {
-            console.error('Failed to delete event:', error);
-            alert(error instanceof Error ? error.message : 'Failed to delete event. Please try again.');
+            console.error('Failed to delete event:', error)
+            alert(
+                error instanceof Error ? error.message : 'Failed to delete event. Please try again.'
+            )
         } finally {
-            setIsDeleting(false);
-            setShowDeleteConfirmation(false);
+            setIsDeleting(false)
+            setShowDeleteConfirmation(false)
         }
-    };
+    }
 
     const handleDeleteCancel = () => {
-        setShowDeleteConfirmation(false);
-    };
+        setShowDeleteConfirmation(false)
+    }
 
     const handleSaveToggle = async () => {
-        if (!eventId) return;
+        if (!eventId) return
 
-        setIsSaving(true);
+        setIsSaving(true)
         try {
-            const eventIdObj = EventId.from(eventId);
+            const eventIdObj = EventId.from(eventId)
             if (isEventSaved) {
-                await removeSavedEventUseCase.execute({ eventId: eventIdObj });
-                setIsEventSaved(false);
+                await removeSavedEventUseCase.execute({ eventId: eventIdObj })
+                setIsEventSaved(false)
             } else {
-                await saveEventUseCase.execute({ eventId: eventIdObj });
-                setIsEventSaved(true);
+                await saveEventUseCase.execute({ eventId: eventIdObj })
+                setIsEventSaved(true)
             }
         } catch (error) {
-            console.error('Failed to toggle save state:', error);
-            alert(error instanceof Error ? error.message : 'Failed to save/unsave event. Please try again.');
+            console.error('Failed to toggle save state:', error)
+            alert(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to save/unsave event. Please try again.'
+            )
         } finally {
-            setIsSaving(false);
+            setIsSaving(false)
         }
-    };
+    }
 
     if (loading) {
         return (
@@ -134,7 +136,7 @@ function EventPage() {
                     <h2>Loading event...</h2>
                 </div>
             </div>
-        );
+        )
     }
 
     if (error || !event) {
@@ -144,16 +146,14 @@ function EventPage() {
                     <div className="error-icon">🎪</div>
                     <h1>Dang, this event doesn't exist!</h1>
                     <p className="error-message">
-                        Check your link — it might have been deleted or never existed in the first place.
+                        Check your link — it might have been deleted or never existed in the first
+                        place.
                     </p>
                     <p className="error-suggestion">
                         But hey, no worries! You can create your own amazing event instead.
                     </p>
                     <div className="error-actions">
-                        <button
-                            onClick={() => navigate('/')}
-                            className="back-button primary"
-                        >
+                        <button onClick={() => navigate('/')} className="back-button primary">
                             🏠 Back to Home
                         </button>
                         <button
@@ -165,7 +165,7 @@ function EventPage() {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 
     return (
@@ -175,11 +175,17 @@ function EventPage() {
                     <h1>{event.title}</h1>
                     <p className="event-id">Event ID: {eventId}</p>
                     <div className="event-dates">
-                        <p><strong>Start:</strong> {formatDate(event.startDate)}</p>
-                        <p><strong>End:</strong> {formatDate(event.endDate)}</p>
+                        <p>
+                            <strong>Start:</strong> {formatDate(event.startDate)}
+                        </p>
+                        <p>
+                            <strong>End:</strong> {formatDate(event.endDate)}
+                        </p>
                     </div>
                     {event.location && (
-                        <p className="event-location"><strong>Location:</strong> {event.location}</p>
+                        <p className="event-location">
+                            <strong>Location:</strong> {event.location}
+                        </p>
                     )}
                 </div>
 
@@ -211,17 +217,14 @@ function EventPage() {
                         <div className="management-actions">
                             <div className="action-group">
                                 <h3>Event Actions</h3>
-                                <button 
+                                <button
                                     className="admin-button secondary"
                                     onClick={() => navigate(`/event/${eventId}/edit`)}
                                 >
                                     Edit Event Details
                                 </button>
                                 <button className="admin-button primary">Generate Schedule</button>
-                                <button 
-                                    className="admin-button danger"
-                                    onClick={handleDeleteClick}
-                                >
+                                <button className="admin-button danger" onClick={handleDeleteClick}>
                                     Delete Event
                                 </button>
                             </div>
@@ -246,27 +249,33 @@ function EventPage() {
                 <div className="event-info">
                     <h2>Description</h2>
                     <div className="markdown-preview">
-                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{event.description}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                            {event.description}
+                        </ReactMarkdown>
                     </div>
                 </div>
 
                 <div className="talk-rules">
                     <h2>Talk Rules</h2>
                     <div className="markdown-preview large">
-                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{event.talkRules}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                            {event.talkRules}
+                        </ReactMarkdown>
                     </div>
                 </div>
 
                 <div className="talk-schedule">
                     <h2>Talk Schedule</h2>
                     <div className="schedule-placeholder">
-                        <p>Schedule will be displayed here once talks are submitted and approved.</p>
+                        <p>
+                            Schedule will be displayed here once talks are submitted and approved.
+                        </p>
                     </div>
                 </div>
             </div>
 
             {/* Floating Action Button */}
-            <button 
+            <button
                 className="floating-action-button"
                 onClick={() => setShowTalkCreationModal(true)}
                 aria-label="Submit a talk"
@@ -292,7 +301,7 @@ function EventPage() {
                 isLoading={isDeleting}
             />
         </div>
-    );
+    )
 }
 
-export default EventPage;
+export default EventPage

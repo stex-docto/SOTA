@@ -1,14 +1,13 @@
-import {EventEntity, EventId} from '@/domain';
-
+import { EventEntity, EventId } from '@/domain'
 
 export interface EventRepository {
-    save(event: EventEntity): Promise<void>;
+    save(event: EventEntity): Promise<void>
 
-    findById(id: EventId): Promise<EventEntity | null>;
+    findById(id: EventId): Promise<EventEntity | null>
 
-    findByCurrentUser(): Promise<EventEntity[]>;
+    findByCurrentUser(): Promise<EventEntity[]>
 
-    subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void;
+    subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void
 
-    delete(id: EventId): Promise<void>;
+    delete(id: EventId): Promise<void>
 }

@@ -1,51 +1,53 @@
-import {useState, useEffect} from 'react';
-import {UserEntity} from '@/domain';
-import {useDependencies} from '../../hooks/useDependencies';
-import styles from '../AuthModal.module.scss';
+import { useState, useEffect } from 'react'
+import { UserEntity } from '@/domain'
+import { useDependencies } from '../../hooks/useDependencies'
+import styles from '../AuthModal.module.scss'
 
 interface UserProfileProps {
-    currentUser: UserEntity;
+    currentUser: UserEntity
 }
 
-export function UserProfile({currentUser}: UserProfileProps) {
-    const {updateUserProfileUseCase} = useDependencies();
-    const [isEditingProfile, setIsEditingProfile] = useState(false);
-    const [displayName, setDisplayName] = useState('');
-    const [isSavingProfile, setIsSavingProfile] = useState(false);
+export function UserProfile({ currentUser }: UserProfileProps) {
+    const { updateUserProfileUseCase } = useDependencies()
+    const [isEditingProfile, setIsEditingProfile] = useState(false)
+    const [displayName, setDisplayName] = useState('')
+    const [isSavingProfile, setIsSavingProfile] = useState(false)
 
     useEffect(() => {
         if (currentUser) {
-            setDisplayName(currentUser.displayName || '');
+            setDisplayName(currentUser.displayName || '')
         }
-    }, [currentUser]);
+    }, [currentUser])
 
     const handleSaveProfile = async () => {
-        if (!displayName.trim()) return;
+        if (!displayName.trim()) return
 
-        setIsSavingProfile(true);
+        setIsSavingProfile(true)
         try {
             await updateUserProfileUseCase.execute({
                 displayName: displayName.trim()
-            });
-            setIsEditingProfile(false);
+            })
+            setIsEditingProfile(false)
         } catch (error) {
-            console.error('Failed to save profile:', error);
-            alert(error instanceof Error ? error.message : 'Failed to save profile. Please try again.');
+            console.error('Failed to save profile:', error)
+            alert(
+                error instanceof Error ? error.message : 'Failed to save profile. Please try again.'
+            )
         } finally {
-            setIsSavingProfile(false);
+            setIsSavingProfile(false)
         }
-    };
+    }
 
     const handleEditProfile = () => {
-        setIsEditingProfile(true);
-    };
+        setIsEditingProfile(true)
+    }
 
     const handleCancelEditProfile = () => {
         if (currentUser) {
-            setDisplayName(currentUser.displayName || '');
-            setIsEditingProfile(false);
+            setDisplayName(currentUser.displayName || '')
+            setIsEditingProfile(false)
         }
-    };
+    }
 
     return (
         <>
@@ -59,7 +61,7 @@ export function UserProfile({currentUser}: UserProfileProps) {
                             type="text"
                             className={styles.profileInput}
                             value={displayName}
-                            onChange={(e) => setDisplayName(e.target.value)}
+                            onChange={e => setDisplayName(e.target.value)}
                             placeholder="Enter your display name"
                             disabled={isSavingProfile}
                             maxLength={50}
@@ -99,5 +101,5 @@ export function UserProfile({currentUser}: UserProfileProps) {
                 </p>
             )}
         </>
-    );
+    )
 }

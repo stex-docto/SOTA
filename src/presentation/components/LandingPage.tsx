@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 function LandingPage() {
     return (
@@ -6,16 +6,22 @@ function LandingPage() {
             <div className="hero-section">
                 <h1>Welcome to SOTA</h1>
                 <p className="hero-description">
-                    Simple Open Talk App - Organize and participate in open talk sessions. Share your knowledge,
-                    learn from others, and build a vibrant community of speakers and learners.
+                    Simple Open Talk App - Organize and participate in open talk sessions. Share
+                    your knowledge, learn from others, and build a vibrant community of speakers and
+                    learners.
                 </p>
 
                 <div className="action-boxes">
                     <div className="action-box participate">
                         <div className="action-glow participate-glow"></div>
                         <div className="action-content">
-                            <h3><span className="action-icon">👥</span> Join an Event</h3>
-                            <p>Got an event URL? Just click it or paste it in your browser. No sign-up needed!</p>
+                            <h3>
+                                <span className="action-icon">👥</span> Join an Event
+                            </h3>
+                            <p>
+                                Got an event URL? Just click it or paste it in your browser. No
+                                sign-up needed!
+                            </p>
                             <div className="action-footer">
                                 <span className="highlight">✨ Zero barriers to participation</span>
                             </div>
@@ -25,8 +31,13 @@ function LandingPage() {
                     <div className="action-box create">
                         <div className="action-glow create-glow"></div>
                         <div className="action-content">
-                            <h3><span className="action-icon">✨</span> Host Your Own</h3>
-                            <p>Be the catalyst! Launch your talk session and bring speakers together in minutes.</p>
+                            <h3>
+                                <span className="action-icon">✨</span> Host Your Own
+                            </h3>
+                            <p>
+                                Be the catalyst! Launch your talk session and bring speakers
+                                together in minutes.
+                            </p>
                             <div className="creation-flow">
                                 <div className="flow-item">
                                     <div className="flow-icon">⚡</div>
@@ -48,7 +59,7 @@ function LandingPage() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default LandingPage;
+export default LandingPage

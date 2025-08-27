@@ -1,14 +1,14 @@
-import {EventEntity, EventRepository, UserRepository} from '@/domain';
+import { EventEntity, EventRepository, UserRepository } from '@/domain'
 
-export type UserEventType = 'created' | 'saved';
+export type UserEventType = 'created' | 'saved'
 
 export interface UserEventItem {
-    event: EventEntity;
-    type: UserEventType;
+    event: EventEntity
+    type: UserEventType
 }
 
 export interface GetUserAllEventsResult {
-    events: UserEventItem[];
+    events: UserEventItem[]
 }
 
 export class GetUserAllEventsUseCase {
@@ -19,44 +19,46 @@ export class GetUserAllEventsUseCase {
 
     async execute(): Promise<GetUserAllEventsResult> {
         // Check if user is authenticated
-        const currentUser = await this.userRepository.getCurrentUser();
+        const currentUser = await this.userRepository.getCurrentUser()
         if (!currentUser) {
-            throw new Error('User must be authenticated to view events');
+            throw new Error('User must be authenticated to view events')
         }
 
         // Get created events
-        const createdEvents = await this.eventRepository.findByCurrentUser();
+        const createdEvents = await this.eventRepository.findByCurrentUser()
         const createdEventItems: UserEventItem[] = createdEvents.map(event => ({
             event,
             type: 'created' as UserEventType
-        }));
+        }))
 
         // Get saved events
-        const savedEventItems: UserEventItem[] = [];
+        const savedEventItems: UserEventItem[] = []
         for (const eventId of currentUser.savedEventIds.toArray()) {
             try {
-                const event = await this.eventRepository.findById(eventId);
+                const event = await this.eventRepository.findById(eventId)
                 if (event) {
                     // Don't duplicate events - if user created and saved the same event, only show as created
-                    const alreadyIncluded = createdEventItems.some(item => item.event.id.equals(event.id));
+                    const alreadyIncluded = createdEventItems.some(item =>
+                        item.event.id.equals(event.id)
+                    )
                     if (!alreadyIncluded) {
                         savedEventItems.push({
                             event,
                             type: 'saved' as UserEventType
-                        });
+                        })
                     }
                 }
             } catch (error) {
-                console.warn(`Could not fetch saved event ${eventId.value}:`, error);
+                console.warn(`Could not fetch saved event ${eventId.value}:`, error)
             }
         }
 
         // Combine and sort by event start date (upcoming events first)
-        const allEvents = [...createdEventItems, ...savedEventItems];
-        allEvents.sort((a, b) => a.event.startDate.getTime() - b.event.startDate.getTime());
+        const allEvents = [...createdEventItems, ...savedEventItems]
+        allEvents.sort((a, b) => a.event.startDate.getTime() - b.event.startDate.getTime())
 
         return {
             events: allEvents
-        };
+        }
     }
 }

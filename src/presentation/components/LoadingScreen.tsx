@@ -7,12 +7,12 @@ export const LoadingScreen: React.FC = () => {
         <div
             className={styles.container}
             style={{
-                backgroundImage: `url(${LoadingImage})`,
+                backgroundImage: `url(${LoadingImage})`
             }}
         >
             <div className={styles.card}>
                 <div className={styles.content}>
-                    <div className={styles.spinner}/>
+                    <div className={styles.spinner} />
                     Loading...
                 </div>
             </div>

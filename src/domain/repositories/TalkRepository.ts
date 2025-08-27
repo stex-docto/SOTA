@@ -1,11 +1,11 @@
-import {EventId, TalkEntity, TalkId} from '@/domain';
+import { EventId, TalkEntity, TalkId } from '@/domain'
 
 export interface TalkRepository {
-    save(talk: TalkEntity): Promise<void>;
+    save(talk: TalkEntity): Promise<void>
 
-    findById(id: TalkId): Promise<TalkEntity | null>;
+    findById(id: TalkId): Promise<TalkEntity | null>
 
-    findByEventId(eventId: EventId): Promise<TalkEntity[]>;
-    
-    delete(id: TalkId): Promise<void>;
+    findByEventId(eventId: EventId): Promise<TalkEntity[]>
+
+    delete(id: TalkId): Promise<void>
 }

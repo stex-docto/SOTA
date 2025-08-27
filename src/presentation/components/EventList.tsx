@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import { UserEventItem } from '@application';
+import { Link } from 'react-router-dom'
+import { UserEventItem } from '@application'
 
 interface EventListProps {
-    events: UserEventItem[];
-    isPastEvent?: boolean;
-    emptyMessage: string;
+    events: UserEventItem[]
+    isPastEvent?: boolean
+    emptyMessage: string
 }
 
 function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps) {
@@ -15,21 +15,21 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        }).format(date);
-    };
+        }).format(date)
+    }
 
     if (events.length === 0) {
-        return <p className="no-events-message">{emptyMessage}</p>;
+        return <p className="no-events-message">{emptyMessage}</p>
     }
 
     return (
         <div className="events-list-items">
-            {events.map((eventItem) => {
-                const className = `event-list-item${isPastEvent ? ' past-event' : ''}`;
-                
+            {events.map(eventItem => {
+                const className = `event-list-item${isPastEvent ? ' past-event' : ''}`
+
                 return (
-                    <Link 
-                        key={`${eventItem.event.id.value}-${eventItem.type}`} 
+                    <Link
+                        key={`${eventItem.event.id.value}-${eventItem.type}`}
                         to={`/event/${eventItem.event.id.value}`}
                         className={className}
                     >
@@ -47,10 +47,10 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                             {eventItem.type === 'created' ? '👤 Created' : '❤️ Saved'}
                         </div>
                     </Link>
-                );
+                )
             })}
         </div>
-    );
+    )
 }
 
-export default EventList;
+export default EventList

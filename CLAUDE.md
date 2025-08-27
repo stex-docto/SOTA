@@ -15,6 +15,15 @@ This is an Simple Open Talk Application (SOTA) conference management. A Progress
 - `make stop` - Stop all Docker services
 - `make firebase.deploy` - Deploy to Firebase
 
+### Code Quality Commands
+
+- `yarn format` - Format code with Prettier (spaces indentation, no trailing commas, no semicolons)
+- `yarn format:check` - Check code formatting without making changes
+- `yarn lint` - Run ESLint
+- `yarn lint:fix` - Run ESLint with auto-fix
+- `yarn type-check` - Run TypeScript type checking
+- `yarn lint:all` - Run all linting (format + lint:fix + type-check)
+
 ### PWA Testing
 
 - `make pwa.build` - Build PWA for production
@@ -85,6 +94,20 @@ The app requires Firebase environment variables:
 - `VITE_FIREBASE_MESSAGING_SENDER_ID`
 - `VITE_FIREBASE_APP_ID`
 
+## Code Formatting Standards
+
+This project uses **Prettier** for consistent code formatting with the following configuration:
+
+- **Indentation**: 4 spaces (no tabs)
+- **Trailing commas**: None
+- **Semicolons**: None (disabled)
+- **Quotes**: Single quotes
+- **Line width**: 100 characters
+- **Bracket spacing**: Enabled
+- **Arrow function parentheses**: Avoid when possible
+
+**Always run `yarn lint:all` before committing** to ensure proper formatting and code quality.
+
 ## Development Guidelines
 
 When working with this codebase:
@@ -94,6 +117,7 @@ When working with this codebase:
 3. **Respect layer boundaries** - Domain should not import from infrastructure or presentation
 4. **Use path aliases** - Import from `@domain`, `@application`, etc. instead of relative paths
 5. **Type safety** - Leverage TypeScript strictly, use domain value objects
-6. **Testing** - Run `make lint` before committing to ensure code quality
-7. **Respect ADRs** - All architectural decision records in `docs/` must be followed
-8. **Update documentatons** - Every time you create, modify or delete feature update the @CLAUDE.md and @README.md if necessary.
+6. **Code formatting** - Use 4 spaces for indentation, no trailing commas, no semicolons, run `yarn lint:all`
+7. **Testing** - Run `make lint` before committing to ensure code quality
+8. **Respect ADRs** - All architectural decision records in `docs/` must be followed
+9. **Update documentations** - Every time you create, modify or delete feature update the @CLAUDE.md and @README.md if necessary.

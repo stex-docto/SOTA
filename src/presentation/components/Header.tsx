@@ -1,6 +1,6 @@
-import {Link} from 'react-router-dom';
-import {AuthModal} from './AuthModal';
-import CurrentEventsBar from './CurrentEventsBar';
+import { Link } from 'react-router-dom'
+import { AuthModal } from './AuthModal'
+import CurrentEventsBar from './CurrentEventsBar'
 
 function Header() {
     return (
@@ -8,21 +8,20 @@ function Header() {
             <div className="header-content">
                 <div className="header-left">
                     <Link to="/" className="logo" title="Simple Open-Talk App Main page">
-                        SOTA
-                        🏠
+                        SOTA 🏠
                     </Link>
                 </div>
 
                 <nav className="header-nav">
-                    <CurrentEventsBar/>
+                    <CurrentEventsBar />
                 </nav>
 
                 <div className="header-right">
-                    <AuthModal/>
+                    <AuthModal />
                 </div>
             </div>
         </header>
-    );
+    )
 }
 
-export default Header;
+export default Header

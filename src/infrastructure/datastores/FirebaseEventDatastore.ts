@@ -1,19 +1,30 @@
-import {EventEntity, EventId, EventRepository, UserId, UserRepository} from '@domain';
-import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, onSnapshot, query, setDoc, where} from "firebase/firestore";
+import { EventEntity, EventId, EventRepository, UserId, UserRepository } from '@domain'
+import {
+    collection,
+    deleteDoc,
+    doc,
+    Firestore,
+    getDoc,
+    getDocs,
+    onSnapshot,
+    query,
+    setDoc,
+    where
+} from 'firebase/firestore'
 
 type FirebaseEventDocument = {
-    id: string;
-    title: string;
-    description: string;
-    talkRules: string;
-    publicUrl: string;
-    createdDate: string;
-    startDate: string;
-    endDate: string;
-    location: string;
-    status: 'active' | 'inactive';
-    createdBy: string;
-};
+    id: string
+    title: string
+    description: string
+    talkRules: string
+    publicUrl: string
+    createdDate: string
+    startDate: string
+    endDate: string
+    location: string
+    status: 'active' | 'inactive'
+    createdBy: string
+}
 
 export class FirebaseEventDatastore implements EventRepository {
     constructor(
@@ -22,7 +33,7 @@ export class FirebaseEventDatastore implements EventRepository {
     ) {}
 
     protected get collection() {
-        return collection(this.firestore, 'events');
+        return collection(this.firestore, 'events')
     }
 
     async save(event: EventEntity): Promise<void> {
@@ -38,74 +49,78 @@ export class FirebaseEventDatastore implements EventRepository {
             location: event.location,
             status: event.status,
             createdBy: event.createdBy.value
-        };
+        }
 
-        await setDoc(doc(this.collection, event.id.value), eventDoc);
+        await setDoc(doc(this.collection, event.id.value), eventDoc)
     }
 
     async findById(id: EventId): Promise<EventEntity | null> {
         try {
-            const docSnapshot = await getDoc(doc(this.collection, id.value));
+            const docSnapshot = await getDoc(doc(this.collection, id.value))
             if (!docSnapshot.exists()) {
-                return null;
+                return null
             }
 
-            const data = docSnapshot.data() as FirebaseEventDocument;
-            return this.mapToEntity(data);
+            const data = docSnapshot.data() as FirebaseEventDocument
+            return this.mapToEntity(data)
         } catch (_err) {
-            return null;
+            return null
         }
     }
 
     async findByCurrentUser(): Promise<EventEntity[]> {
         try {
-            const currentUser = await this.userRepository.getCurrentUser();
+            const currentUser = await this.userRepository.getCurrentUser()
             if (!currentUser) {
-                return [];
+                return []
             }
 
             // Must use where clause to satisfy Firebase security rules
-            const q = query(this.collection, where("createdBy", "==", currentUser.id.value));
-            const querySnapshot = await getDocs(q);
-            
-            const events: EventEntity[] = [];
-            querySnapshot.forEach((doc) => {
-                const data = doc.data() as FirebaseEventDocument;
-                events.push(this.mapToEntity(data));
-            });
-            
+            const q = query(this.collection, where('createdBy', '==', currentUser.id.value))
+            const querySnapshot = await getDocs(q)
+
+            const events: EventEntity[] = []
+            querySnapshot.forEach(doc => {
+                const data = doc.data() as FirebaseEventDocument
+                events.push(this.mapToEntity(data))
+            })
+
             // Sort by creation date, most recent first
-            return events.sort((a, b) => b.createdDate.getTime() - a.createdDate.getTime());
+            return events.sort((a, b) => b.createdDate.getTime() - a.createdDate.getTime())
         } catch (_err) {
-            return [];
+            return []
         }
     }
 
     subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void {
-        const documentRef = doc(this.collection, id.value);
-        
-        return onSnapshot(documentRef, (docSnapshot) => {
-            if (!docSnapshot.exists()) {
-                callback(null);
-                return;
-            }
+        const documentRef = doc(this.collection, id.value)
 
-            try {
-                const data = docSnapshot.data() as FirebaseEventDocument;
-                const event = this.mapToEntity(data);
-                callback(event);
-            } catch (error) {
-                console.error('Error mapping event data:', error);
-                callback(null);
+        return onSnapshot(
+            documentRef,
+            docSnapshot => {
+                if (!docSnapshot.exists()) {
+                    callback(null)
+                    return
+                }
+
+                try {
+                    const data = docSnapshot.data() as FirebaseEventDocument
+                    const event = this.mapToEntity(data)
+                    callback(event)
+                } catch (error) {
+                    console.error('Error mapping event data:', error)
+                    callback(null)
+                }
+            },
+            error => {
+                console.error('Error in event subscription:', error)
+                callback(null)
             }
-        }, (error) => {
-            console.error('Error in event subscription:', error);
-            callback(null);
-        });
+        )
     }
 
     async delete(id: EventId): Promise<void> {
-        await deleteDoc(doc(this.collection, id.value));
+        await deleteDoc(doc(this.collection, id.value))
     }
 
     private mapToEntity(doc: FirebaseEventDocument): EventEntity {
@@ -121,6 +136,6 @@ export class FirebaseEventDatastore implements EventRepository {
             doc.location,
             doc.status,
             UserId.from(doc.createdBy)
-        );
+        )
     }
 }

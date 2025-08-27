@@ -1,11 +1,11 @@
-import {FirebaseApp, getApps, initializeApp} from 'firebase/app'
-import {Auth, getAuth} from 'firebase/auth'
+import { FirebaseApp, getApps, initializeApp } from 'firebase/app'
+import { Auth, getAuth } from 'firebase/auth'
 import {
     Firestore,
     getFirestore,
     initializeFirestore,
     persistentLocalCache,
-    persistentMultipleTabManager,
+    persistentMultipleTabManager
 } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -15,36 +15,36 @@ const firebaseConfig = {
     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID
-};
+}
 
 export class Firebase {
-    private static instance: Firebase;
+    private static instance: Firebase
     app: FirebaseApp
     auth: Auth
     firestore: Firestore
 
     private constructor() {
         // Check if Firebase app already exists
-        const existingApps = getApps();
-        const existingApp = existingApps.find(app => app.name === 'sota');
+        const existingApps = getApps()
+        const existingApp = existingApps.find(app => app.name === 'sota')
 
         if (existingApp) {
-            this.app = existingApp;
-            this.auth = getAuth(this.app);
-            this.firestore = getFirestore(this.app);
+            this.app = existingApp
+            this.auth = getAuth(this.app)
+            this.firestore = getFirestore(this.app)
         } else {
-            this.app = initializeApp(firebaseConfig, 'sota');
-            this.auth = getAuth(this.app);
+            this.app = initializeApp(firebaseConfig, 'sota')
+            this.auth = getAuth(this.app)
             this.firestore = initializeFirestore(this.app, {
-                localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()}),
-            });
+                localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+            })
         }
     }
 
     public static getInstance(): Firebase {
         if (!Firebase.instance) {
-            Firebase.instance = new Firebase();
+            Firebase.instance = new Firebase()
         }
-        return Firebase.instance;
+        return Firebase.instance
     }
 }

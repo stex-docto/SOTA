@@ -12,7 +12,7 @@ export class Credential {
     readonly codes: Code[] = []
 
     constructor(codes?: Code[]) {
-        this.codes = codes ? codes.map((c) => c.toLocaleLowerCase()) : Credential.generateCodes()
+        this.codes = codes ? codes.map(c => c.toLocaleLowerCase()) : Credential.generateCodes()
         this.check()
     }
 
@@ -33,7 +33,6 @@ export class Credential {
             .fill(null)
             .map(() => Credential.generateRandomString(CODE_LENGTH))
     }
-
 
     private check() {
         if (this.codes.length !== 4) throw new Error('Code length must be 4')

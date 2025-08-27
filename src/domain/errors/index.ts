@@ -1,2 +1,2 @@
-export { SignInRequiredError } from './SignInRequiredError';
-export { AuthenticationError, PermissionError, EventNotFoundError } from './AuthenticationError';
+export { SignInRequiredError } from './SignInRequiredError'
+export { AuthenticationError, PermissionError, EventNotFoundError } from './AuthenticationError'

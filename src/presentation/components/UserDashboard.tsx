@@ -1,37 +1,36 @@
-import {Link} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
-import {useDependencies} from '../hooks/useDependencies';
-import {UserEventItem} from '@application';
-import {useEffect, useState} from 'react';
-import EventList from './EventList';
+import { Link } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
+import { UserEventItem } from '@application'
+import { useEffect, useState } from 'react'
+import EventList from './EventList'
 
 function UserDashboard() {
-    const {currentUser} = useAuth();
-    const {getUserAllEventsUseCase} = useDependencies();
-    const [allEvents, setAllEvents] = useState<UserEventItem[]>([]);
-    const [loadingEvents, setLoadingEvents] = useState(true);
+    const { currentUser } = useAuth()
+    const { getUserAllEventsUseCase } = useDependencies()
+    const [allEvents, setAllEvents] = useState<UserEventItem[]>([])
+    const [loadingEvents, setLoadingEvents] = useState(true)
 
     useEffect(() => {
         const fetchAllEvents = async () => {
-            if (!currentUser) return;
+            if (!currentUser) return
 
             try {
-                const result = await getUserAllEventsUseCase.execute();
+                const result = await getUserAllEventsUseCase.execute()
                 console.log(result.events)
-                setAllEvents(result.events);
+                setAllEvents(result.events)
             } catch (error) {
-                console.error('Failed to fetch user events:', error);
+                console.error('Failed to fetch user events:', error)
             } finally {
-                setLoadingEvents(false);
+                setLoadingEvents(false)
             }
-        };
+        }
 
-        fetchAllEvents();
-    }, [currentUser, getUserAllEventsUseCase]);
-
+        fetchAllEvents()
+    }, [currentUser, getUserAllEventsUseCase])
 
     if (!currentUser) {
-        return null;
+        return null
     }
 
     return (
@@ -51,16 +50,20 @@ function UserDashboard() {
                         </div>
                     ) : allEvents.length > 0 ? (
                         (() => {
-                            const now = new Date();
-                            const upcomingEvents = allEvents.filter(eventItem => eventItem.event.endDate > now);
-                            const pastEvents = allEvents.filter(eventItem => eventItem.event.endDate <= now);
+                            const now = new Date()
+                            const upcomingEvents = allEvents.filter(
+                                eventItem => eventItem.event.endDate > now
+                            )
+                            const pastEvents = allEvents.filter(
+                                eventItem => eventItem.event.endDate <= now
+                            )
 
                             return (
                                 <>
                                     {/* Upcoming Events */}
                                     <div className="events-section">
                                         <h3>Upcoming Events ({upcomingEvents.length})</h3>
-                                        <EventList 
+                                        <EventList
                                             events={upcomingEvents}
                                             isPastEvent={false}
                                             emptyMessage="No upcoming events"
@@ -71,7 +74,7 @@ function UserDashboard() {
                                     <div className="events-section">
                                         <details className="past-events-details">
                                             <summary>Past Events ({pastEvents.length})</summary>
-                                            <EventList 
+                                            <EventList
                                                 events={pastEvents}
                                                 isPastEvent={true}
                                                 emptyMessage="No past events"
@@ -83,19 +86,27 @@ function UserDashboard() {
                                     {upcomingEvents.length === 0 && pastEvents.length === 0 && (
                                         <div className="empty-state">
                                             <h3>No events yet</h3>
-                                            <p>Create your first event or save events from others to see them here.</p>
-                                            <Link to="/create-event" className="create-event-btn primary">
+                                            <p>
+                                                Create your first event or save events from others
+                                                to see them here.
+                                            </p>
+                                            <Link
+                                                to="/create-event"
+                                                className="create-event-btn primary"
+                                            >
                                                 Create Your First Event
                                             </Link>
                                         </div>
                                     )}
                                 </>
-                            );
+                            )
                         })()
                     ) : (
                         <div className="empty-state">
                             <h3>No events yet</h3>
-                            <p>Create your first event or save events from others to see them here.</p>
+                            <p>
+                                Create your first event or save events from others to see them here.
+                            </p>
                             <Link to="/create-event" className="create-event-btn primary">
                                 Create Your First Event
                             </Link>
@@ -104,7 +115,7 @@ function UserDashboard() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default UserDashboard;
+export default UserDashboard

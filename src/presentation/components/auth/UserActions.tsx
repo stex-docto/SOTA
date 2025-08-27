@@ -1,31 +1,31 @@
-import {useDependencies} from '../../hooks/useDependencies';
-import styles from '../AuthModal.module.scss';
+import { useDependencies } from '../../hooks/useDependencies'
+import styles from '../AuthModal.module.scss'
 
 interface UserActionsProps {
-    onSignOut: () => void;
-    onDeleteAccount: () => void;
+    onSignOut: () => void
+    onDeleteAccount: () => void
 }
 
-export function UserActions({onSignOut, onDeleteAccount}: UserActionsProps) {
-    const {signInUseCase} = useDependencies();
+export function UserActions({ onSignOut, onDeleteAccount }: UserActionsProps) {
+    const { signInUseCase } = useDependencies()
 
     const handleLogout = async () => {
         try {
-            await signInUseCase.signOut();
-            onSignOut();
+            await signInUseCase.signOut()
+            onSignOut()
         } catch (error) {
-            console.error('Logout failed:', error);
+            console.error('Logout failed:', error)
         }
-    };
+    }
 
     const handleDeleteAccount = async () => {
         try {
-            await signInUseCase.delete();
-            onDeleteAccount();
+            await signInUseCase.delete()
+            onDeleteAccount()
         } catch (error) {
-            console.error('Account deletion failed:', error);
+            console.error('Account deletion failed:', error)
         }
-    };
+    }
 
     return (
         <div className={styles.buttonGroup}>
@@ -36,5 +36,5 @@ export function UserActions({onSignOut, onDeleteAccount}: UserActionsProps) {
                 Delete Account
             </button>
         </div>
-    );
+    )
 }

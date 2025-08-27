@@ -1,24 +1,22 @@
-import {TalkEntity, TalkId, TalkRepository, EventId, UserId, LocationId} from '@domain';
-import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc} from "firebase/firestore";
+import { TalkEntity, TalkId, TalkRepository, EventId, UserId, LocationId } from '@domain'
+import { collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc } from 'firebase/firestore'
 
 type FirebaseTalkDocument = {
-    id: string;
-    eventId: string;
-    createdBy: string;
-    name: string;
-    pitch: string;
-    startDateTime: string;
-    endDateTime: string;
-    locationId: string;
-};
+    id: string
+    eventId: string
+    createdBy: string
+    name: string
+    pitch: string
+    startDateTime: string
+    endDateTime: string
+    locationId: string
+}
 
 export class FirebaseTalkDatastore implements TalkRepository {
-    constructor(
-        private readonly firestore: Firestore
-    ) {}
+    constructor(private readonly firestore: Firestore) {}
 
     private getTalkCollection(eventId: EventId) {
-        return collection(this.firestore, 'events', eventId.value,'talk');
+        return collection(this.firestore, 'events', eventId.value, 'talk')
     }
 
     async save(talk: TalkEntity): Promise<void> {
@@ -30,45 +28,47 @@ export class FirebaseTalkDatastore implements TalkRepository {
             pitch: talk.pitch,
             startDateTime: talk.startDateTime.toISOString(),
             endDateTime: talk.endDateTime.toISOString(),
-            locationId: talk.locationId.value,
-        };
+            locationId: talk.locationId.value
+        }
 
-        const talkCollection = this.getTalkCollection(talk.id.eventId);
-        await setDoc(doc(talkCollection, talk.id.value), talkDoc);
+        const talkCollection = this.getTalkCollection(talk.id.eventId)
+        await setDoc(doc(talkCollection, talk.id.value), talkDoc)
     }
 
     async findById(id: TalkId): Promise<TalkEntity | null> {
         try {
-            const talkCollection = this.getTalkCollection(id.eventId);
-            const docSnapshot = await getDoc(doc(talkCollection, id.value));
+            const talkCollection = this.getTalkCollection(id.eventId)
+            const docSnapshot = await getDoc(doc(talkCollection, id.value))
             if (!docSnapshot.exists()) {
-                return null;
+                return null
             }
-            return this.documentToEntity(docSnapshot.data() as FirebaseTalkDocument);
+            return this.documentToEntity(docSnapshot.data() as FirebaseTalkDocument)
         } catch (error) {
-            console.error('Error finding talk by id:', error);
-            return null;
+            console.error('Error finding talk by id:', error)
+            return null
         }
     }
 
     async findByEventId(eventId: EventId): Promise<TalkEntity[]> {
         try {
-            const talkCollection = this.getTalkCollection(eventId);
-            const querySnapshot = await getDocs(talkCollection);
-            return querySnapshot.docs.map(doc => this.documentToEntity(doc.data() as FirebaseTalkDocument));
+            const talkCollection = this.getTalkCollection(eventId)
+            const querySnapshot = await getDocs(talkCollection)
+            return querySnapshot.docs.map(doc =>
+                this.documentToEntity(doc.data() as FirebaseTalkDocument)
+            )
         } catch (error) {
-            console.error('Error finding talks by event id:', error);
-            return [];
+            console.error('Error finding talks by event id:', error)
+            return []
         }
     }
 
     async delete(id: TalkId): Promise<void> {
         try {
-            const talkCollection = this.getTalkCollection(id.eventId);
-            await deleteDoc(doc(talkCollection, id.value));
+            const talkCollection = this.getTalkCollection(id.eventId)
+            await deleteDoc(doc(talkCollection, id.value))
         } catch (error) {
-            console.error('Error deleting talk:', error);
-            throw error;
+            console.error('Error deleting talk:', error)
+            throw error
         }
     }
 
@@ -80,7 +80,7 @@ export class FirebaseTalkDatastore implements TalkRepository {
             doc.pitch,
             new Date(doc.startDateTime),
             new Date(doc.endDateTime),
-            LocationId.from(doc.locationId),
-        );
+            LocationId.from(doc.locationId)
+        )
     }
 }
