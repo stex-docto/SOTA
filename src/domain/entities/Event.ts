@@ -1,17 +1,17 @@
-import { EventId, UserId } from '@/domain';
+import { EventId, UserId } from '@/domain'
 
 export interface Event {
-    id: EventId;
-    title: string;
-    description: string;
-    talkRules: string;
-    publicUrl: string;
-    createdDate: Date;
-    startDate: Date;
-    endDate: Date;
-    location: string;
-    status: 'active' | 'inactive';
-    createdBy: UserId;
+    id: EventId
+    title: string
+    description: string
+    talkRules: string
+    publicUrl: string
+    createdDate: Date
+    startDate: Date
+    endDate: Date
+    location: string
+    status: 'active' | 'inactive'
+    createdBy: UserId
 }
 
 export class EventEntity implements Event {
@@ -39,8 +39,8 @@ export class EventEntity implements Event {
         createdBy: UserId,
         id?: EventId
     ): EventEntity {
-        const eventId = id || EventId.generate();
-        const publicUrl = `#/event/${eventId.value}`;
+        const eventId = id || EventId.generate()
+        const publicUrl = `#/event/${eventId.value}`
 
         return new EventEntity(
             eventId,
@@ -54,6 +54,6 @@ export class EventEntity implements Event {
             location,
             'active',
             createdBy
-        );
+        )
     }
 }

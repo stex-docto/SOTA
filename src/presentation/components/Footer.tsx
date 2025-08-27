@@ -1,9 +1,9 @@
-import './Footer.scss';
+import './Footer.scss'
 
 function Footer() {
     const handleReportIssue = () => {
-        const issueUrl = new URL('https://github.com/stex-docto/SOTA/issues/new');
-        issueUrl.searchParams.set('title', 'Bug Report: ');
+        const issueUrl = new URL('https://github.com/stex-docto/SOTA/issues/new')
+        issueUrl.searchParams.set('title', 'Bug Report: ')
         issueUrl.searchParams.set(
             'body',
             `**Describe the issue:**
@@ -28,10 +28,10 @@ What actually happened?
 **Additional context:**
 Add any other context about the problem here.
 `
-        );
+        )
 
-        window.open(issueUrl.toString(), '_blank');
-    };
+        window.open(issueUrl.toString(), '_blank')
+    }
 
     return (
         <footer className="app-footer">
@@ -60,7 +60,7 @@ Add any other context about the problem here.
                 </div>
             </div>
         </footer>
-    );
+    )
 }
 
-export default Footer;
+export default Footer

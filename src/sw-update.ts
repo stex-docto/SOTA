@@ -1,5 +1,5 @@
 // Service Worker update handler
-let updateAvailable = false;
+let updateAvailable = false
 
 // Listen for service worker updates
 if ('serviceWorker' in navigator) {
@@ -7,17 +7,17 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .register('./sw.js')
             .then(registration => {
-                console.log('SW registered: ', registration);
+                console.log('SW registered: ', registration)
 
                 // Check for updates every 30 seconds when page is visible
                 setInterval(() => {
                     if (document.visibilityState === 'visible') {
-                        registration.update();
+                        registration.update()
                     }
-                }, 30000);
+                }, 30000)
 
                 registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
+                    const newWorker = registration.installing
                     if (newWorker) {
                         newWorker.addEventListener('statechange', () => {
                             if (
@@ -25,23 +25,23 @@ if ('serviceWorker' in navigator) {
                                 navigator.serviceWorker.controller
                             ) {
                                 // New content is available, show update notification
-                                updateAvailable = true;
-                                showUpdateNotification();
+                                updateAvailable = true
+                                showUpdateNotification()
                             }
-                        });
+                        })
                     }
-                });
+                })
             })
             .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
+                console.log('SW registration failed: ', registrationError)
+            })
+    })
 }
 
 function showUpdateNotification() {
     // Create a simple update notification
-    const notification = document.createElement('div');
-    notification.id = 'sw-update-notification';
+    const notification = document.createElement('div')
+    notification.id = 'sw-update-notification'
     notification.innerHTML = `
     <div style="
       position: fixed;
@@ -78,26 +78,26 @@ function showUpdateNotification() {
         cursor: pointer;
       ">Later</button>
     </div>
-  `;
+  `
 
-    document.body.appendChild(notification);
+    document.body.appendChild(notification)
 
     // Handle update button click
     document.getElementById('sw-update-btn')?.addEventListener('click', () => {
-        window.location.reload();
-    });
+        window.location.reload()
+    })
 
     // Handle dismiss button click
     document.getElementById('sw-dismiss-btn')?.addEventListener('click', () => {
-        notification.remove();
-    });
+        notification.remove()
+    })
 
     // Auto-dismiss after 10 seconds if no action
     setTimeout(() => {
         if (document.getElementById('sw-update-notification')) {
-            notification.remove();
+            notification.remove()
         }
-    }, 10000);
+    }, 10000)
 }
 
-export { updateAvailable };
+export { updateAvailable }

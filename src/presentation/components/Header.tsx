@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { AuthModal } from './AuthModal';
-import CurrentEventsBar from './CurrentEventsBar';
+import { Link } from 'react-router-dom'
+import { AuthModal } from './AuthModal'
+import CurrentEventsBar from './CurrentEventsBar'
 
 function Header() {
     return (
@@ -21,7 +21,7 @@ function Header() {
                 </div>
             </div>
         </header>
-    );
+    )
 }
 
-export default Header;
+export default Header

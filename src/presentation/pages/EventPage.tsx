@@ -1,69 +1,69 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import { useAuth } from '../hooks/useAuth';
-import { useDependencies } from '../hooks/useDependencies';
-import { EventEntity, EventId } from '@domain';
-import ConfirmationModal from '../components/ConfirmationModal';
-import TalkCreationModal from '../components/TalkCreationModal';
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
+import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
+import { EventEntity, EventId } from '@domain'
+import ConfirmationModal from '../components/ConfirmationModal'
+import TalkCreationModal from '../components/TalkCreationModal'
 
 function EventPage() {
-    const { eventId } = useParams<{ eventId: string }>();
-    const navigate = useNavigate();
-    const { currentUser } = useAuth();
+    const { eventId } = useParams<{ eventId: string }>()
+    const navigate = useNavigate()
+    const { currentUser } = useAuth()
     const { getEventUseCase, deleteEventUseCase, saveEventUseCase, removeSavedEventUseCase } =
-        useDependencies();
-    const [event, setEvent] = useState<EventEntity | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string>('');
-    const [isEventCreator, setIsEventCreator] = useState(false);
-    const [showManagement, setShowManagement] = useState(false);
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isEventSaved, setIsEventSaved] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [showTalkCreationModal, setShowTalkCreationModal] = useState(false);
+        useDependencies()
+    const [event, setEvent] = useState<EventEntity | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string>('')
+    const [isEventCreator, setIsEventCreator] = useState(false)
+    const [showManagement, setShowManagement] = useState(false)
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [isEventSaved, setIsEventSaved] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
+    const [showTalkCreationModal, setShowTalkCreationModal] = useState(false)
 
     useEffect(() => {
         if (!eventId) {
-            setError('Event ID is required');
-            setLoading(false);
-            return;
+            setError('Event ID is required')
+            setLoading(false)
+            return
         }
 
         // Set up real-time subscription
         const unsubscribe = getEventUseCase.subscribe(
             { eventId: EventId.from(eventId) },
             result => {
-                setEvent(result.event);
-                setLoading(false);
+                setEvent(result.event)
+                setLoading(false)
 
                 if (!result.event) {
-                    setError('Event not found');
+                    setError('Event not found')
                 }
             }
-        );
+        )
 
         // Cleanup subscription on unmount
         return () => {
-            unsubscribe();
-        };
-    }, [eventId, getEventUseCase]);
+            unsubscribe()
+        }
+    }, [eventId, getEventUseCase])
 
     useEffect(() => {
         // Check if current user is the event creator
         if (currentUser && event) {
-            setIsEventCreator(currentUser.id.value === event.createdBy.value);
+            setIsEventCreator(currentUser.id.value === event.createdBy.value)
         }
-    }, [currentUser, event]);
+    }, [currentUser, event])
 
     useEffect(() => {
         // Check if event is saved by current user
         if (currentUser && eventId) {
-            setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)));
+            setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)))
         }
-    }, [currentUser, eventId]);
+    }, [currentUser, eventId])
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat(undefined, {
@@ -73,61 +73,61 @@ function EventPage() {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        }).format(date);
-    };
+        }).format(date)
+    }
 
     const handleDeleteClick = () => {
-        setShowDeleteConfirmation(true);
-    };
+        setShowDeleteConfirmation(true)
+    }
 
     const handleDeleteConfirm = async () => {
-        if (!eventId) return;
+        if (!eventId) return
 
-        setIsDeleting(true);
+        setIsDeleting(true)
         try {
-            await deleteEventUseCase.execute({ eventId: EventId.from(eventId) });
+            await deleteEventUseCase.execute({ eventId: EventId.from(eventId) })
 
             // Navigate to home page after successful deletion
-            navigate('/');
+            navigate('/')
         } catch (error) {
-            console.error('Failed to delete event:', error);
+            console.error('Failed to delete event:', error)
             alert(
                 error instanceof Error ? error.message : 'Failed to delete event. Please try again.'
-            );
+            )
         } finally {
-            setIsDeleting(false);
-            setShowDeleteConfirmation(false);
+            setIsDeleting(false)
+            setShowDeleteConfirmation(false)
         }
-    };
+    }
 
     const handleDeleteCancel = () => {
-        setShowDeleteConfirmation(false);
-    };
+        setShowDeleteConfirmation(false)
+    }
 
     const handleSaveToggle = async () => {
-        if (!eventId) return;
+        if (!eventId) return
 
-        setIsSaving(true);
+        setIsSaving(true)
         try {
-            const eventIdObj = EventId.from(eventId);
+            const eventIdObj = EventId.from(eventId)
             if (isEventSaved) {
-                await removeSavedEventUseCase.execute({ eventId: eventIdObj });
-                setIsEventSaved(false);
+                await removeSavedEventUseCase.execute({ eventId: eventIdObj })
+                setIsEventSaved(false)
             } else {
-                await saveEventUseCase.execute({ eventId: eventIdObj });
-                setIsEventSaved(true);
+                await saveEventUseCase.execute({ eventId: eventIdObj })
+                setIsEventSaved(true)
             }
         } catch (error) {
-            console.error('Failed to toggle save state:', error);
+            console.error('Failed to toggle save state:', error)
             alert(
                 error instanceof Error
                     ? error.message
                     : 'Failed to save/unsave event. Please try again.'
-            );
+            )
         } finally {
-            setIsSaving(false);
+            setIsSaving(false)
         }
-    };
+    }
 
     if (loading) {
         return (
@@ -136,7 +136,7 @@ function EventPage() {
                     <h2>Loading event...</h2>
                 </div>
             </div>
-        );
+        )
     }
 
     if (error || !event) {
@@ -165,7 +165,7 @@ function EventPage() {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 
     return (
@@ -301,7 +301,7 @@ function EventPage() {
                 isLoading={isDeleting}
             />
         </div>
-    );
+    )
 }
 
-export default EventPage;
+export default EventPage

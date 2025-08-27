@@ -1,10 +1,10 @@
-import { useContext } from 'react';
-import { Dependencies } from '../context/DependencyContext.ts';
+import { useContext } from 'react'
+import { Dependencies } from '../context/DependencyContext.ts'
 
 export function useDependencies() {
-    const context = useContext(Dependencies);
+    const context = useContext(Dependencies)
     if (context === undefined) {
-        throw new Error('useDependencies must be used within a DependencyProvider');
+        throw new Error('useDependencies must be used within a DependencyProvider')
     }
-    return context;
+    return context
 }

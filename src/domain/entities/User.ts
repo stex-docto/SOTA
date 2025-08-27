@@ -1,16 +1,16 @@
-import { UserId, EventId, EventIdSet } from '@/domain';
+import { UserId, EventId, EventIdSet } from '@/domain'
 
 export type PublicUser = {
-    id: UserId;
-    displayName: string;
-};
+    id: UserId
+    displayName: string
+}
 
 export type PrivateUser = {
-    id: UserId;
-    savedEventIds: EventIdSet;
-};
+    id: UserId
+    savedEventIds: EventIdSet
+}
 
-export type User = PublicUser & PrivateUser;
+export type User = PublicUser & PrivateUser
 
 export class UserEntity implements User {
     constructor(
@@ -20,16 +20,16 @@ export class UserEntity implements User {
     ) {}
 
     addSavedEvent(eventId: EventId): UserEntity {
-        const newSavedEvents = this.savedEventIds.add(eventId);
-        return new UserEntity(this.id, newSavedEvents, this.displayName);
+        const newSavedEvents = this.savedEventIds.add(eventId)
+        return new UserEntity(this.id, newSavedEvents, this.displayName)
     }
 
     removeSavedEvent(eventId: EventId): UserEntity {
-        const newSavedEvents = this.savedEventIds.remove(eventId);
-        return new UserEntity(this.id, newSavedEvents, this.displayName);
+        const newSavedEvents = this.savedEventIds.remove(eventId)
+        return new UserEntity(this.id, newSavedEvents, this.displayName)
     }
 
     hasEventSaved(eventId: EventId): boolean {
-        return this.savedEventIds.has(eventId);
+        return this.savedEventIds.has(eventId)
     }
 }

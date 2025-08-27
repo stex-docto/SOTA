@@ -1,15 +1,15 @@
-import { Credential, UserEntity } from '@/domain';
-import styles from '../AuthModal.module.scss';
+import { Credential, UserEntity } from '@/domain'
+import styles from '../AuthModal.module.scss'
 
 interface CredentialDisplayProps {
-    credential: Credential;
-    currentUser: UserEntity;
+    credential: Credential
+    currentUser: UserEntity
 }
 
 export function CredentialDisplay({ credential, currentUser }: CredentialDisplayProps) {
     const formatCredentialDisplay = (codes: string[]) => {
-        return codes.join('-');
-    };
+        return codes.join('-')
+    }
 
     return (
         <>
@@ -21,5 +21,5 @@ export function CredentialDisplay({ credential, currentUser }: CredentialDisplay
             </div>
             <p className={styles.userInfo}>Signed in as: {String(currentUser.id)}</p>
         </>
-    );
+    )
 }

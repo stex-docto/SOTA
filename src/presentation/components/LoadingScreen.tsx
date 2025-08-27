@@ -1,6 +1,6 @@
-import React from 'react';
-import LoadingImage from '@/assets/loading.jpeg';
-import styles from './LoadingScreen.module.scss';
+import React from 'react'
+import LoadingImage from '@/assets/loading.jpeg'
+import styles from './LoadingScreen.module.scss'
 
 export const LoadingScreen: React.FC = () => {
     return (
@@ -17,5 +17,5 @@ export const LoadingScreen: React.FC = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}

@@ -1,13 +1,13 @@
-import { UserRepository, EventId } from '@/domain';
-import { SignInUseCase } from '@/application';
+import { UserRepository, EventId } from '@/domain'
+import { SignInUseCase } from '@/application'
 
 export interface SaveEventCommand {
-    eventId: EventId;
+    eventId: EventId
 }
 
 export interface SaveEventResult {
-    success: boolean;
-    alreadySaved: boolean;
+    success: boolean
+    alreadySaved: boolean
 }
 
 export class SaveEventUseCase {
@@ -18,23 +18,23 @@ export class SaveEventUseCase {
 
     async execute(command: SaveEventCommand): Promise<SaveEventResult> {
         // Require current user (will prompt sign-in if needed)
-        const currentUser = await this.signInUseCase.requireCurrentUser();
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         // Check if already saved
         if (currentUser.hasEventSaved(command.eventId)) {
             return {
                 success: true,
                 alreadySaved: true
-            };
+            }
         }
 
         // Add event to saved events and save user
-        const updatedUser = currentUser.addSavedEvent(command.eventId);
-        await this.userRepository.saveUser(updatedUser);
+        const updatedUser = currentUser.addSavedEvent(command.eventId)
+        await this.userRepository.saveUser(updatedUser)
 
         return {
             success: true,
             alreadySaved: false
-        };
+        }
     }
 }

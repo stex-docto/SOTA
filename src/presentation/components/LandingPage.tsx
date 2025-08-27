@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 function LandingPage() {
     return (
@@ -59,7 +59,7 @@ function LandingPage() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default LandingPage;
+export default LandingPage

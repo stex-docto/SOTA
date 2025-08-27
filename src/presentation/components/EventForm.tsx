@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
+import React, { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
 
 export interface EventFormData {
-    title: string;
-    description: string;
-    talkRules: string;
-    startDate: string;
-    endDate: string;
-    location: string;
+    title: string
+    description: string
+    talkRules: string
+    startDate: string
+    endDate: string
+    location: string
 }
 
 export interface EventFormProps {
-    initialData?: Partial<EventFormData>;
-    onSubmit: (data: EventFormData) => void;
-    onCancel: () => void;
-    isSubmitting: boolean;
-    error: Error | string | null;
-    submitButtonText?: string;
-    title: string;
-    subtitle: string;
+    initialData?: Partial<EventFormData>
+    onSubmit: (data: EventFormData) => void
+    onCancel: () => void
+    isSubmitting: boolean
+    error: Error | string | null
+    submitButtonText?: string
+    title: string
+    subtitle: string
 }
 
 const defaultTalkRules = `### The Four Principles
@@ -40,7 +40,7 @@ If you're not learning or contributing, go somewhere else. No hard feelings.
 This creates engaged, passionate discussions where everyone participates by choice.
 
 ---
-_More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations_`;
+_More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations_`
 
 function EventForm({
     initialData = {},
@@ -52,8 +52,8 @@ function EventForm({
     title,
     subtitle
 }: EventFormProps) {
-    const [descriptionPreview, setDescriptionPreview] = useState(false);
-    const [talkRulesPreview, setTalkRulesPreview] = useState(false);
+    const [descriptionPreview, setDescriptionPreview] = useState(false)
+    const [talkRulesPreview, setTalkRulesPreview] = useState(false)
 
     const [formData, setFormData] = useState<EventFormData>({
         title: initialData.title || '',
@@ -62,22 +62,22 @@ function EventForm({
         startDate: initialData.startDate || '',
         endDate: initialData.endDate || '',
         location: initialData.location || ''
-    });
+    })
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value, type } = e.target;
+        const { name, value, type } = e.target
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-        }));
-    };
+        }))
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+        e.preventDefault()
+        onSubmit(formData)
+    }
 
     return (
         <div className="event-form-container">
@@ -235,7 +235,7 @@ function EventForm({
                 </div>
             </form>
         </div>
-    );
+    )
 }
 
-export default EventForm;
+export default EventForm

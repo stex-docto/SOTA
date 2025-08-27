@@ -1,14 +1,14 @@
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import { DependencyProvider } from '@presentation/context/DependencyProvider.tsx';
-import { ProtectedRoute } from './presentation/routing';
-import Header from './presentation/components/Header';
-import Footer from './presentation/components/Footer';
-import HomePage from './presentation/pages/HomePage';
-import EventPage from './presentation/pages/EventPage';
-import CreateEventPage from './presentation/pages/CreateEventPage';
-import EditEventPage from './presentation/pages/EditEventPage';
-import './App.scss';
-import './sw-update'; // Import service worker update handler
+import { HashRouter as Router, Route, Routes } from 'react-router-dom'
+import { DependencyProvider } from '@presentation/context/DependencyProvider.tsx'
+import { ProtectedRoute } from './presentation/routing'
+import Header from './presentation/components/Header'
+import Footer from './presentation/components/Footer'
+import HomePage from './presentation/pages/HomePage'
+import EventPage from './presentation/pages/EventPage'
+import CreateEventPage from './presentation/pages/CreateEventPage'
+import EditEventPage from './presentation/pages/EditEventPage'
+import './App.scss'
+import './sw-update' // Import service worker update handler
 
 function App() {
     return (
@@ -42,7 +42,7 @@ function App() {
                 </div>
             </Router>
         </DependencyProvider>
-    );
+    )
 }
 
-export default App;
+export default App

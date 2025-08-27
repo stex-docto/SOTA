@@ -1,11 +1,11 @@
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth'
 
 interface AuthButtonProps {
-    onClick: () => void;
+    onClick: () => void
 }
 
 export function AuthButton({ onClick }: AuthButtonProps) {
-    const { currentUser } = useAuth();
+    const { currentUser } = useAuth()
 
     return (
         <button
@@ -36,5 +36,5 @@ export function AuthButton({ onClick }: AuthButtonProps) {
                 />
             </svg>
         </button>
-    );
+    )
 }

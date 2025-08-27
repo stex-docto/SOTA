@@ -1,43 +1,43 @@
-import { useEffect, useState } from 'react';
-import { useDependencies } from '../hooks/useDependencies';
-import { useAuth } from '../hooks/useAuth';
-import { useSignInProvider } from '../hooks/useSignInProvider';
-import styles from './AuthModal.module.scss';
-import { Credential } from '@/domain';
-import { AuthButton, CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth';
+import { useEffect, useState } from 'react'
+import { useDependencies } from '../hooks/useDependencies'
+import { useAuth } from '../hooks/useAuth'
+import { useSignInProvider } from '../hooks/useSignInProvider'
+import styles from './AuthModal.module.scss'
+import { Credential } from '@/domain'
+import { AuthButton, CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
 
 export function AuthModal() {
-    const { signInUseCase } = useDependencies();
-    const { currentUser } = useAuth();
-    const { answerAllRequests, hasPendingRequests } = useSignInProvider(signInUseCase);
-    const [showAuthModal, setShowAuthModal] = useState(false);
-    const [credential, setCredential] = useState<Credential | null>();
+    const { signInUseCase } = useDependencies()
+    const { currentUser } = useAuth()
+    const { answerAllRequests, hasPendingRequests } = useSignInProvider(signInUseCase)
+    const [showAuthModal, setShowAuthModal] = useState(false)
+    const [credential, setCredential] = useState<Credential | null>()
 
     useEffect(() => {
-        setCredential(signInUseCase.getCurrentCredential());
-    }, [signInUseCase]);
+        setCredential(signInUseCase.getCurrentCredential())
+    }, [signInUseCase])
 
     // Watch for successful sign-in to resolve all pending requests
     useEffect(() => {
         if (currentUser && hasPendingRequests) {
-            answerAllRequests(true);
+            answerAllRequests(true)
         }
-    }, [currentUser, hasPendingRequests, answerAllRequests]);
+    }, [currentUser, hasPendingRequests, answerAllRequests])
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         // Only close if clicking the overlay itself, not the modal content
         if (e.target === e.currentTarget) {
-            handleClose();
+            handleClose()
         }
-    };
+    }
 
     const handleClose = () => {
         // Reject all pending sign-in requests
         if (hasPendingRequests) {
-            answerAllRequests(false);
+            answerAllRequests(false)
         }
-        setShowAuthModal(false);
-    };
+        setShowAuthModal(false)
+    }
 
     return (
         <div className="auth-buttons">
@@ -86,5 +86,5 @@ export function AuthModal() {
                 </div>
             )}
         </div>
-    );
+    )
 }

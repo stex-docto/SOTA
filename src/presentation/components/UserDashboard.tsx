@@ -1,36 +1,36 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { useDependencies } from '../hooks/useDependencies';
-import { UserEventItem } from '@application';
-import { useEffect, useState } from 'react';
-import EventList from './EventList';
+import { Link } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
+import { UserEventItem } from '@application'
+import { useEffect, useState } from 'react'
+import EventList from './EventList'
 
 function UserDashboard() {
-    const { currentUser } = useAuth();
-    const { getUserAllEventsUseCase } = useDependencies();
-    const [allEvents, setAllEvents] = useState<UserEventItem[]>([]);
-    const [loadingEvents, setLoadingEvents] = useState(true);
+    const { currentUser } = useAuth()
+    const { getUserAllEventsUseCase } = useDependencies()
+    const [allEvents, setAllEvents] = useState<UserEventItem[]>([])
+    const [loadingEvents, setLoadingEvents] = useState(true)
 
     useEffect(() => {
         const fetchAllEvents = async () => {
-            if (!currentUser) return;
+            if (!currentUser) return
 
             try {
-                const result = await getUserAllEventsUseCase.execute();
-                console.log(result.events);
-                setAllEvents(result.events);
+                const result = await getUserAllEventsUseCase.execute()
+                console.log(result.events)
+                setAllEvents(result.events)
             } catch (error) {
-                console.error('Failed to fetch user events:', error);
+                console.error('Failed to fetch user events:', error)
             } finally {
-                setLoadingEvents(false);
+                setLoadingEvents(false)
             }
-        };
+        }
 
-        fetchAllEvents();
-    }, [currentUser, getUserAllEventsUseCase]);
+        fetchAllEvents()
+    }, [currentUser, getUserAllEventsUseCase])
 
     if (!currentUser) {
-        return null;
+        return null
     }
 
     return (
@@ -50,13 +50,13 @@ function UserDashboard() {
                         </div>
                     ) : allEvents.length > 0 ? (
                         (() => {
-                            const now = new Date();
+                            const now = new Date()
                             const upcomingEvents = allEvents.filter(
                                 eventItem => eventItem.event.endDate > now
-                            );
+                            )
                             const pastEvents = allEvents.filter(
                                 eventItem => eventItem.event.endDate <= now
-                            );
+                            )
 
                             return (
                                 <>
@@ -99,7 +99,7 @@ function UserDashboard() {
                                         </div>
                                     )}
                                 </>
-                            );
+                            )
                         })()
                     ) : (
                         <div className="empty-state">
@@ -115,7 +115,7 @@ function UserDashboard() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default UserDashboard;
+export default UserDashboard

@@ -1,13 +1,13 @@
-import { EventId, LocationId, TalkId, UserId } from '@/domain';
+import { EventId, LocationId, TalkId, UserId } from '@/domain'
 
 export interface Talk {
-    id: TalkId;
-    createdBy: UserId;
-    name: string;
-    pitch: string;
-    startDateTime: Date;
-    endDateTime: Date;
-    locationId: LocationId;
+    id: TalkId
+    createdBy: UserId
+    name: string
+    pitch: string
+    startDateTime: Date
+    endDateTime: Date
+    locationId: LocationId
 }
 
 export class TalkEntity implements Talk {
@@ -30,8 +30,8 @@ export class TalkEntity implements Talk {
         expectedDurationMinutes: number,
         locationId: LocationId
     ): TalkEntity {
-        const endDateTime = new Date(startDateTime);
-        endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes);
+        const endDateTime = new Date(startDateTime)
+        endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes)
 
         return new TalkEntity(
             id instanceof TalkId ? id : TalkId.generate(id),
@@ -41,7 +41,7 @@ export class TalkEntity implements Talk {
             startDateTime,
             endDateTime,
             locationId
-        );
+        )
     }
 
     update(
@@ -51,16 +51,16 @@ export class TalkEntity implements Talk {
         expectedDurationMinutes?: number,
         locationId?: LocationId
     ): TalkEntity {
-        const newStartDateTime = startDateTime ?? this.startDateTime;
-        let newEndDateTime = this.endDateTime;
+        const newStartDateTime = startDateTime ?? this.startDateTime
+        let newEndDateTime = this.endDateTime
 
         if (expectedDurationMinutes !== undefined) {
-            newEndDateTime = new Date(newStartDateTime);
-            newEndDateTime.setMinutes(newEndDateTime.getMinutes() + expectedDurationMinutes);
+            newEndDateTime = new Date(newStartDateTime)
+            newEndDateTime.setMinutes(newEndDateTime.getMinutes() + expectedDurationMinutes)
         } else if (startDateTime) {
             // If only start time changes, maintain the same duration
-            const currentDurationMs = this.endDateTime.getTime() - this.startDateTime.getTime();
-            newEndDateTime = new Date(newStartDateTime.getTime() + currentDurationMs);
+            const currentDurationMs = this.endDateTime.getTime() - this.startDateTime.getTime()
+            newEndDateTime = new Date(newStartDateTime.getTime() + currentDurationMs)
         }
 
         return new TalkEntity(
@@ -71,16 +71,14 @@ export class TalkEntity implements Talk {
             newStartDateTime,
             newEndDateTime,
             locationId ?? this.locationId
-        );
+        )
     }
 
     isOwnedBy(userId: UserId): boolean {
-        return this.createdBy.equals(userId);
+        return this.createdBy.equals(userId)
     }
 
     getDurationMinutes(): number {
-        return Math.round(
-            (this.endDateTime.getTime() - this.startDateTime.getTime()) / (1000 * 60)
-        );
+        return Math.round((this.endDateTime.getTime() - this.startDateTime.getTime()) / (1000 * 60))
     }
 }

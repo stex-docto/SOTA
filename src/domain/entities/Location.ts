@@ -1,12 +1,12 @@
-import { EventId, LocationId, UserId } from '@/domain';
+import { EventId, LocationId, UserId } from '@/domain'
 
 export interface Location {
-    id: LocationId;
-    eventId: EventId;
-    name: string;
-    description: string;
-    createdBy: UserId;
-    createdDate: Date;
+    id: LocationId
+    eventId: EventId
+    name: string
+    description: string
+    createdBy: UserId
+    createdDate: Date
 }
 
 export class LocationEntity implements Location {
@@ -33,7 +33,7 @@ export class LocationEntity implements Location {
             description,
             createdBy,
             new Date()
-        );
+        )
     }
 
     update(name?: string, description?: string): LocationEntity {
@@ -44,6 +44,6 @@ export class LocationEntity implements Location {
             description ?? this.description,
             this.createdBy,
             this.createdDate
-        );
+        )
     }
 }
