@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { EventId, LocationId } from '@domain'
+import { EventId, RoomId } from '@domain'
 import { useDependencies } from '../hooks/useDependencies'
 
 interface TalkCreationModalProps {
@@ -13,7 +13,7 @@ interface TalkFormData {
     pitch: string
     startDateTime: string
     expectedDurationMinutes: number
-    locationId: string
+    roomId: string
 }
 
 function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps) {
@@ -23,7 +23,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
         pitch: '',
         startDateTime: '',
         expectedDurationMinutes: 15,
-        locationId: ''
+        roomId: ''
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string>('')
@@ -34,7 +34,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
             pitch: '',
             startDateTime: '',
             expectedDurationMinutes: 15,
-            locationId: ''
+            roomId: ''
         })
         setError('')
     }
@@ -59,7 +59,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
         e.preventDefault()
         setError('')
 
-        if (!formData.name.trim() || !formData.startDateTime || !formData.locationId) {
+        if (!formData.name.trim() || !formData.startDateTime || !formData.roomId) {
             setError('Please fill in all required fields')
             return
         }
@@ -72,7 +72,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
                 pitch: formData.pitch.trim(),
                 startDateTime: new Date(formData.startDateTime),
                 expectedDurationMinutes: formData.expectedDurationMinutes,
-                locationId: LocationId.from(formData.locationId)
+                roomId: RoomId.from(formData.roomId)
             })
 
             onClose()
@@ -172,11 +172,11 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="locationId">Preferred Room*</label>
+                        <label htmlFor="roomId">Preferred Room*</label>
                         <select
-                            id="locationId"
-                            name="locationId"
-                            value={formData.locationId}
+                            id="roomId"
+                            name="roomId"
+                            value={formData.roomId}
                             onChange={handleInputChange}
                             className="form-select"
                             required

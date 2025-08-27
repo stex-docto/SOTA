@@ -51,10 +51,10 @@ async function initDependencies() {
     const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository)
     const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository)
     const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository)
-    const createRoomUseCase = new CreateRoomUseCase(eventRepository, userRepository);
-    const updateRoomUseCase = new UpdateRoomUseCase(eventRepository, userRepository);
-    const deleteRoomUseCase = new DeleteRoomUseCase(eventRepository, userRepository);
-    const getRoomsByEventUseCase = new GetRoomsByEventUseCase(eventRepository);
+    const createRoomUseCase = new CreateRoomUseCase(eventRepository, userRepository)
+    const updateRoomUseCase = new UpdateRoomUseCase(eventRepository, userRepository)
+    const deleteRoomUseCase = new DeleteRoomUseCase(eventRepository, userRepository)
+    const getRoomsByEventUseCase = new GetRoomsByEventUseCase(eventRepository)
 
     return {
         signInUseCase,

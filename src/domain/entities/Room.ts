@@ -1,9 +1,9 @@
 import { RoomId } from '@/domain'
 
 export interface Room {
-    id: RoomId;
-    name: string;
-    description: string;
+    id: RoomId
+    name: string
+    description: string
 }
 
 export class RoomEntity implements Room {
@@ -13,23 +13,11 @@ export class RoomEntity implements Room {
         public readonly description: string
     ) {}
 
-    static create(
-        name: string,
-        description: string,
-        id?: RoomId
-    ): RoomEntity {
-        return new RoomEntity(
-            id || RoomId.generate(),
-            name,
-            description
-        )
+    static create(name: string, description: string, id?: RoomId): RoomEntity {
+        return new RoomEntity(id || RoomId.generate(), name, description)
     }
 
     update(name?: string, description?: string): RoomEntity {
-        return new RoomEntity(
-            this.id,
-            name ?? this.name,
-            description ?? this.description
-        )
+        return new RoomEntity(this.id, name ?? this.name, description ?? this.description)
     }
 }

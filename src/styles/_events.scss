@@ -527,77 +527,76 @@
     }
 }
 
-
 // Room Management Styles
 .room-management {
-  .action-group {
-    h3 {
-      margin: 0 0 $spacing-md 0;
-      color: $color-gray-900;
-      font-size: $font-size-lg;
+    .action-group {
+        h3 {
+            margin: 0 0 $spacing-md 0;
+            color: $color-gray-900;
+            font-size: $font-size-lg;
+        }
     }
-  }
 }
 
 .room-list {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  margin-top: $spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-top: $spacing-md;
 }
 
 .room-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: $spacing-lg;
-  background: $color-white;
-  border: 1px solid $color-gray-200;
-  border-radius: $radius-lg;
-  transition: all $transition-fast ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: $spacing-lg;
+    background: $color-white;
+    border: 1px solid $color-gray-200;
+    border-radius: $radius-lg;
+    transition: all $transition-fast ease;
 
-  &:hover {
-    border-color: $color-gray-300;
-    box-shadow: $shadow-sm;
-  }
+    &:hover {
+        border-color: $color-gray-300;
+        box-shadow: $shadow-sm;
+    }
 
-  @media (max-width: $breakpoint-mobile) {
-    flex-direction: column;
-    align-items: stretch;
-  }
+    @media (max-width: $breakpoint-mobile) {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 
 .room-info {
-  flex: 1;
+    flex: 1;
 
-  .room-name {
-    margin: 0 0 $spacing-xs 0;
-    font-size: $font-size-base;
-    font-weight: 600;
-    color: $color-gray-900;
-  }
+    .room-name {
+        margin: 0 0 $spacing-xs 0;
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: $color-gray-900;
+    }
 
-  .room-description {
-    margin: 0;
-    font-size: $font-size-sm;
-    color: $color-gray-500;
-    line-height: 1.4;
-  }
+    .room-description {
+        margin: 0;
+        font-size: $font-size-sm;
+        color: $color-gray-500;
+        line-height: 1.4;
+    }
 
-  @media (max-width: $breakpoint-mobile) {
-    margin-bottom: $spacing-md;
-  }
+    @media (max-width: $breakpoint-mobile) {
+        margin-bottom: $spacing-md;
+    }
 }
 
 .room-actions {
-  display: flex;
-  gap: $spacing-sm;
-  flex-shrink: 0;
-  margin-left: $spacing-md;
+    display: flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+    margin-left: $spacing-md;
 
-  @media (max-width: $breakpoint-mobile) {
-    flex-direction: column;
-    margin-left: 0;
-    gap: $spacing-xs;
-  }
+    @media (max-width: $breakpoint-mobile) {
+        flex-direction: column;
+        margin-left: 0;
+        gap: $spacing-xs;
+    }
 }

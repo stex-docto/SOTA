@@ -1,22 +1,20 @@
-import {RoomEntity} from '@domain';
+import { RoomEntity } from '@domain'
 
 export interface RoomListProps {
-    rooms: RoomEntity[];
-    isEventCreator: boolean;
-    onEdit?: (room: RoomEntity) => void;
-    onDelete?: (room: RoomEntity) => void;
+    rooms: RoomEntity[]
+    isEventCreator: boolean
+    onEdit?: (room: RoomEntity) => void
+    onDelete?: (room: RoomEntity) => void
 }
 
-function RoomList({rooms, isEventCreator, onEdit, onDelete}: RoomListProps) {
+function RoomList({ rooms, isEventCreator, onEdit, onDelete }: RoomListProps) {
     if (rooms.length === 0) {
         return (
             <div className="empty-state">
                 <p>No rooms have been created for this event yet.</p>
-                {isEventCreator && (
-                    <p>Add rooms where talks will be held.</p>
-                )}
+                {isEventCreator && <p>Add rooms where talks will be held.</p>}
             </div>
-        );
+        )
     }
 
     return (
@@ -25,11 +23,9 @@ function RoomList({rooms, isEventCreator, onEdit, onDelete}: RoomListProps) {
                 <div key={room.id.value} className="room-card">
                     <div className="room-info">
                         <h4 className="room-name">{room.name}</h4>
-                        {room.description && (
-                            <p className="room-description">{room.description}</p>
-                        )}
+                        {room.description && <p className="room-description">{room.description}</p>}
                     </div>
-                    
+
                     {isEventCreator && (onEdit || onDelete) && (
                         <div className="room-actions">
                             {onEdit && (
@@ -55,7 +51,7 @@ function RoomList({rooms, isEventCreator, onEdit, onDelete}: RoomListProps) {
                 </div>
             ))}
         </div>
-    );
+    )
 }
 
-export default RoomList;
+export default RoomList

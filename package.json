@@ -11,7 +11,7 @@
     "test:ui": "vitest --ui",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+    "format": "prettier --write --list-different \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
     "type-check": "tsc --noEmit",
     "lint:all": "yarn format && yarn lint:fix && yarn type-check",

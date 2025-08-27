@@ -1,4 +1,13 @@
-import { EventEntity, EventId, EventRepository, UserId, UserRepository, RoomId, RoomEntity } from '@domain'
+import {
+    EventEntity,
+    EventId,
+    EventRepository,
+    UserId,
+    UserRepository,
+    RoomId,
+    RoomEntity,
+    RoomSet
+} from '@domain'
 import {
     collection,
     deleteDoc,
@@ -13,10 +22,10 @@ import {
 } from 'firebase/firestore'
 
 type FirebaseRoomDocument = {
-    id: string;
-    name: string;
-    description: string;
-};
+    id: string
+    name: string
+    description: string
+}
 
 type FirebaseEventDocument = {
     id: string
@@ -30,7 +39,7 @@ type FirebaseEventDocument = {
     location: string
     status: 'active' | 'inactive'
     createdBy: string
-    rooms: { [roomId: string]: FirebaseRoomDocument };
+    rooms: { [roomId: string]: FirebaseRoomDocument }
 }
 
 export class FirebaseEventDatastore implements EventRepository {
@@ -44,14 +53,14 @@ export class FirebaseEventDatastore implements EventRepository {
     }
 
     async save(event: EventEntity): Promise<void> {
-        const rooms: { [roomId: string]: FirebaseRoomDocument } = {};
-        event.rooms.forEach((room, roomId) => {
+        const rooms: { [roomId: string]: FirebaseRoomDocument } = {}
+        event.rooms.forEach((room: any, roomId) => {
             rooms[roomId.value] = {
                 id: room.id.value,
                 name: room.name,
                 description: room.description
-            };
-        });
+            }
+        })
 
         const eventDoc: FirebaseEventDocument = {
             id: event.id.value,
@@ -141,18 +150,18 @@ export class FirebaseEventDatastore implements EventRepository {
     }
 
     private mapToEntity(doc: FirebaseEventDocument): EventEntity {
-        const roomEntities: RoomEntity[] = [];
+        const roomEntities: RoomEntity[] = []
         if (doc.rooms) {
             Object.entries(doc.rooms).forEach(([_roomIdString, roomDoc]) => {
                 const room = new RoomEntity(
                     RoomId.from(roomDoc.id),
                     roomDoc.name,
                     roomDoc.description
-                );
-                roomEntities.push(room);
-            });
+                )
+                roomEntities.push(room)
+            })
         }
-        const rooms = new RoomSet(roomEntities);
+        const rooms = new RoomSet(roomEntities)
 
         return new EventEntity(
             EventId.from(doc.id),

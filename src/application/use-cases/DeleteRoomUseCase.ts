@@ -1,12 +1,12 @@
-import {EventRepository, RoomId, UserRepository, EventId} from '@domain';
+import { EventRepository, RoomId, UserRepository, EventId } from '@domain'
 
 export interface DeleteRoomCommand {
-    eventId: EventId;
-    roomId: RoomId;
+    eventId: EventId
+    roomId: RoomId
 }
 
 export interface DeleteRoomResult {
-    success: boolean;
+    success: boolean
 }
 
 export class DeleteRoomUseCase {
@@ -16,27 +16,27 @@ export class DeleteRoomUseCase {
     ) {}
 
     async execute(command: DeleteRoomCommand): Promise<DeleteRoomResult> {
-        const currentUser = await this.userRepository.getCurrentUser();
+        const currentUser = await this.userRepository.getCurrentUser()
         if (!currentUser) {
-            throw new Error('User must be authenticated');
+            throw new Error('User must be authenticated')
         }
 
-        const event = await this.eventRepository.findById(command.eventId);
+        const event = await this.eventRepository.findById(command.eventId)
         if (!event) {
-            throw new Error('Event not found');
+            throw new Error('Event not found')
         }
 
         if (!event.createdBy.equals(currentUser.id)) {
-            throw new Error('Only event creator can delete rooms');
+            throw new Error('Only event creator can delete rooms')
         }
 
         if (!event.rooms.has(command.roomId)) {
-            throw new Error('Room not found');
+            throw new Error('Room not found')
         }
 
-        const updatedEvent = event.removeRoom(command.roomId);
-        await this.eventRepository.save(updatedEvent);
+        const updatedEvent = event.removeRoom(command.roomId)
+        await this.eventRepository.save(updatedEvent)
 
-        return { success: true };
+        return { success: true }
     }
 }

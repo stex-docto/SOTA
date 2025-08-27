@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 
 export interface RoomFormData {
-    name: string;
-    description: string;
+    name: string
+    description: string
 }
 
 export interface RoomFormProps {
-    initialData?: Partial<RoomFormData>;
-    onSubmit: (data: RoomFormData) => void;
-    onCancel: () => void;
-    isSubmitting: boolean;
-    error: Error | string | null;
-    submitButtonText?: string;
-    title: string;
+    initialData?: Partial<RoomFormData>
+    onSubmit: (data: RoomFormData) => void
+    onCancel: () => void
+    isSubmitting: boolean
+    error: Error | string | null
+    submitButtonText?: string
+    title: string
 }
 
 function RoomForm({
@@ -27,20 +27,20 @@ function RoomForm({
     const [formData, setFormData] = useState<RoomFormData>({
         name: initialData.name || '',
         description: initialData.description || ''
-    });
+    })
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target
         setFormData(prev => ({
             ...prev,
             [name]: value
-        }));
-    };
+        }))
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+        e.preventDefault()
+        onSubmit(formData)
+    }
 
     return (
         <div className="room-form-container">
@@ -91,17 +91,15 @@ function RoomForm({
                     >
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="admin-button primary"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? `${submitButtonText.replace(/e$/, 'ing')}...` : submitButtonText}
+                    <button type="submit" className="admin-button primary" disabled={isSubmitting}>
+                        {isSubmitting
+                            ? `${submitButtonText.replace(/e$/, 'ing')}...`
+                            : submitButtonText}
                     </button>
                 </div>
             </form>
         </div>
-    );
+    )
 }
 
-export default RoomForm;
+export default RoomForm

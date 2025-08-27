@@ -1,11 +1,11 @@
-import {EntityId} from './EntityId';
+import { EntityId } from './EntityId'
 
 export class RoomId extends EntityId {
     static generate(): RoomId {
-        return new RoomId(this.generateId());
+        return new RoomId(this.generateId())
     }
 
     static from(value: string): RoomId {
-        return new RoomId(value);
+        return new RoomId(value)
     }
 }

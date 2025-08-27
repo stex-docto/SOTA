@@ -7,7 +7,7 @@ export interface Talk {
     pitch: string
     startDateTime: Date
     endDateTime: Date
-    roomId: RoomId;
+    roomId: RoomId
 }
 
 export class TalkEntity implements Talk {
@@ -18,7 +18,7 @@ export class TalkEntity implements Talk {
         public readonly pitch: string,
         public readonly startDateTime: Date,
         public readonly endDateTime: Date,
-        public readonly roomId: RoomId,
+        public readonly roomId: RoomId
     ) {}
 
     static create(
@@ -28,7 +28,7 @@ export class TalkEntity implements Talk {
         pitch: string,
         startDateTime: Date,
         expectedDurationMinutes: number,
-        roomId: RoomId,
+        roomId: RoomId
     ): TalkEntity {
         const endDateTime = new Date(startDateTime)
         endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes)
@@ -40,7 +40,7 @@ export class TalkEntity implements Talk {
             pitch,
             startDateTime,
             endDateTime,
-            roomId,
+            roomId
         )
     }
 
@@ -70,7 +70,7 @@ export class TalkEntity implements Talk {
             pitch ?? this.pitch,
             newStartDateTime,
             newEndDateTime,
-            roomId ?? this.roomId,
+            roomId ?? this.roomId
         )
     }
 

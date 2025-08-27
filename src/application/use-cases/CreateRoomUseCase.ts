@@ -1,13 +1,13 @@
-import {EventId, EventRepository, RoomEntity, UserRepository} from '@domain';
+import { EventId, EventRepository, RoomEntity, UserRepository } from '@domain'
 
 export interface CreateRoomCommand {
-    eventId: EventId;
-    name: string;
-    description: string;
+    eventId: EventId
+    name: string
+    description: string
 }
 
 export interface CreateRoomResult {
-    room: RoomEntity;
+    room: RoomEntity
 }
 
 export class CreateRoomUseCase {
@@ -17,28 +17,25 @@ export class CreateRoomUseCase {
     ) {}
 
     async execute(command: CreateRoomCommand): Promise<CreateRoomResult> {
-        const currentUser = await this.userRepository.getCurrentUser();
+        const currentUser = await this.userRepository.getCurrentUser()
         if (!currentUser) {
-            throw new Error('User must be authenticated');
+            throw new Error('User must be authenticated')
         }
 
-        const event = await this.eventRepository.findById(command.eventId);
+        const event = await this.eventRepository.findById(command.eventId)
         if (!event) {
-            throw new Error('Event not found');
+            throw new Error('Event not found')
         }
 
         if (!event.createdBy.equals(currentUser.id)) {
-            throw new Error('Only event creator can create rooms');
+            throw new Error('Only event creator can create rooms')
         }
 
-        const room = RoomEntity.create(
-            command.name,
-            command.description
-        );
+        const room = RoomEntity.create(command.name, command.description)
 
-        const updatedEvent = event.addRoom(room);
-        await this.eventRepository.save(updatedEvent);
+        const updatedEvent = event.addRoom(room)
+        await this.eventRepository.save(updatedEvent)
 
-        return { room };
+        return { room }
     }
 }

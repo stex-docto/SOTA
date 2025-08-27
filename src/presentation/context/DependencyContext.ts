@@ -27,10 +27,10 @@ export interface DependencyContext {
     removeSavedEventUseCase: RemoveSavedEventUseCase
     updateUserProfileUseCase: UpdateUserProfileUseCase
     getUserAllEventsUseCase: GetUserAllEventsUseCase
-    createRoomUseCase: CreateRoomUseCase;
-    updateRoomUseCase: UpdateRoomUseCase;
-    deleteRoomUseCase: DeleteRoomUseCase;
-    getRoomsByEventUseCase: GetRoomsByEventUseCase;
+    createRoomUseCase: CreateRoomUseCase
+    updateRoomUseCase: UpdateRoomUseCase
+    deleteRoomUseCase: DeleteRoomUseCase
+    getRoomsByEventUseCase: GetRoomsByEventUseCase
 }
 
 export const Dependencies = createContext<DependencyContext | undefined>(undefined)
