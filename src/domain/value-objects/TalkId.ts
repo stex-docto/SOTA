@@ -23,6 +23,6 @@ export class TalkId extends EntityId {
     }
 
     toString(): string {
-        return this.eventId.toString();
+        return `${this.eventId.toString()}/${this.value.toString()}`;
     }
 }
