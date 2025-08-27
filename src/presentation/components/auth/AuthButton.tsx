@@ -1,11 +1,11 @@
-import {useAuth} from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 interface AuthButtonProps {
     onClick: () => void;
 }
 
-export function AuthButton({onClick}: AuthButtonProps) {
-    const {currentUser} = useAuth();
+export function AuthButton({ onClick }: AuthButtonProps) {
+    const { currentUser } = useAuth();
 
     return (
         <button

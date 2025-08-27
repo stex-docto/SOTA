@@ -1,13 +1,13 @@
-import {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
-import {useDependencies} from '../hooks/useDependencies';
-import EventForm, {EventFormData} from '../components/EventForm';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useDependencies } from '../hooks/useDependencies';
+import EventForm, { EventFormData } from '../components/EventForm';
 
 function CreateEventPage() {
     const navigate = useNavigate();
-    const {currentUser} = useAuth();
-    const {createEventUseCase} = useDependencies();
+    const { currentUser } = useAuth();
+    const { createEventUseCase } = useDependencies();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -39,10 +39,13 @@ function CreateEventPage() {
 
             // Navigate to the created event
             navigate(`/event/${result.event.id.value}`);
-
         } catch (error) {
             console.error('Failed to create event:', error);
-            setError(error instanceof Error ? error : new Error('Failed to create event. Please try again.'));
+            setError(
+                error instanceof Error
+                    ? error
+                    : new Error('Failed to create event. Please try again.')
+            );
         } finally {
             setIsSubmitting(false);
         }

@@ -1,4 +1,4 @@
-import {useDependencies} from '../../hooks/useDependencies';
+import { useDependencies } from '../../hooks/useDependencies';
 import styles from '../AuthModal.module.scss';
 
 interface UserActionsProps {
@@ -6,8 +6,8 @@ interface UserActionsProps {
     onDeleteAccount: () => void;
 }
 
-export function UserActions({onSignOut, onDeleteAccount}: UserActionsProps) {
-    const {signInUseCase} = useDependencies();
+export function UserActions({ onSignOut, onDeleteAccount }: UserActionsProps) {
+    const { signInUseCase } = useDependencies();
 
     const handleLogout = async () => {
         try {

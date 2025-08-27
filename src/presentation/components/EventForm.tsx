@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 
@@ -64,8 +64,10 @@ function EventForm({
         location: initialData.location || ''
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const {name, value, type} = e.target;
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+        const { name, value, type } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
@@ -116,7 +118,9 @@ function EventForm({
                         {descriptionPreview ? (
                             <div className="markdown-preview">
                                 {formData.description ? (
-                                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{formData.description}</ReactMarkdown>
+                                    <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                        {formData.description}
+                                    </ReactMarkdown>
                                 ) : (
                                     <p className="preview-placeholder">No description provided</p>
                                 )}
@@ -147,7 +151,9 @@ function EventForm({
                         </div>
                         {talkRulesPreview ? (
                             <div className="markdown-preview large">
-                                    <ReactMarkdown remarkPlugins={[remarkBreaks]}>{formData.talkRules}</ReactMarkdown>
+                                <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                    {formData.talkRules}
+                                </ReactMarkdown>
                             </div>
                         ) : (
                             <textarea
@@ -160,7 +166,10 @@ function EventForm({
                                 className="form-textarea"
                             />
                         )}
-                        <small className="help-text">These guidelines will be shown to participants about how the talk sessions work.</small>
+                        <small className="help-text">
+                            These guidelines will be shown to participants about how the talk
+                            sessions work.
+                        </small>
                     </div>
 
                     <div className="form-group">
@@ -218,12 +227,10 @@ function EventForm({
                     >
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="submit-button"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? `${submitButtonText.replace(/e$/, 'ing')}...` : submitButtonText}
+                    <button type="submit" className="submit-button" disabled={isSubmitting}>
+                        {isSubmitting
+                            ? `${submitButtonText.replace(/e$/, 'ing')}...`
+                            : submitButtonText}
                     </button>
                 </div>
             </form>

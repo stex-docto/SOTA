@@ -1,14 +1,14 @@
-import {useState, useEffect} from 'react';
-import {UserEntity} from '@/domain';
-import {useDependencies} from '../../hooks/useDependencies';
+import { useState, useEffect } from 'react';
+import { UserEntity } from '@/domain';
+import { useDependencies } from '../../hooks/useDependencies';
 import styles from '../AuthModal.module.scss';
 
 interface UserProfileProps {
     currentUser: UserEntity;
 }
 
-export function UserProfile({currentUser}: UserProfileProps) {
-    const {updateUserProfileUseCase} = useDependencies();
+export function UserProfile({ currentUser }: UserProfileProps) {
+    const { updateUserProfileUseCase } = useDependencies();
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [displayName, setDisplayName] = useState('');
     const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -30,7 +30,9 @@ export function UserProfile({currentUser}: UserProfileProps) {
             setIsEditingProfile(false);
         } catch (error) {
             console.error('Failed to save profile:', error);
-            alert(error instanceof Error ? error.message : 'Failed to save profile. Please try again.');
+            alert(
+                error instanceof Error ? error.message : 'Failed to save profile. Please try again.'
+            );
         } finally {
             setIsSavingProfile(false);
         }
@@ -59,7 +61,7 @@ export function UserProfile({currentUser}: UserProfileProps) {
                             type="text"
                             className={styles.profileInput}
                             value={displayName}
-                            onChange={(e) => setDisplayName(e.target.value)}
+                            onChange={e => setDisplayName(e.target.value)}
                             placeholder="Enter your display name"
                             disabled={isSavingProfile}
                             maxLength={50}

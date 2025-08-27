@@ -1,4 +1,4 @@
-import {Credential, UserEntity, UserId} from '@/domain';
+import { Credential, UserEntity, UserId } from '@/domain';
 
 export interface UserRepository {
     getUser(uid: UserId): Promise<UserEntity | null>;

@@ -24,12 +24,12 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
 
     return (
         <div className="events-list-items">
-            {events.map((eventItem) => {
+            {events.map(eventItem => {
                 const className = `event-list-item${isPastEvent ? ' past-event' : ''}`;
-                
+
                 return (
-                    <Link 
-                        key={`${eventItem.event.id.value}-${eventItem.type}`} 
+                    <Link
+                        key={`${eventItem.event.id.value}-${eventItem.type}`}
                         to={`/event/${eventItem.event.id.value}`}
                         className={className}
                     >

@@ -1,4 +1,4 @@
-import {EventEntity, EventId, EventRepository, UserRepository} from '@/domain';
+import { EventEntity, EventId, EventRepository, UserRepository } from '@/domain';
 
 export interface UpdateEventCommand {
     eventId: EventId;

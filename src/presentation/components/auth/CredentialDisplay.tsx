@@ -1,4 +1,4 @@
-import {Credential, UserEntity} from '@/domain';
+import { Credential, UserEntity } from '@/domain';
 import styles from '../AuthModal.module.scss';
 
 interface CredentialDisplayProps {
@@ -6,7 +6,7 @@ interface CredentialDisplayProps {
     currentUser: UserEntity;
 }
 
-export function CredentialDisplay({credential, currentUser}: CredentialDisplayProps) {
+export function CredentialDisplay({ credential, currentUser }: CredentialDisplayProps) {
     const formatCredentialDisplay = (codes: string[]) => {
         return codes.join('-');
     };

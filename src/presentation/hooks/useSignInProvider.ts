@@ -1,6 +1,6 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {SignInProvider} from '@/domain';
-import {SignInUseCase} from '@/application';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { SignInProvider } from '@/domain';
+import { SignInUseCase } from '@/application';
 
 interface UseSignInProviderReturn {
     answerAllRequests: (answer: boolean) => void;
@@ -16,14 +16,17 @@ export function useSignInProvider(signInUseCase: SignInUseCase): UseSignInProvid
         signInRequestsRef.current = signInRequests;
     }, [signInRequests]);
 
-    const signInProvider: SignInProvider = useMemo(() => ({
-        async request(): Promise<boolean> {
-            return new Promise((resolve) => {
-                // Add this promise to the list of waiting requests
-                setSignInRequests(prev => [...prev, resolve]);
-            });
-        }
-    }), []);
+    const signInProvider: SignInProvider = useMemo(
+        () => ({
+            async request(): Promise<boolean> {
+                return new Promise(resolve => {
+                    // Add this promise to the list of waiting requests
+                    setSignInRequests(prev => [...prev, resolve]);
+                });
+            }
+        }),
+        []
+    );
 
     const answerAllRequests = useCallback((answer: boolean) => {
         signInRequestsRef.current.forEach(resolve => resolve(answer));
@@ -33,7 +36,7 @@ export function useSignInProvider(signInUseCase: SignInUseCase): UseSignInProvid
     // Register with SignInUseCase
     useEffect(() => {
         signInUseCase.registerSignInProvider(signInProvider);
-        
+
         return () => {
             answerAllRequests(false);
             signInUseCase.unregisterSignInProvider();

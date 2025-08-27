@@ -1,5 +1,4 @@
-import {EventEntity, EventId} from '@/domain';
-
+import { EventEntity, EventId } from '@/domain';
 
 export interface EventRepository {
     save(event: EventEntity): Promise<void>;

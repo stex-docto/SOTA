@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {EventId, LocationId} from '@domain';
-import {useDependencies} from '../hooks/useDependencies';
+import React, { useState, useEffect } from 'react';
+import { EventId, LocationId } from '@domain';
+import { useDependencies } from '../hooks/useDependencies';
 
 interface TalkCreationModalProps {
     isOpen: boolean;
@@ -16,8 +16,8 @@ interface TalkFormData {
     locationId: string;
 }
 
-function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
-    const {createTalkUseCase} = useDependencies();
+function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps) {
+    const { createTalkUseCase } = useDependencies();
     const [formData, setFormData] = useState<TalkFormData>({
         name: '',
         pitch: '',
@@ -45,8 +45,10 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
         }
     }, [isOpen]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const {name, value} = e.target;
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -72,12 +74,14 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
                 expectedDurationMinutes: formData.expectedDurationMinutes,
                 locationId: LocationId.from(formData.locationId)
             });
-            
+
             onClose();
             resetForm();
         } catch (error) {
             console.error('Failed to create talk:', error);
-            setError(error instanceof Error ? error.message : 'Failed to create talk. Please try again.');
+            setError(
+                error instanceof Error ? error.message : 'Failed to create talk. Please try again.'
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -87,7 +91,7 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content talk-creation-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content talk-creation-modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <div className="modal-title">
                         <span className="talk-icon">🎤</span>
@@ -99,11 +103,7 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="talk-form">
-                    {error && (
-                        <div className="error-banner">
-                            {error}
-                        </div>
-                    )}
+                    {error && <div className="error-banner">{error}</div>}
 
                     <div className="form-group">
                         <label htmlFor="name">Title*</label>
@@ -158,7 +158,12 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
                                     key={value}
                                     type="button"
                                     className={`duration-btn ${formData.expectedDurationMinutes === value ? 'selected' : ''}`}
-                                    onClick={() => setFormData(prev => ({...prev, expectedDurationMinutes: value}))}
+                                    onClick={() =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            expectedDurationMinutes: value
+                                        }))
+                                    }
                                 >
                                     {label}
                                 </button>
@@ -193,11 +198,7 @@ function TalkCreationModal({isOpen, onClose, eventId}: TalkCreationModalProps) {
                         >
                             Cancel
                         </button>
-                        <button
-                            type="submit"
-                            className="btn primary"
-                            disabled={isSubmitting}
-                        >
+                        <button type="submit" className="btn primary" disabled={isSubmitting}>
                             {isSubmitting ? 'Submitting...' : 'Submit Talk'}
                         </button>
                     </div>

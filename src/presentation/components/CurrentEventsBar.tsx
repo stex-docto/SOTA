@@ -24,19 +24,19 @@ function CurrentEventsBar() {
 
             try {
                 const result = await getUserAllEventsUseCase.execute();
-                
+
                 const now = new Date();
-                
+
                 // Get events that are currently happening (started but not ended)
-                const current = result.events.filter(eventItem => 
-                    eventItem.event.startDate <= now && eventItem.event.endDate > now
+                const current = result.events.filter(
+                    eventItem => eventItem.event.startDate <= now && eventItem.event.endDate > now
                 );
-                
+
                 // Get next upcoming event
                 const upcoming = result.events
                     .filter(eventItem => eventItem.event.startDate > now)
                     .sort((a, b) => a.event.startDate.getTime() - b.event.startDate.getTime());
-                
+
                 setCurrentEvents(current);
                 setNextEvent(upcoming.length > 0 ? upcoming[0] : null);
             } catch (error) {
@@ -60,7 +60,7 @@ function CurrentEventsBar() {
         const updateCountdown = () => {
             const eventMoment = moment(nextEvent.event.startDate);
             const now = moment();
-            
+
             if (eventMoment.isSameOrBefore(now)) {
                 setTimeToNext('Starting now!');
                 return;
@@ -86,14 +86,15 @@ function CurrentEventsBar() {
             {/* Live Events */}
             {currentEvents.length > 0 && (
                 <div className="event-items">
-                    {currentEvents.slice(0, 2).map((eventItem) => (
+                    {currentEvents.slice(0, 2).map(eventItem => (
                         <Link
                             key={`${eventItem.event.id.value}-${eventItem.type}`}
                             to={`/event/${eventItem.event.id.value}`}
                             className="header-event-item live-event"
-                        >                       <span className="live-indicator">🔴 Live</span>
+                        >
+                            {' '}
+                            <span className="live-indicator">🔴 Live</span>
                             <span className="event-title">{eventItem.event.title}</span>
-
                         </Link>
                     ))}
                     {currentEvents.length > 2 && (

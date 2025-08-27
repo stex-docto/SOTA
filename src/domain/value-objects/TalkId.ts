@@ -1,14 +1,13 @@
-import {EntityId} from './EntityId';
-import {EventId} from '@/domain';
+import { EntityId } from './EntityId';
+import { EventId } from '@/domain';
 
 export class TalkId extends EntityId {
     constructor(
         public readonly eventId: EventId,
         public readonly value: string
     ) {
-        super(value)
+        super(value);
     }
-
 
     static generate(eventId: EventId): TalkId {
         return new TalkId(eventId, EntityId.generateId());

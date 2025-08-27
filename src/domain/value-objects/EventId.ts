@@ -1,4 +1,4 @@
-import {EntityId} from './EntityId';
+import { EntityId } from './EntityId';
 
 export class EventId extends EntityId {
     static generate(): EventId {

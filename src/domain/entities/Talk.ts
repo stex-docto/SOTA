@@ -1,4 +1,4 @@
-import {EventId, LocationId, TalkId, UserId} from '@/domain';
+import { EventId, LocationId, TalkId, UserId } from '@/domain';
 
 export interface Talk {
     id: TalkId;
@@ -18,9 +18,8 @@ export class TalkEntity implements Talk {
         public readonly pitch: string,
         public readonly startDateTime: Date,
         public readonly endDateTime: Date,
-        public readonly locationId: LocationId,
-    ) {
-    }
+        public readonly locationId: LocationId
+    ) {}
 
     static create(
         id: TalkId | EventId,
@@ -29,14 +28,13 @@ export class TalkEntity implements Talk {
         pitch: string,
         startDateTime: Date,
         expectedDurationMinutes: number,
-        locationId: LocationId,
-
+        locationId: LocationId
     ): TalkEntity {
         const endDateTime = new Date(startDateTime);
         endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes);
 
         return new TalkEntity(
-            id instanceof TalkId ? id: TalkId.generate(id),
+            id instanceof TalkId ? id : TalkId.generate(id),
             createdBy,
             name,
             pitch,
@@ -55,7 +53,7 @@ export class TalkEntity implements Talk {
     ): TalkEntity {
         const newStartDateTime = startDateTime ?? this.startDateTime;
         let newEndDateTime = this.endDateTime;
-        
+
         if (expectedDurationMinutes !== undefined) {
             newEndDateTime = new Date(newStartDateTime);
             newEndDateTime.setMinutes(newEndDateTime.getMinutes() + expectedDurationMinutes);
@@ -81,6 +79,8 @@ export class TalkEntity implements Talk {
     }
 
     getDurationMinutes(): number {
-        return Math.round((this.endDateTime.getTime() - this.startDateTime.getTime()) / (1000 * 60));
+        return Math.round(
+            (this.endDateTime.getTime() - this.startDateTime.getTime()) / (1000 * 60)
+        );
     }
 }

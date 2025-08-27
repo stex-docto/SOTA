@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {EventRepository, UserRepository, TalkRepository} from '@domain';
+import React, { useEffect, useState } from 'react';
+import { EventRepository, UserRepository, TalkRepository } from '@domain';
 import {
     SignInUseCase,
     CreateEventUseCase,
@@ -12,25 +12,31 @@ import {
     UpdateUserProfileUseCase,
     GetUserAllEventsUseCase
 } from '@application';
-import {FirebaseUserDatastore} from '@infrastructure/datastores/FirebaseUserDatastore';
-import {FirebaseEventDatastore} from '@infrastructure/datastores/FirebaseEventDatastore';
-import {FirebaseTalkDatastore} from '@infrastructure/datastores/FirebaseTalkDatastore';
-import {Firebase} from "@infrastructure/firebase.ts";
-import {LoadingScreen} from "@presentation/components/LoadingScreen.tsx";
-import {LocalCredentialDataStore} from "@infrastructure/datastores/LocalCredentialDataStore.ts";
-import {Dependencies, DependencyContext} from './DependencyContext.ts';
+import { FirebaseUserDatastore } from '@infrastructure/datastores/FirebaseUserDatastore';
+import { FirebaseEventDatastore } from '@infrastructure/datastores/FirebaseEventDatastore';
+import { FirebaseTalkDatastore } from '@infrastructure/datastores/FirebaseTalkDatastore';
+import { Firebase } from '@infrastructure/firebase.ts';
+import { LoadingScreen } from '@presentation/components/LoadingScreen.tsx';
+import { LocalCredentialDataStore } from '@infrastructure/datastores/LocalCredentialDataStore.ts';
+import { Dependencies, DependencyContext } from './DependencyContext.ts';
 
 interface DependencyProviderProps {
     children: React.ReactNode;
 }
 
 async function initDependencies() {
-    const firebase = Firebase.getInstance()
-    const userRepository: UserRepository = new FirebaseUserDatastore(firebase.auth, firebase.firestore);
-    const eventRepository: EventRepository = new FirebaseEventDatastore(firebase.firestore, userRepository);
+    const firebase = Firebase.getInstance();
+    const userRepository: UserRepository = new FirebaseUserDatastore(
+        firebase.auth,
+        firebase.firestore
+    );
+    const eventRepository: EventRepository = new FirebaseEventDatastore(
+        firebase.firestore,
+        userRepository
+    );
     const talkRepository: TalkRepository = new FirebaseTalkDatastore(firebase.firestore);
     const credentialRepository = new LocalCredentialDataStore();
-    
+
     // Initialize use cases
     const signInUseCase = new SignInUseCase(userRepository, credentialRepository);
     const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository);
@@ -57,13 +63,16 @@ async function initDependencies() {
     };
 }
 
-export function DependencyProvider({children}: DependencyProviderProps) {
+export function DependencyProvider({ children }: DependencyProviderProps) {
     const [dependencies, setDependencies] = useState<DependencyContext>();
 
     useEffect(() => {
-        initDependencies().then(setDependencies)
-    }, [])
+        initDependencies().then(setDependencies);
+    }, []);
 
-    return dependencies ? <Dependencies.Provider value={dependencies}>{children}</Dependencies.Provider> :
-        <LoadingScreen/>
+    return dependencies ? (
+        <Dependencies.Provider value={dependencies}>{children}</Dependencies.Provider>
+    ) : (
+        <LoadingScreen />
+    );
 }

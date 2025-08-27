@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
-import {UserEntity} from '@domain';
-import {useDependencies} from './useDependencies';
+import { useEffect, useState } from 'react';
+import { UserEntity } from '@domain';
+import { useDependencies } from './useDependencies';
 
 export interface Auth {
     currentUser: UserEntity | null | undefined;
@@ -8,13 +8,14 @@ export interface Auth {
 }
 
 export function useAuth(): Auth {
-    const {signInUseCase} = useDependencies();
+    const { signInUseCase } = useDependencies();
     const [currentUser, setCurrentUser] = useState<UserEntity | null | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        signInUseCase.getCurrentUser()
-            .then((user) => {
+        signInUseCase
+            .getCurrentUser()
+            .then(user => {
                 setCurrentUser(user);
                 setIsLoading(false);
             })
@@ -24,15 +25,14 @@ export function useAuth(): Auth {
             });
 
         // Subscribe to current user changes
-        return signInUseCase.subscribeToCurrentUser(
-            async (user) => {
-                setCurrentUser(user);
-                setIsLoading(false);
-            });
+        return signInUseCase.subscribeToCurrentUser(async user => {
+            setCurrentUser(user);
+            setIsLoading(false);
+        });
     }, [signInUseCase]);
 
     return {
         currentUser,
-        isLoading,
+        isLoading
     };
 }

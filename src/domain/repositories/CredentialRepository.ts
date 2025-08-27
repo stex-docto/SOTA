@@ -1,11 +1,11 @@
-import {Code, Credential} from "@domain"
+import { Code, Credential } from '@domain';
 
 export interface CredentialRepository {
-    get(): Credential | null
+    get(): Credential | null;
 
-    set(codes: Code[]): Credential
+    set(codes: Code[]): Credential;
 
-    delete(): void
+    delete(): void;
 
-    create(): Credential
+    create(): Credential;
 }

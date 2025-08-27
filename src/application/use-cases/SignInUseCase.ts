@@ -1,4 +1,10 @@
-import {UserRepository, CredentialRepository, Credential, UserEntity, SignInProvider} from '@/domain';
+import {
+    UserRepository,
+    CredentialRepository,
+    Credential,
+    UserEntity,
+    SignInProvider
+} from '@/domain';
 
 export class SignInUseCase {
     private signInProvider: SignInProvider | null = null;
@@ -31,7 +37,7 @@ export class SignInUseCase {
             console.error('No sign-in provider registered');
             throw new Error('No sign-in provider available');
         }
-        
+
         const signInSuccessful = await this.signInProvider.request();
         if (!signInSuccessful) {
             throw new Error('Sign-in was cancelled or failed');

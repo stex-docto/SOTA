@@ -36,19 +36,15 @@ function ConfirmationModal({
             <div className="modal-content confirmation-modal">
                 <div className="modal-header">
                     <h2>{title}</h2>
-                    <button 
-                        className="modal-close-button"
-                        onClick={onClose}
-                        disabled={isLoading}
-                    >
+                    <button className="modal-close-button" onClick={onClose} disabled={isLoading}>
                         ×
                     </button>
                 </div>
-                
+
                 <div className="modal-body">
                     <p>{message}</p>
                 </div>
-                
+
                 <div className="modal-actions">
                     <button
                         type="button"

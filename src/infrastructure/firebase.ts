@@ -1,12 +1,12 @@
-import {FirebaseApp, getApps, initializeApp} from 'firebase/app'
-import {Auth, getAuth} from 'firebase/auth'
+import { FirebaseApp, getApps, initializeApp } from 'firebase/app';
+import { Auth, getAuth } from 'firebase/auth';
 import {
     Firestore,
     getFirestore,
     initializeFirestore,
     persistentLocalCache,
-    persistentMultipleTabManager,
-} from 'firebase/firestore'
+    persistentMultipleTabManager
+} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -19,9 +19,9 @@ const firebaseConfig = {
 
 export class Firebase {
     private static instance: Firebase;
-    app: FirebaseApp
-    auth: Auth
-    firestore: Firestore
+    app: FirebaseApp;
+    auth: Auth;
+    firestore: Firestore;
 
     private constructor() {
         // Check if Firebase app already exists
@@ -36,7 +36,7 @@ export class Firebase {
             this.app = initializeApp(firebaseConfig, 'sota');
             this.auth = getAuth(this.app);
             this.firestore = initializeFirestore(this.app, {
-                localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()}),
+                localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
             });
         }
     }

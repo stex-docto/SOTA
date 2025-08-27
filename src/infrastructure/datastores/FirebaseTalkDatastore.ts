@@ -1,5 +1,5 @@
-import {TalkEntity, TalkId, TalkRepository, EventId, UserId, LocationId} from '@domain';
-import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc} from "firebase/firestore";
+import { TalkEntity, TalkId, TalkRepository, EventId, UserId, LocationId } from '@domain';
+import { collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc } from 'firebase/firestore';
 
 type FirebaseTalkDocument = {
     id: string;
@@ -13,12 +13,10 @@ type FirebaseTalkDocument = {
 };
 
 export class FirebaseTalkDatastore implements TalkRepository {
-    constructor(
-        private readonly firestore: Firestore
-    ) {}
+    constructor(private readonly firestore: Firestore) {}
 
     private getTalkCollection(eventId: EventId) {
-        return collection(this.firestore, 'events', eventId.value,'talk');
+        return collection(this.firestore, 'events', eventId.value, 'talk');
     }
 
     async save(talk: TalkEntity): Promise<void> {
@@ -30,7 +28,7 @@ export class FirebaseTalkDatastore implements TalkRepository {
             pitch: talk.pitch,
             startDateTime: talk.startDateTime.toISOString(),
             endDateTime: talk.endDateTime.toISOString(),
-            locationId: talk.locationId.value,
+            locationId: talk.locationId.value
         };
 
         const talkCollection = this.getTalkCollection(talk.id.eventId);
@@ -55,7 +53,9 @@ export class FirebaseTalkDatastore implements TalkRepository {
         try {
             const talkCollection = this.getTalkCollection(eventId);
             const querySnapshot = await getDocs(talkCollection);
-            return querySnapshot.docs.map(doc => this.documentToEntity(doc.data() as FirebaseTalkDocument));
+            return querySnapshot.docs.map(doc =>
+                this.documentToEntity(doc.data() as FirebaseTalkDocument)
+            );
         } catch (error) {
             console.error('Error finding talks by event id:', error);
             return [];
@@ -80,7 +80,7 @@ export class FirebaseTalkDatastore implements TalkRepository {
             doc.pitch,
             new Date(doc.startDateTime),
             new Date(doc.endDateTime),
-            LocationId.from(doc.locationId),
+            LocationId.from(doc.locationId)
         );
     }
 }

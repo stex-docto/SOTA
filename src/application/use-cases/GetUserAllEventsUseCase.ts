@@ -1,4 +1,4 @@
-import {EventEntity, EventRepository, UserRepository} from '@/domain';
+import { EventEntity, EventRepository, UserRepository } from '@/domain';
 
 export type UserEventType = 'created' | 'saved';
 
@@ -38,7 +38,9 @@ export class GetUserAllEventsUseCase {
                 const event = await this.eventRepository.findById(eventId);
                 if (event) {
                     // Don't duplicate events - if user created and saved the same event, only show as created
-                    const alreadyIncluded = createdEventItems.some(item => item.event.id.equals(event.id));
+                    const alreadyIncluded = createdEventItems.some(item =>
+                        item.event.id.equals(event.id)
+                    );
                     if (!alreadyIncluded) {
                         savedEventItems.push({
                             event,

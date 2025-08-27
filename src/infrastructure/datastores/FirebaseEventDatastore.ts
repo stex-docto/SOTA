@@ -1,5 +1,16 @@
-import {EventEntity, EventId, EventRepository, UserId, UserRepository} from '@domain';
-import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, onSnapshot, query, setDoc, where} from "firebase/firestore";
+import { EventEntity, EventId, EventRepository, UserId, UserRepository } from '@domain';
+import {
+    collection,
+    deleteDoc,
+    doc,
+    Firestore,
+    getDoc,
+    getDocs,
+    onSnapshot,
+    query,
+    setDoc,
+    where
+} from 'firebase/firestore';
 
 type FirebaseEventDocument = {
     id: string;
@@ -65,15 +76,15 @@ export class FirebaseEventDatastore implements EventRepository {
             }
 
             // Must use where clause to satisfy Firebase security rules
-            const q = query(this.collection, where("createdBy", "==", currentUser.id.value));
+            const q = query(this.collection, where('createdBy', '==', currentUser.id.value));
             const querySnapshot = await getDocs(q);
-            
+
             const events: EventEntity[] = [];
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach(doc => {
                 const data = doc.data() as FirebaseEventDocument;
                 events.push(this.mapToEntity(data));
             });
-            
+
             // Sort by creation date, most recent first
             return events.sort((a, b) => b.createdDate.getTime() - a.createdDate.getTime());
         } catch (_err) {
@@ -83,25 +94,29 @@ export class FirebaseEventDatastore implements EventRepository {
 
     subscribe(id: EventId, callback: (event: EventEntity | null) => void): () => void {
         const documentRef = doc(this.collection, id.value);
-        
-        return onSnapshot(documentRef, (docSnapshot) => {
-            if (!docSnapshot.exists()) {
-                callback(null);
-                return;
-            }
 
-            try {
-                const data = docSnapshot.data() as FirebaseEventDocument;
-                const event = this.mapToEntity(data);
-                callback(event);
-            } catch (error) {
-                console.error('Error mapping event data:', error);
+        return onSnapshot(
+            documentRef,
+            docSnapshot => {
+                if (!docSnapshot.exists()) {
+                    callback(null);
+                    return;
+                }
+
+                try {
+                    const data = docSnapshot.data() as FirebaseEventDocument;
+                    const event = this.mapToEntity(data);
+                    callback(event);
+                } catch (error) {
+                    console.error('Error mapping event data:', error);
+                    callback(null);
+                }
+            },
+            error => {
+                console.error('Error in event subscription:', error);
                 callback(null);
             }
-        }, (error) => {
-            console.error('Error in event subscription:', error);
-            callback(null);
-        });
+        );
     }
 
     async delete(id: EventId): Promise<void> {

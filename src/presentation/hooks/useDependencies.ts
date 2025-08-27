@@ -1,5 +1,5 @@
-import {useContext} from 'react';
-import {Dependencies} from '../context/DependencyContext.ts';
+import { useContext } from 'react';
+import { Dependencies } from '../context/DependencyContext.ts';
 
 export function useDependencies() {
     const context = useContext(Dependencies);

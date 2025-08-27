@@ -1,4 +1,4 @@
-import {EventId, LocationEntity, LocationId} from '@/domain';
+import { EventId, LocationEntity, LocationId } from '@/domain';
 
 export interface LocationRepository {
     save(location: LocationEntity): Promise<void>;

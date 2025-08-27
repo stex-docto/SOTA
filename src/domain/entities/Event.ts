@@ -1,4 +1,4 @@
-import {EventId, UserId} from '@/domain';
+import { EventId, UserId } from '@/domain';
 
 export interface Event {
     id: EventId;
@@ -27,8 +27,7 @@ export class EventEntity implements Event {
         public readonly location: string,
         public readonly status: 'active' | 'inactive',
         public readonly createdBy: UserId
-    ) {
-    }
+    ) {}
 
     static create(
         title: string,

@@ -1,5 +1,5 @@
-import {TalkRepository, TalkEntity, EventId, LocationId} from '@/domain';
-import {SignInUseCase} from '@application';
+import { TalkRepository, TalkEntity, EventId, LocationId } from '@/domain';
+import { SignInUseCase } from '@application';
 
 export interface TalkCreationData {
     eventId: EventId;
@@ -18,7 +18,7 @@ export class CreateTalkUseCase {
 
     async execute(data: TalkCreationData): Promise<TalkEntity> {
         const currentUser = await this.signInUseCase.requireCurrentUser();
-        
+
         const talk = TalkEntity.create(
             data.eventId,
             currentUser.id,

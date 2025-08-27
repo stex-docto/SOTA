@@ -1,4 +1,4 @@
-import {UserRepository, EventId} from '@/domain';
+import { UserRepository, EventId } from '@/domain';
 
 export interface RemoveSavedEventCommand {
     eventId: EventId;

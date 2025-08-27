@@ -1,4 +1,4 @@
-import {EventEntity, EventRepository, UserRepository} from '@domain';
+import { EventEntity, EventRepository, UserRepository } from '@domain';
 
 export interface CreateEventCommand {
     title: string;
@@ -17,8 +17,7 @@ export class CreateEventUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
         private readonly userRepository: UserRepository
-    ) {
-    }
+    ) {}
 
     async execute(command: CreateEventCommand): Promise<CreateEventResult> {
         // Verify user exists
@@ -41,6 +40,6 @@ export class CreateEventUseCase {
         // Save event
         await this.eventRepository.save(event);
 
-        return {event};
+        return { event };
     }
 }

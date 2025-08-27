@@ -1,4 +1,4 @@
-import {EventId, EventRepository, UserRepository} from '@/domain';
+import { EventId, EventRepository, UserRepository } from '@/domain';
 
 export interface DeleteEventCommand {
     eventId: EventId;

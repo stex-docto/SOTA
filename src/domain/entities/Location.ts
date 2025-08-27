@@ -1,4 +1,4 @@
-import {EventId, LocationId, UserId} from '@/domain';
+import { EventId, LocationId, UserId } from '@/domain';
 
 export interface Location {
     id: LocationId;
@@ -17,8 +17,7 @@ export class LocationEntity implements Location {
         public readonly description: string,
         public readonly createdBy: UserId,
         public readonly createdDate: Date
-    ) {
-    }
+    ) {}
 
     static create(
         eventId: EventId,

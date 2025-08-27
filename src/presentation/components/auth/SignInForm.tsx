@@ -1,7 +1,11 @@
-import {useState} from 'react';
-import {CODE_BLOCK_ITERATION, CODE_LENGTH, CODE_TOTAL_LENGTH} from '@/domain/value-objects/Credential';
-import {useDependencies} from '../../hooks/useDependencies';
-import {Credential} from '@/domain';
+import { useState } from 'react';
+import {
+    CODE_BLOCK_ITERATION,
+    CODE_LENGTH,
+    CODE_TOTAL_LENGTH
+} from '@/domain/value-objects/Credential';
+import { useDependencies } from '../../hooks/useDependencies';
+import { Credential } from '@/domain';
 import styles from '../AuthModal.module.scss';
 
 interface SignInFormProps {
@@ -9,8 +13,8 @@ interface SignInFormProps {
     onError: (error: string) => void;
 }
 
-export function SignInForm({onCredentialSet, onError}: SignInFormProps) {
-    const {signInUseCase} = useDependencies();
+export function SignInForm({ onCredentialSet, onError }: SignInFormProps) {
+    const { signInUseCase } = useDependencies();
     const [phrase, setPhrase] = useState<string>('');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [credentialError, setCredentialError] = useState<string>('');
@@ -50,7 +54,9 @@ export function SignInForm({onCredentialSet, onError}: SignInFormProps) {
                 setPhrase('');
             } catch (error) {
                 console.error('Invalid credential:', error);
-                setCredentialError('Invalid credential. Please check your sharing code and try again.');
+                setCredentialError(
+                    'Invalid credential. Please check your sharing code and try again.'
+                );
                 setPhrase('');
             }
         }
@@ -68,11 +74,7 @@ export function SignInForm({onCredentialSet, onError}: SignInFormProps) {
         <>
             <p className={styles.description}>Anonymous sign in to connect your devices</p>
 
-            <button
-                className={styles.primaryButton}
-                onClick={handleLogin}
-                disabled={isLoggingIn}
-            >
+            <button className={styles.primaryButton} onClick={handleLogin} disabled={isLoggingIn}>
                 {isLoggingIn ? 'Signing in...' : 'Sign In'}
             </button>
 
@@ -81,23 +83,17 @@ export function SignInForm({onCredentialSet, onError}: SignInFormProps) {
             </div>
 
             <div className={styles.formGroup}>
-                <label className={styles.label}>
-                    Enter sharing code from another device
-                </label>
+                <label className={styles.label}>Enter sharing code from another device</label>
                 <input
                     type="text"
                     className={styles.codeInput}
                     value={formatInputValue(phrase)}
-                    onPaste={(e) => handleCredentialInput(e.clipboardData.getData('Text'))}
-                    onChange={(e) => handleCredentialInput(e.target.value)}
+                    onPaste={e => handleCredentialInput(e.clipboardData.getData('Text'))}
+                    onChange={e => handleCredentialInput(e.target.value)}
                     placeholder="xxxxx-xxxxx-xxxxx-xxxxx"
                     maxLength={CODE_TOTAL_LENGTH + 3} // +3 for dashes
                 />
-                {credentialError && (
-                    <div className={styles.errorMessage}>
-                        {credentialError}
-                    </div>
-                )}
+                {credentialError && <div className={styles.errorMessage}>{credentialError}</div>}
             </div>
         </>
     );

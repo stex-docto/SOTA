@@ -1,15 +1,21 @@
-import {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
-import {useDependencies} from '../hooks/useDependencies';
-import {EventEntity, EventId, AuthenticationError, PermissionError, EventNotFoundError} from '@domain';
-import EventForm, {EventFormData} from '../components/EventForm';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useDependencies } from '../hooks/useDependencies';
+import {
+    EventEntity,
+    EventId,
+    AuthenticationError,
+    PermissionError,
+    EventNotFoundError
+} from '@domain';
+import EventForm, { EventFormData } from '../components/EventForm';
 
 function EditEventPage() {
-    const {eventId} = useParams<{ eventId: string }>();
+    const { eventId } = useParams<{ eventId: string }>();
     const navigate = useNavigate();
-    const {currentUser} = useAuth();
-    const {getEventUseCase, updateEventUseCase} = useDependencies();
+    const { currentUser } = useAuth();
+    const { getEventUseCase, updateEventUseCase } = useDependencies();
     const [event, setEvent] = useState<EventEntity | null>(null);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,8 +31,8 @@ function EditEventPage() {
         }
 
         const unsubscribe = getEventUseCase.subscribe(
-            {eventId: EventId.from(eventId)},
-            (result) => {
+            { eventId: EventId.from(eventId) },
+            result => {
                 setEvent(result.event);
                 setLoading(false);
 
@@ -98,10 +104,13 @@ function EditEventPage() {
 
             // Navigate back to the event page
             navigate(`/event/${eventId}`);
-
         } catch (error) {
             console.error('Failed to update event:', error);
-            setError(error instanceof Error ? error : new Error('Failed to update event. Please try again.'));
+            setError(
+                error instanceof Error
+                    ? error
+                    : new Error('Failed to update event. Please try again.')
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -162,9 +171,7 @@ function EditEventPage() {
                         {error?.message || 'The event you are trying to edit does not exist.'}
                     </p>
                     {getErrorSuggestion() && (
-                        <p className="error-suggestion">
-                            {getErrorSuggestion()}
-                        </p>
+                        <p className="error-suggestion">{getErrorSuggestion()}</p>
                     )}
                     <div className="error-actions">
                         {eventId && (
@@ -175,10 +182,7 @@ function EditEventPage() {
                                 🔙 View Event
                             </button>
                         )}
-                        <button
-                            onClick={() => navigate('/')}
-                            className="home-button secondary"
-                        >
+                        <button onClick={() => navigate('/')} className="home-button secondary">
                             🏠 Back to Home
                         </button>
                     </div>
@@ -192,18 +196,23 @@ function EditEventPage() {
         <div>
             <h1>Edit Event</h1>
             <p>Update your event details</p>
-            <div className="event-meta" style={{marginTop: '1rem', fontSize: '0.9rem', color: '#6b7280'}}>
-                <p><strong>Created:</strong> {formatDate(event.createdDate)}</p>
-                <p><strong>Event ID:</strong> {eventId}</p>
+            <div
+                className="event-meta"
+                style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6b7280' }}
+            >
+                <p>
+                    <strong>Created:</strong> {formatDate(event.createdDate)}
+                </p>
+                <p>
+                    <strong>Event ID:</strong> {eventId}
+                </p>
             </div>
         </div>
     );
 
     return (
         <div className="edit-event-page">
-            <div className="page-header">
-                {customTitle}
-            </div>
+            <div className="page-header">{customTitle}</div>
             <EventForm
                 initialData={initialFormData}
                 onSubmit={handleSubmit}
