@@ -17,7 +17,7 @@ This is an Simple Open Talk Application (SOTA) conference management. A Progress
 
 ### Code Quality Commands
 
-- `yarn format` - Format code with Prettier (spaces indentation, no trailing commas)
+- `yarn format` - Format code with Prettier (spaces indentation, no trailing commas, no semicolons)
 - `yarn format:check` - Check code formatting without making changes
 - `yarn lint` - Run ESLint
 - `yarn lint:fix` - Run ESLint with auto-fix
@@ -100,7 +100,7 @@ This project uses **Prettier** for consistent code formatting with the following
 
 - **Indentation**: 4 spaces (no tabs)
 - **Trailing commas**: None
-- **Semicolons**: Required
+- **Semicolons**: None (disabled)
 - **Quotes**: Single quotes
 - **Line width**: 100 characters
 - **Bracket spacing**: Enabled
@@ -117,7 +117,7 @@ When working with this codebase:
 3. **Respect layer boundaries** - Domain should not import from infrastructure or presentation
 4. **Use path aliases** - Import from `@domain`, `@application`, etc. instead of relative paths
 5. **Type safety** - Leverage TypeScript strictly, use domain value objects
-6. **Code formatting** - Use 4 spaces for indentation, no trailing commas, run `yarn lint:all`
+6. **Code formatting** - Use 4 spaces for indentation, no trailing commas, no semicolons, run `yarn lint:all`
 7. **Testing** - Run `make lint` before committing to ensure code quality
 8. **Respect ADRs** - All architectural decision records in `docs/` must be followed
 9. **Update documentations** - Every time you create, modify or delete feature update the @CLAUDE.md and @README.md if necessary.

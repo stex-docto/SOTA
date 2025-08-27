@@ -38,6 +38,9 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
+      - name: Format check
+        run: yarn format:check
+
       - name: Type check
         run: yarn type-check
 
