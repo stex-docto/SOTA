@@ -1,4 +1,4 @@
-import {EventId, TalkEntity, TalkId, TalkStatus, UserId} from '@/domain';
+import {EventId, TalkEntity, TalkId} from '@/domain';
 
 export interface TalkRepository {
     save(talk: TalkEntity): Promise<void>;
@@ -6,12 +6,6 @@ export interface TalkRepository {
     findById(id: TalkId): Promise<TalkEntity | null>;
 
     findByEventId(eventId: EventId): Promise<TalkEntity[]>;
-
-    findByEventIdAndStatus(eventId: EventId, status: TalkStatus): Promise<TalkEntity[]>;
-
-    findByUserId(userId: UserId): Promise<TalkEntity[]>;
-
-    findByEventIdAndUserId(eventId: EventId, userId: UserId): Promise<TalkEntity[]>;
-
+    
     delete(id: TalkId): Promise<void>;
 }

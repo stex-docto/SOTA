@@ -1,108 +1,86 @@
 import {EventId, LocationId, TalkId, UserId} from '@/domain';
 
-export type TalkStatus = 'pending' | 'approved' | 'rejected';
-
 export interface Talk {
     id: TalkId;
-    eventId: EventId;
-    userId: UserId;
+    createdBy: UserId;
     name: string;
     pitch: string;
-    proposedStartDateTime: Date;
+    startDateTime: Date;
+    endDateTime: Date;
     locationId: LocationId;
-    status: TalkStatus;
-    submissionDate: Date;
-    approvedStartDateTime?: Date;
 }
 
 export class TalkEntity implements Talk {
     constructor(
         public readonly id: TalkId,
-        public readonly eventId: EventId,
-        public readonly userId: UserId,
+        public readonly createdBy: UserId,
         public readonly name: string,
         public readonly pitch: string,
-        public readonly proposedStartDateTime: Date,
+        public readonly startDateTime: Date,
+        public readonly endDateTime: Date,
         public readonly locationId: LocationId,
-        public readonly status: TalkStatus,
-        public readonly submissionDate: Date,
-        public readonly approvedStartDateTime?: Date
     ) {
     }
 
     static create(
-        eventId: EventId,
-        userId: UserId,
+        id: TalkId | EventId,
+        createdBy: UserId,
         name: string,
         pitch: string,
-        proposedStartDateTime: Date,
+        startDateTime: Date,
+        expectedDurationMinutes: number,
         locationId: LocationId,
-        id?: TalkId
+
     ): TalkEntity {
+        const endDateTime = new Date(startDateTime);
+        endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes);
+
         return new TalkEntity(
-            id || TalkId.generate(),
-            eventId,
-            userId,
+            id instanceof TalkId ? id: TalkId.generate(id),
+            createdBy,
             name,
             pitch,
-            proposedStartDateTime,
-            locationId,
-            'pending',
-            new Date()
-        );
-    }
-
-    approve(approvedStartDateTime?: Date): TalkEntity {
-        return new TalkEntity(
-            this.id,
-            this.eventId,
-            this.userId,
-            this.name,
-            this.pitch,
-            this.proposedStartDateTime,
-            this.locationId,
-            'approved',
-            this.submissionDate,
-            approvedStartDateTime || this.proposedStartDateTime
-        );
-    }
-
-    reject(): TalkEntity {
-        return new TalkEntity(
-            this.id,
-            this.eventId,
-            this.userId,
-            this.name,
-            this.pitch,
-            this.proposedStartDateTime,
-            this.locationId,
-            'rejected',
-            this.submissionDate,
-            this.approvedStartDateTime
+            startDateTime,
+            endDateTime,
+            locationId
         );
     }
 
     update(
         name?: string,
         pitch?: string,
-        proposedStartDateTime?: Date,
+        startDateTime?: Date,
+        expectedDurationMinutes?: number,
         locationId?: LocationId
     ): TalkEntity {
+        const newStartDateTime = startDateTime ?? this.startDateTime;
+        let newEndDateTime = this.endDateTime;
+        
+        if (expectedDurationMinutes !== undefined) {
+            newEndDateTime = new Date(newStartDateTime);
+            newEndDateTime.setMinutes(newEndDateTime.getMinutes() + expectedDurationMinutes);
+        } else if (startDateTime) {
+            // If only start time changes, maintain the same duration
+            const currentDurationMs = this.endDateTime.getTime() - this.startDateTime.getTime();
+            newEndDateTime = new Date(newStartDateTime.getTime() + currentDurationMs);
+        }
+
         return new TalkEntity(
             this.id,
-            this.eventId,
-            this.userId,
+            this.createdBy,
             name ?? this.name,
             pitch ?? this.pitch,
-            proposedStartDateTime ?? this.proposedStartDateTime,
-            locationId ?? this.locationId,
-            this.status,
-            this.submissionDate,
-            this.approvedStartDateTime
+            newStartDateTime,
+            newEndDateTime,
+            locationId ?? this.locationId
         );
     }
 
     isOwnedBy(userId: UserId): boolean {
-        return this.userId.equals(userId);
+        return this.createdBy.equals(userId);
+    }
+
+    getDurationMinutes(): number {
+        return Math.round((this.endDateTime.getTime() - this.startDateTime.getTime()) / (1000 * 60));
     }
 }

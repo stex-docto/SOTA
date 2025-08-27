@@ -455,3 +455,74 @@
     font-size: $font-size-lg;
   }
 }
+
+// Talk Creation Styles
+.submit-talk-cta {
+  text-align: center;
+  padding: $spacing-xl;
+  background: $color-gray-50;
+  border-radius: $radius-lg;
+  border: 2px dashed $color-gray-300;
+  
+  p {
+    margin: 0 0 $spacing-lg 0;
+    color: $color-gray-600;
+    font-size: $font-size-base;
+  }
+  
+  .cta-button {
+    @include button-base;
+    @include button-primary;
+    padding: $spacing-md $spacing-xl;
+    border-radius: $radius-lg;
+    font-weight: 600;
+    font-size: $font-size-lg;
+    transition: all $transition-normal ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+  }
+}
+
+// Floating Action Button
+.floating-action-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: $color-primary;
+  color: $color-white;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 300;
+  cursor: pointer;
+  box-shadow: $shadow-lg;
+  transition: all $transition-fast;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: $shadow-xl;
+    background: $color-primary-hover;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  @media (max-width: $breakpoint-mobile) {
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+}
