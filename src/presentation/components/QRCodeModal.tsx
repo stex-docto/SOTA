@@ -18,16 +18,16 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
             toaster.create({
                 title: 'URL copied!',
                 description: 'The event URL has been copied to your clipboard',
-                status: 'success',
-                duration: 2000,
+                type: 'success',
+                duration: 2000
             })
         } catch (err) {
             console.error('Failed to copy URL:', err)
             toaster.create({
                 title: 'Copy failed',
                 description: 'Unable to copy URL to clipboard',
-                status: 'error',
-                duration: 3000,
+                type: 'error',
+                duration: 3000
             })
         }
     }
