@@ -36,15 +36,17 @@ Add any other context about the problem here.
     }
 
     return (
-        <Box as="footer" bg="gray.50" borderTop="1px solid" borderColor="gray.200" mt="auto" py={1}>
+        <Box as="footer" bg="bg.subtle" borderTopWidth="1px" mt="auto" padding={1}>
             <Flex
+                maxW="1200px"
+                mx="auto"
+                px={6}
                 direction={{ base: 'column', md: 'row' }}
-                justify={{ base: 'center', md: 'space-between' }}
+                justify="space-between"
                 align="center"
                 gap={1}
-                maxW="1200px"
             >
-                <HStack gap={6} wrap="wrap" justify="center">
+                <HStack gap={4} wrap="wrap" justify="center">
                     <ColorModeButton />
                     <Link
                         href="https://github.com/stex-docto/SOTA"
@@ -54,17 +56,7 @@ Add any other context about the problem here.
                         alignItems="center"
                         gap={2}
                         fontSize="sm"
-                        fontWeight="medium"
-                        color="gray.700"
-                        px={2}
-                        py={1}
-                        borderRadius="md"
-                        transition="all 0.2s"
-                        _hover={{
-                            color: 'gray.900',
-                            bg: 'gray.100',
-                            transform: 'translateY(-1px)'
-                        }}
+                        _hover={{ textDecoration: 'none' }}
                     >
                         <VscGithub size={16} />
                         GitHub Repository
@@ -74,18 +66,7 @@ Add any other context about the problem here.
                         variant="ghost"
                         size="sm"
                         aria-label="Report Issue"
-                        fontSize="sm"
-                        fontWeight="medium"
-                        color="gray.700"
-                        px={2}
-                        py={1}
-                        borderRadius="md"
-                        transition="all 0.2s"
-                        _hover={{
-                            color: 'red.600',
-                            bg: 'red.50',
-                            transform: 'translateY(-1px)'
-                        }}
+                        colorScheme="red"
                     >
                         <HStack gap={2}>
                             <VscIssues size={16} />
@@ -93,7 +74,7 @@ Add any other context about the problem here.
                         </HStack>
                     </IconButton>
                 </HStack>
-                <Text fontSize="sm" color="gray.500" textAlign={{ base: 'center', md: 'right' }}>
+                <Text fontSize="sm" color="fg.muted" textAlign={{ base: 'center', md: 'right' }}>
                     &copy; {new Date().getFullYear()} SOTA - Simple Open-Talk App
                 </Text>
             </Flex>
