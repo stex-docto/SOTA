@@ -22,7 +22,8 @@ This application follows hexagonal architecture (Ports & Adapters) with clean se
 ## Tech Stack
 
 - **Frontend**: React 19 with TypeScript
-- **Backend**: Firebase (Firestore, Authentication)
+- **UI Library**: Chakra UI v3 + react-icons
+- **Backend**: Firebase (Firestore, Authentication)  
 - **Development**: Docker Compose with Firebase emulators
 - **Deployment**: GitHub Pages
 - **Architecture**: Hexagonal Architecture (Ports & Adapters)
@@ -88,6 +89,28 @@ src/
     ├── hooks/            # Custom hooks
     └── context/          # React context providers
 ```
+
+## UI Development
+
+This project uses **Chakra UI v3** as the primary UI framework for building consistent, accessible, and responsive user interfaces.
+
+### Key UI Features
+- **Modern Component Library**: Chakra UI v3 with comprehensive component set
+- **Icon System**: react-icons library with multiple icon families
+- **Responsive Design**: Built-in responsive props and mobile-first approach
+- **Accessibility**: ARIA compliance and keyboard navigation built-in
+- **Theme Integration**: Consistent design tokens and color system
+
+### Component Examples
+- **QRCodeModal**: Modal dialog with QR code generation and URL sharing
+- **Responsive Layouts**: VStack, HStack, and Grid components
+- **Interactive Elements**: Buttons, inputs, and form controls
+- **Navigation**: Dialogs, tooltips, and overlay components
+
+### Development Approach
+- **New Components**: Built with Chakra UI components and styling
+- **Legacy Components**: Existing SCSS-based components maintained until refactored
+- **Migration Strategy**: Gradual transition to Chakra UI for consistency
 
 ## User Roles & Access
 

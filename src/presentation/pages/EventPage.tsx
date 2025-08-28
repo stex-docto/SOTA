@@ -7,6 +7,7 @@ import { useDependencies } from '../hooks/useDependencies'
 import { EventEntity, EventId } from '@domain'
 import ConfirmationModal from '../components/ConfirmationModal'
 import TalkCreationModal from '../components/TalkCreationModal'
+import QRCodeModal from '../components/QRCodeModal'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -190,6 +191,11 @@ function EventPage() {
                 </div>
 
                 <div className="event-controls">
+                    <QRCodeModal
+                        url={window.location.href}
+                        title={event.title}
+                        buttonClassName="share-button secondary"
+                    />
                     {!isEventCreator && (
                         <button
                             className={`save-button ${isEventSaved ? 'saved' : 'unsaved'}`}
