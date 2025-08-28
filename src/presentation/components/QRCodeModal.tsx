@@ -3,7 +3,7 @@ import { Dialog } from '@chakra-ui/react'
 import { QrCode } from '@chakra-ui/react'
 import { IoQrCodeOutline } from 'react-icons/io5'
 import { MdContentCopy } from 'react-icons/md'
-import { toaster } from '@presentation/ui/toaster'
+import { toaster } from '@presentation/ui'
 
 interface QRCodeModalProps {
     url: string
