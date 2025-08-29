@@ -57,7 +57,7 @@ export function UserActions({ onSignOut, onDeleteAccount }: UserActionsProps) {
             <Button variant="outline" size="sm" onClick={handleLogout} flex="1">
                 Sign Out
             </Button>
-            <Button colorScheme="red" size="sm" onClick={handleDeleteAccount} flex="1">
+            <Button colorPalette="red" size="sm" onClick={handleDeleteAccount} flex="1">
                 Delete Account
             </Button>
         </HStack>

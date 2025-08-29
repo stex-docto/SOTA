@@ -87,7 +87,7 @@ This application follows **hexagonal architecture** (Ports & Adapters pattern) w
 - **Frontend**: React 19 + TypeScript + Vite
 - **Backend**: Firebase (Firestore + Authentication)
 - **UI Library**: Chakra UI v3 + react-icons
-- **Styling**: SCSS with modular approach (legacy components) + Chakra UI (new components)
+- **Styling**: Chakra UI with colorPalette system for theming
 - **Testing**: Vitest
 - **PWA**: Vite PWA plugin with Workbox
 - **Deployment**: GitHub Pages with base path `/SOTA/`
@@ -173,8 +173,50 @@ function MyComponent({ title, onAction }: MyComponentProps) {
 2. **Styling Approach**:
    - **Prefer Chakra Props**: Use `bg="gray.50"`, `p={4}`, `borderRadius="md"` instead of custom CSS
    - **Responsive Design**: Use Chakra's responsive syntax: `fontSize={{ base: "sm", md: "md" }}`
-   - **Color System**: Use Chakra's color tokens: `colorScheme="blue"`, `color="gray.600"`
+   - **Color System**: Use `colorPalette` prop for theming: `colorPalette="blue"`, `colorPalette="gray"`
    - **Spacing**: Use Chakra's spacing scale: `gap={4}`, `p={6}`, `m={2}`
+
+#### Color Palette System
+
+**IMPORTANT**: Always use `colorPalette` instead of direct `color` or `colorScheme` props for consistent theming.
+
+**Correct Usage**:
+```tsx
+// Components with automatic light/dark theme support
+<Button colorPalette="blue">Primary Action</Button>
+<Text colorPalette="gray">Muted text</Text>
+<Box colorPalette="red">
+  <Badge colorPalette="red">Error</Badge>
+</Box>
+
+// For complex theming with responsive colors
+<Box
+  colorPalette="blue"
+  bg={{ base: "colorPalette.50", _dark: "colorPalette.900" }}
+  color={{ base: "colorPalette.800", _dark: "colorPalette.200" }}
+  borderColor={{ base: "colorPalette.500", _dark: "colorPalette.400" }}
+>
+  Content with theme-aware colors
+</Box>
+```
+
+**Available Color Palettes**:
+- `colorPalette="gray"` - For text, borders, backgrounds
+- `colorPalette="blue"` - Primary actions, links, info states
+- `colorPalette="green"` - Success states, positive actions
+- `colorPalette="red"` - Error states, destructive actions
+- `colorPalette="orange"` - Warning states
+
+**Migration Pattern**:
+```tsx
+// Old approach (avoid)
+<Text color="fg.muted">Text</Text>
+<Button colorScheme="blue">Button</Button>
+
+// New approach (preferred)
+<Text colorPalette="gray">Text</Text>
+<Button colorPalette="blue">Button</Button>
+```
 
 3. **Layout Components**:
    - **VStack/HStack**: For vertical/horizontal layouts with consistent spacing

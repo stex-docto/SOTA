@@ -22,7 +22,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
 
     if (events.length === 0) {
         return (
-            <Text color="fg.muted" textAlign="center" py={8}>
+            <Text colorPalette="gray" textAlign="center" py={8}>
                 {emptyMessage}
             </Text>
         )
@@ -48,7 +48,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                         <Card.Body p={6}>
                             <HStack justify="space-between" align="flex-start">
                                 <VStack align="flex-start" gap={3} flex={1}>
-                                    <Text fontSize="lg" fontWeight="semibold" color="fg.emphasized">
+                                    <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                                         {eventItem.event.title}
                                     </Text>
 
@@ -56,7 +56,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                                         align="flex-start"
                                         gap={1}
                                         fontSize="sm"
-                                        color="fg.muted"
+                                        colorPalette="gray"
                                     >
                                         <Text>Start: {formatDate(eventItem.event.startDate)}</Text>
                                         <Text>End: {formatDate(eventItem.event.endDate)}</Text>
@@ -65,7 +65,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                                     {eventItem.event.location && (
                                         <HStack gap={2}>
                                             <HiMapPin size={16} />
-                                            <Text fontSize="sm" color="fg.muted">
+                                            <Text fontSize="sm" colorPalette="gray">
                                                 {eventItem.event.location}
                                             </Text>
                                         </HStack>
@@ -73,7 +73,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                                 </VStack>
 
                                 <Badge
-                                    colorScheme={eventItem.type === 'created' ? 'blue' : 'red'}
+                                    colorPalette={eventItem.type === 'created' ? 'blue' : 'red'}
                                     borderRadius="full"
                                     px={3}
                                     py={1}

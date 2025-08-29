@@ -16,7 +16,7 @@ import {
     Spinner,
     Center
 } from '@chakra-ui/react'
-import { HiCalendarDays } from 'react-icons/hi2'
+import {HiCalendarDays, HiOutlinePlus} from 'react-icons/hi2'
 import { TbTarget } from 'react-icons/tb'
 
 function UserDashboard() {
@@ -57,8 +57,8 @@ function UserDashboard() {
             {/* Header */}
             <HStack justify="space-between" align="center" mb={8}>
                 <Heading size="2xl">Your Events</Heading>
-                <Button asChild colorScheme="blue" size="lg" borderRadius="full" px={6}>
-                    <Link to="/create-event">+ Create Event</Link>
+                <Button asChild colorPalette="blue" size="lg" borderRadius="full" px={6}>
+                    <Link to="/create-event"><HiOutlinePlus/> Create Event</Link>
                 </Button>
             </HStack>
 
@@ -66,8 +66,8 @@ function UserDashboard() {
             {loadingEvents ? (
                 <Center py={16}>
                     <VStack gap={4}>
-                        <Spinner size="xl" colorScheme="blue" />
-                        <Text color="fg.muted">Loading your events...</Text>
+                        <Spinner size="xl" colorPalette="blue" />
+                        <Text colorPalette="gray">Loading your events...</Text>
                     </VStack>
                 </Center>
             ) : hasAnyEvents ? (
@@ -114,19 +114,19 @@ function UserDashboard() {
                     {upcomingEvents.length === 0 && pastEvents.length > 0 && (
                         <Center py={12}>
                             <VStack gap={6} textAlign="center" maxW="lg">
-                                <Heading size="xl" color="fg.muted">
+                                <Heading size="xl" colorPalette="gray">
                                     <HStack gap={2}>
                                         <Text>All caught up!</Text>
                                         <HiCalendarDays size={20} />
                                     </HStack>
                                 </Heading>
-                                <Text color="fg.muted" fontSize="lg">
+                                <Text colorPalette="gray" fontSize="lg">
                                     You don't have any upcoming events. Ready to create your next
                                     one?
                                 </Text>
                                 <Button
                                     asChild
-                                    colorScheme="blue"
+                                    colorPalette="blue"
                                     size="lg"
                                     borderRadius="full"
                                     px={8}
@@ -144,13 +144,13 @@ function UserDashboard() {
                         <TbTarget size={96} color="currentColor" />
                         <VStack gap={4}>
                             <Heading size="2xl">No events yet</Heading>
-                            <Text color="fg.muted" fontSize="lg" lineHeight={1.6}>
+                            <Text colorPalette="gray" fontSize="lg" lineHeight={1.6}>
                                 Create your first event or save events from others to see them here.
                             </Text>
                         </VStack>
                         <Button
                             asChild
-                            colorScheme="blue"
+                            colorPalette="blue"
                             size="xl"
                             borderRadius="full"
                             px={10}

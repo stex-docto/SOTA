@@ -79,26 +79,26 @@ export function SignInForm({ onCredentialSet, onError }: SignInFormProps) {
 
     return (
         <VStack align="stretch" gap={6}>
-            <Text color="fg.muted" fontSize="sm" lineHeight="1.5">
+            <Text colorPalette="fg.muted" fontSize="sm" lineHeight="1.5">
                 Anonymous sign in to connect your devices
             </Text>
 
             <Button
+                colorPalette="blue"
                 onClick={handleLogin}
                 disabled={isLoggingIn}
                 loading={isLoggingIn}
-                colorScheme="blue.200"
                 size="lg"
             >
                 {isLoggingIn ? 'Signing in...' : 'Sign In'}
             </Button>
 
             <Separator>
-                <Text fontSize="sm" color="fg.muted">or</Text>
+                <Text fontSize="sm" colorPalette="fg.muted">or</Text>
             </Separator>
 
             <Field.Root invalid={!!credentialError}>
-                <Field.Label fontSize="sm" fontWeight="medium" color="fg">
+                <Field.Label fontSize="sm" fontWeight="medium" colorPalette="fg">
                     Enter sharing code from another device
                 </Field.Label>
                 <Input

@@ -61,12 +61,12 @@ export function UserProfile({ currentUser }: UserProfileProps) {
 
     return (
         <VStack gap={4} align="stretch">
-            <Text fontSize="lg" fontWeight="semibold" color="fg">
+            <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                 Profile
             </Text>
 
             <Field.Root>
-                <Field.Label fontSize="sm" fontWeight="medium" color="fg">
+                <Field.Label fontSize="sm" fontWeight="medium" colorPalette="gray">
                     Display Name
                 </Field.Label>
                 {isEditingProfile ? (
@@ -80,7 +80,7 @@ export function UserProfile({ currentUser }: UserProfileProps) {
                         />
                         <HStack gap={2} justify="flex-end">
                             <Button
-                                colorScheme="blue"
+                                colorPalette="blue"
                                 size="sm"
                                 onClick={handleSaveProfile}
                                 disabled={isSavingProfile || !displayName.trim()}
@@ -109,13 +109,13 @@ export function UserProfile({ currentUser }: UserProfileProps) {
                         border="1px solid"
                         borderColor="border.subtle"
                     >
-                        <Text fontSize="md" color="fg" fontWeight="medium">
+                        <Text fontSize="md" colorPalette="gray" fontWeight="medium">
                             {currentUser.displayName || 'No display name set'}
                         </Text>
                         <Button
                             variant="outline"
                             size="sm"
-                            colorScheme="blue"
+                            colorPalette="blue"
                             onClick={handleEditProfile}
                         >
                             Edit
@@ -125,7 +125,7 @@ export function UserProfile({ currentUser }: UserProfileProps) {
             </Field.Root>
 
             {!currentUser.displayName && (
-                <Text fontSize="sm" color="fg.muted" fontStyle="italic">
+                <Text fontSize="sm" colorPalette="gray" fontStyle="italic">
                     Set your display name to be shown to other users in events.
                 </Text>
             )}
