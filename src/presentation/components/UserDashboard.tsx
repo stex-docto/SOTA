@@ -16,7 +16,7 @@ import {
     Spinner,
     Center
 } from '@chakra-ui/react'
-import {HiCalendarDays, HiOutlinePlus} from 'react-icons/hi2'
+import { HiCalendarDays, HiOutlinePlus } from 'react-icons/hi2'
 import { TbTarget } from 'react-icons/tb'
 
 function UserDashboard() {
@@ -58,7 +58,9 @@ function UserDashboard() {
             <HStack justify="space-between" align="center" mb={8}>
                 <Heading size="2xl">Your Events</Heading>
                 <Button asChild colorPalette="blue" size="lg" borderRadius="full" px={6}>
-                    <Link to="/create-event"><HiOutlinePlus/> Create Event</Link>
+                    <Link to="/create-event">
+                        <HiOutlinePlus /> Create Event
+                    </Link>
                 </Button>
             </HStack>
 

@@ -6,14 +6,7 @@ import {
 } from '@/domain/value-objects/Credential'
 import { useDependencies } from '../../hooks/useDependencies'
 import { Credential } from '@/domain'
-import {
-    VStack,
-    Text,
-    Button,
-    Separator,
-    Field,
-    Input
-} from '@chakra-ui/react'
+import { VStack, Text, Button, Separator, Field, Input } from '@chakra-ui/react'
 
 interface SignInFormProps {
     onCredentialSet: (credential: Credential) => void
@@ -94,7 +87,9 @@ export function SignInForm({ onCredentialSet, onError }: SignInFormProps) {
             </Button>
 
             <Separator>
-                <Text fontSize="sm" colorPalette="fg.muted">or</Text>
+                <Text fontSize="sm" colorPalette="fg.muted">
+                    or
+                </Text>
             </Separator>
 
             <Field.Root invalid={!!credentialError}>
@@ -112,9 +107,7 @@ export function SignInForm({ onCredentialSet, onError }: SignInFormProps) {
                     textAlign="center"
                     fontSize="lg"
                 />
-                {credentialError && (
-                    <Field.ErrorText>{credentialError}</Field.ErrorText>
-                )}
+                {credentialError && <Field.ErrorText>{credentialError}</Field.ErrorText>}
             </Field.Root>
         </VStack>
     )

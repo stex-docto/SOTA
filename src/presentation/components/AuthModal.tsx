@@ -4,9 +4,9 @@ import { useAuth } from '../hooks/useAuth'
 import { useSignInProvider } from '../hooks/useSignInProvider'
 import { Credential } from '@/domain'
 import { CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
-import { Dialog, VStack, CloseButton, Box, IconButton } from '@chakra-ui/react'
+import { Dialog, VStack, CloseButton, IconButton } from '@chakra-ui/react'
 import { HiUser } from 'react-icons/hi2'
-import {OpenChangeDetails} from "@zag-js/dialog"
+import { OpenChangeDetails } from '@zag-js/dialog'
 import { toaster } from '@presentation/ui/toaster-config'
 
 export function AuthModal() {
@@ -70,7 +70,8 @@ export function AuthModal() {
                                     onError={error => {
                                         toaster.create({
                                             title: 'Sign In Error',
-                                            description: error || 'An error occurred during sign in',
+                                            description:
+                                                error || 'An error occurred during sign in',
                                             type: 'error',
                                             duration: 5000
                                         })
@@ -80,29 +81,13 @@ export function AuthModal() {
                         ) : (
                             <VStack align="stretch" gap={6}>
                                 {credential && (
-                                    <Box
-                                        p={6}
-                                        bg="blue.50"
-                                        borderRadius="lg"
-                                        borderWidth="1px"
-                                        borderColor="blue.200"
-                                    >
-                                        <CredentialDisplay
-                                            credential={credential}
-                                            currentUser={currentUser}
-                                        />
-                                    </Box>
+                                    <CredentialDisplay
+                                        credential={credential}
+                                        currentUser={currentUser}
+                                    />
                                 )}
 
-                                <Box
-                                    p={6}
-                                    bg="bg.subtle"
-                                    borderRadius="lg"
-                                    borderWidth="1px"
-                                    borderColor="border.subtle"
-                                >
-                                    <UserProfile currentUser={currentUser} />
-                                </Box>
+                                <UserProfile currentUser={currentUser} />
 
                                 <UserActions
                                     onSignOut={() => setCredential(null)}
