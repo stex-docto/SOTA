@@ -6,7 +6,7 @@ import {
 } from '@/domain/value-objects/Credential'
 import { useDependencies } from '../../hooks/useDependencies'
 import { Credential } from '@/domain'
-import styles from '../AuthModal.module.scss'
+import { VStack, Text, Button, Separator, Field, Input } from '@chakra-ui/react'
 
 interface SignInFormProps {
     onCredentialSet: (credential: Credential) => void
@@ -71,30 +71,44 @@ export function SignInForm({ onCredentialSet, onError }: SignInFormProps) {
     }
 
     return (
-        <>
-            <p className={styles.description}>Anonymous sign in to connect your devices</p>
+        <VStack align="stretch" gap={6}>
+            <Text colorPalette="fg.muted" fontSize="sm" lineHeight="1.5">
+                Anonymous sign in to connect your devices
+            </Text>
 
-            <button className={styles.primaryButton} onClick={handleLogin} disabled={isLoggingIn}>
+            <Button
+                colorPalette="blue"
+                onClick={handleLogin}
+                disabled={isLoggingIn}
+                loading={isLoggingIn}
+                size="lg"
+            >
                 {isLoggingIn ? 'Signing in...' : 'Sign In'}
-            </button>
+            </Button>
 
-            <div className={styles.divider}>
-                <span>or</span>
-            </div>
+            <Separator>
+                <Text fontSize="sm" colorPalette="fg.muted">
+                    or
+                </Text>
+            </Separator>
 
-            <div className={styles.formGroup}>
-                <label className={styles.label}>Enter sharing code from another device</label>
-                <input
-                    type="text"
-                    className={styles.codeInput}
+            <Field.Root invalid={!!credentialError}>
+                <Field.Label fontSize="sm" fontWeight="medium" colorPalette="fg">
+                    Enter sharing code from another device
+                </Field.Label>
+                <Input
                     value={formatInputValue(phrase)}
                     onPaste={e => handleCredentialInput(e.clipboardData.getData('Text'))}
                     onChange={e => handleCredentialInput(e.target.value)}
                     placeholder="xxxxx-xxxxx-xxxxx-xxxxx"
                     maxLength={CODE_TOTAL_LENGTH + 3} // +3 for dashes
+                    fontFamily="mono"
+                    letterSpacing="2px"
+                    textAlign="center"
+                    fontSize="lg"
                 />
-                {credentialError && <div className={styles.errorMessage}>{credentialError}</div>}
-            </div>
-        </>
+                {credentialError && <Field.ErrorText>{credentialError}</Field.ErrorText>}
+            </Field.Root>
+        </VStack>
     )
 }

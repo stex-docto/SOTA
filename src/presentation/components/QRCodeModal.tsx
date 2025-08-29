@@ -71,7 +71,7 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
                                 </QrCode.Root>
                             </Box>
 
-                            <Text fontSize="sm" color="gray.600" textAlign="center">
+                            <Text fontSize="sm" colorPalette="gray" textAlign="center">
                                 Scan this QR code with your phone to quickly access the event page
                             </Text>
 
@@ -80,7 +80,7 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
                                 <IconButton
                                     aria-label="Copy URL"
                                     onClick={handleCopyUrl}
-                                    colorScheme="blue"
+                                    colorPalette="blue"
                                 >
                                     <MdContentCopy />
                                 </IconButton>

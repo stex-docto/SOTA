@@ -4,6 +4,20 @@ import { useDependencies } from '../hooks/useDependencies'
 import { UserEventItem } from '@application'
 import { useEffect, useState } from 'react'
 import EventList from './EventList'
+import {
+    Container,
+    VStack,
+    HStack,
+    Heading,
+    Text,
+    Button,
+    Box,
+    Collapsible,
+    Spinner,
+    Center
+} from '@chakra-ui/react'
+import { HiCalendarDays, HiOutlinePlus } from 'react-icons/hi2'
+import { TbTarget } from 'react-icons/tb'
 
 function UserDashboard() {
     const { currentUser } = useAuth()
@@ -33,88 +47,124 @@ function UserDashboard() {
         return null
     }
 
+    const now = new Date()
+    const upcomingEvents = allEvents.filter(eventItem => eventItem.event.endDate > now)
+    const pastEvents = allEvents.filter(eventItem => eventItem.event.endDate <= now)
+    const hasAnyEvents = allEvents.length > 0
+
     return (
-        <div className="home-page">
-            <div className="user-dashboard">
-                <div className="dashboard-header">
-                    <h2>Your Events</h2>
-                    <Link to="/create-event" className="create-event-btn">
-                        <span>+ Create Event</span>
+        <Container maxW="1200px" py={8}>
+            {/* Header */}
+            <HStack justify="space-between" align="center" mb={8}>
+                <Heading size="2xl">Your Events</Heading>
+                <Button asChild colorPalette="blue" size="lg" borderRadius="full" px={6}>
+                    <Link to="/create-event">
+                        <HiOutlinePlus /> Create Event
                     </Link>
-                </div>
+                </Button>
+            </HStack>
 
-                <div className="events-list">
-                    {loadingEvents ? (
-                        <div className="loading-message">
-                            <p>Loading your events...</p>
-                        </div>
-                    ) : allEvents.length > 0 ? (
-                        (() => {
-                            const now = new Date()
-                            const upcomingEvents = allEvents.filter(
-                                eventItem => eventItem.event.endDate > now
-                            )
-                            const pastEvents = allEvents.filter(
-                                eventItem => eventItem.event.endDate <= now
-                            )
+            {/* Content */}
+            {loadingEvents ? (
+                <Center py={16}>
+                    <VStack gap={4}>
+                        <Spinner size="xl" colorPalette="blue" />
+                        <Text colorPalette="gray">Loading your events...</Text>
+                    </VStack>
+                </Center>
+            ) : hasAnyEvents ? (
+                <VStack gap={8} align="stretch">
+                    {/* Upcoming Events */}
+                    <Box>
+                        <Heading size="lg" mb={4}>
+                            Upcoming Events ({upcomingEvents.length})
+                        </Heading>
+                        <EventList
+                            events={upcomingEvents}
+                            isPastEvent={false}
+                            emptyMessage="No upcoming events"
+                        />
+                    </Box>
 
-                            return (
-                                <>
-                                    {/* Upcoming Events */}
-                                    <div className="events-section">
-                                        <h3>Upcoming Events ({upcomingEvents.length})</h3>
-                                        <EventList
-                                            events={upcomingEvents}
-                                            isPastEvent={false}
-                                            emptyMessage="No upcoming events"
-                                        />
-                                    </div>
-
-                                    {/* Past Events - Collapsible */}
-                                    <div className="events-section">
-                                        <details className="past-events-details">
-                                            <summary>Past Events ({pastEvents.length})</summary>
-                                            <EventList
-                                                events={pastEvents}
-                                                isPastEvent={true}
-                                                emptyMessage="No past events"
-                                            />
-                                        </details>
-                                    </div>
-
-                                    {/* Empty State */}
-                                    {upcomingEvents.length === 0 && pastEvents.length === 0 && (
-                                        <div className="empty-state">
-                                            <h3>No events yet</h3>
-                                            <p>
-                                                Create your first event or save events from others
-                                                to see them here.
-                                            </p>
-                                            <Link
-                                                to="/create-event"
-                                                className="create-event-btn primary"
-                                            >
-                                                Create Your First Event
-                                            </Link>
-                                        </div>
-                                    )}
-                                </>
-                            )
-                        })()
-                    ) : (
-                        <div className="empty-state">
-                            <h3>No events yet</h3>
-                            <p>
-                                Create your first event or save events from others to see them here.
-                            </p>
-                            <Link to="/create-event" className="create-event-btn primary">
-                                Create Your First Event
-                            </Link>
-                        </div>
+                    {/* Past Events - Collapsible */}
+                    {pastEvents.length > 0 && (
+                        <Collapsible.Root>
+                            <Collapsible.Trigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="lg"
+                                    justifyContent="flex-start"
+                                    fontWeight="semibold"
+                                    fontSize="lg"
+                                    p={0}
+                                    h="auto"
+                                >
+                                    Past Events ({pastEvents.length})
+                                </Button>
+                            </Collapsible.Trigger>
+                            <Collapsible.Content mt={4}>
+                                <EventList
+                                    events={pastEvents}
+                                    isPastEvent={true}
+                                    emptyMessage="No past events"
+                                />
+                            </Collapsible.Content>
+                        </Collapsible.Root>
                     )}
-                </div>
-            </div>
-        </div>
+
+                    {/* No Upcoming Events State */}
+                    {upcomingEvents.length === 0 && pastEvents.length > 0 && (
+                        <Center py={12}>
+                            <VStack gap={6} textAlign="center" maxW="lg">
+                                <Heading size="xl" colorPalette="gray">
+                                    <HStack gap={2}>
+                                        <Text>All caught up!</Text>
+                                        <HiCalendarDays size={20} />
+                                    </HStack>
+                                </Heading>
+                                <Text colorPalette="gray" fontSize="lg">
+                                    You don't have any upcoming events. Ready to create your next
+                                    one?
+                                </Text>
+                                <Button
+                                    asChild
+                                    colorPalette="blue"
+                                    size="lg"
+                                    borderRadius="full"
+                                    px={8}
+                                >
+                                    <Link to="/create-event">Create New Event</Link>
+                                </Button>
+                            </VStack>
+                        </Center>
+                    )}
+                </VStack>
+            ) : (
+                // Empty State - No Events at All
+                <Center py={20}>
+                    <VStack gap={8} textAlign="center" maxW="lg">
+                        <TbTarget size={96} color="currentColor" />
+                        <VStack gap={4}>
+                            <Heading size="2xl">No events yet</Heading>
+                            <Text colorPalette="gray" fontSize="lg" lineHeight={1.6}>
+                                Create your first event or save events from others to see them here.
+                            </Text>
+                        </VStack>
+                        <Button
+                            asChild
+                            colorPalette="blue"
+                            size="xl"
+                            borderRadius="full"
+                            px={10}
+                            py={6}
+                            fontSize="lg"
+                        >
+                            <Link to="/create-event">Create Your First Event</Link>
+                        </Button>
+                    </VStack>
+                </Center>
+            )}
+        </Container>
     )
 }
 

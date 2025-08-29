@@ -10,6 +10,8 @@ import {
     EventNotFoundError
 } from '@domain'
 import EventForm, { EventFormData } from '../components/EventForm'
+import { HiLockClosed, HiKey, HiExclamationTriangle } from 'react-icons/hi2'
+import { HiArchiveBox } from 'react-icons/hi2'
 
 function EditEventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -143,10 +145,10 @@ function EditEventPage() {
 
     if (error || !event) {
         const getErrorIcon = () => {
-            if (error instanceof AuthenticationError) return '🔐'
-            if (error instanceof PermissionError) return '🔒'
-            if (error instanceof EventNotFoundError) return '🎪'
-            return '⚠️'
+            if (error instanceof AuthenticationError) return <HiKey size={24} />
+            if (error instanceof PermissionError) return <HiLockClosed size={24} />
+            if (error instanceof EventNotFoundError) return <HiArchiveBox size={24} />
+            return <HiExclamationTriangle size={24} />
         }
 
         const getErrorSuggestion = () => {

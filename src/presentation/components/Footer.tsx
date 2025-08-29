@@ -66,7 +66,7 @@ Add any other context about the problem here.
                         variant="ghost"
                         size="sm"
                         aria-label="Report Issue"
-                        colorScheme="red"
+                        colorPalette="red"
                     >
                         <HStack gap={2}>
                             <VscIssues size={16} />
@@ -74,7 +74,7 @@ Add any other context about the problem here.
                         </HStack>
                     </IconButton>
                 </HStack>
-                <Text fontSize="sm" color="fg.muted" textAlign={{ base: 'center', md: 'right' }}>
+                <Text fontSize="sm" colorPalette="gray" textAlign={{ base: 'center', md: 'right' }}>
                     &copy; {new Date().getFullYear()} SOTA - Simple Open-Talk App
                 </Text>
             </Flex>

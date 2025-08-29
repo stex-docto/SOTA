@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { UserEntity } from '@/domain'
 import { useDependencies } from '../../hooks/useDependencies'
-import styles from '../AuthModal.module.scss'
+import { VStack, HStack, Text, Button, Input, Field, Box } from '@chakra-ui/react'
+import { toaster } from '@presentation/ui/toaster-config'
 
 interface UserProfileProps {
     currentUser: UserEntity
@@ -28,11 +29,23 @@ export function UserProfile({ currentUser }: UserProfileProps) {
                 displayName: displayName.trim()
             })
             setIsEditingProfile(false)
+            toaster.create({
+                title: 'Profile Updated',
+                description: 'Your display name has been saved.',
+                type: 'success',
+                duration: 3000
+            })
         } catch (error) {
             console.error('Failed to save profile:', error)
-            alert(
-                error instanceof Error ? error.message : 'Failed to save profile. Please try again.'
-            )
+            toaster.create({
+                title: 'Save Failed',
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to save profile. Please try again.',
+                type: 'error',
+                duration: 5000
+            })
         } finally {
             setIsSavingProfile(false)
         }
@@ -50,56 +63,84 @@ export function UserProfile({ currentUser }: UserProfileProps) {
     }
 
     return (
-        <>
-            <h3 className={styles.sectionTitle}>Profile</h3>
+        <Box
+            p={6}
+            bg={{ base: 'gray.50', _dark: 'gray.900' }}
+            borderRadius="lg"
+            borderWidth="1px"
+            borderColor={{ base: 'gray.200', _dark: 'gray.700' }}
+        >
+            <VStack gap={4} align="stretch">
+                <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
+                    Profile
+                </Text>
 
-            <div className={styles.formGroup}>
-                <label className={styles.label}>Display Name</label>
-                {isEditingProfile ? (
-                    <div className={styles.editMode}>
-                        <input
-                            type="text"
-                            className={styles.profileInput}
-                            value={displayName}
-                            onChange={e => setDisplayName(e.target.value)}
-                            placeholder="Enter your display name"
-                            disabled={isSavingProfile}
-                            maxLength={50}
-                        />
-                        <div className={styles.profileActions}>
-                            <button
-                                className={styles.primaryButton}
-                                onClick={handleSaveProfile}
-                                disabled={isSavingProfile || !displayName.trim()}
-                            >
-                                {isSavingProfile ? 'Saving...' : 'Save'}
-                            </button>
-                            <button
-                                className={styles.secondaryButton}
-                                onClick={handleCancelEditProfile}
+                <Field.Root>
+                    <Field.Label fontSize="sm" fontWeight="medium" colorPalette="gray">
+                        Display Name
+                    </Field.Label>
+                    {isEditingProfile ? (
+                        <VStack gap={3} align="stretch">
+                            <Input
+                                value={displayName}
+                                onChange={e => setDisplayName(e.target.value)}
+                                placeholder="Enter your display name"
                                 disabled={isSavingProfile}
+                                maxLength={50}
+                            />
+                            <HStack gap={2} justify="flex-end">
+                                <Button
+                                    colorPalette="blue"
+                                    size="sm"
+                                    onClick={handleSaveProfile}
+                                    disabled={isSavingProfile || !displayName.trim()}
+                                    loading={isSavingProfile}
+                                >
+                                    {isSavingProfile ? 'Saving...' : 'Save'}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleCancelEditProfile}
+                                    disabled={isSavingProfile}
+                                >
+                                    Cancel
+                                </Button>
+                            </HStack>
+                        </VStack>
+                    ) : (
+                        <HStack
+                            justify="space-between"
+                            align="center"
+                            py={3}
+                            px={4}
+                            bg={{ base: 'white', _dark: 'gray.800' }}
+                            borderRadius="md"
+                            border="1px solid"
+                            borderColor={{ base: 'gray.200', _dark: 'gray.600' }}
+                            width="100%"
+                        >
+                            <Text fontSize="md" colorPalette="gray" fontWeight="medium">
+                                {currentUser.displayName || 'No display name set'}
+                            </Text>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                colorPalette="blue"
+                                onClick={handleEditProfile}
                             >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className={styles.displayMode}>
-                        <span className={styles.displayValue}>
-                            {currentUser.displayName || 'No display name set'}
-                        </span>
-                        <button className={styles.editButton} onClick={handleEditProfile}>
-                            Edit
-                        </button>
-                    </div>
-                )}
-            </div>
+                                Edit
+                            </Button>
+                        </HStack>
+                    )}
+                </Field.Root>
 
-            {!currentUser.displayName && (
-                <p className={styles.helpText}>
-                    Set your display name to be shown to other users in events.
-                </p>
-            )}
-        </>
+                {!currentUser.displayName && (
+                    <Text fontSize="sm" colorPalette="gray" fontStyle="italic">
+                        Set your display name to be shown to other users in events.
+                    </Text>
+                )}
+            </VStack>
+        </Box>
     )
 }

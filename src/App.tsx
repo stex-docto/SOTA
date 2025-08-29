@@ -8,6 +8,7 @@ import HomePage from './presentation/pages/HomePage'
 import EventPage from './presentation/pages/EventPage'
 import CreateEventPage from './presentation/pages/CreateEventPage'
 import EditEventPage from './presentation/pages/EditEventPage'
+import { Box, Flex } from '@chakra-ui/react'
 import './App.scss'
 import './sw-update' // Import service worker update handler
 
@@ -16,9 +17,9 @@ function App() {
         <UI_Provider>
             <DependencyProvider>
                 <Router>
-                    <div className="App">
+                    <Flex direction="column" minH="100vh">
                         <Header />
-                        <main className="container">
+                        <Box as="main" flex="1" w="full" maxW="1400px" mx="auto" px={8} py={6}>
                             <Routes>
                                 <Route path="/" element={<HomePage />} />
                                 <Route
@@ -39,9 +40,9 @@ function App() {
                                     }
                                 />
                             </Routes>
-                        </main>
+                        </Box>
                         <Footer />
-                    </div>
+                    </Flex>
                 </Router>
             </DependencyProvider>
         </UI_Provider>
