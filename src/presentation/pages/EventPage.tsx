@@ -8,6 +8,7 @@ import { EventEntity, EventId } from '@domain'
 import ConfirmationModal from '../components/ConfirmationModal'
 import TalkCreationModal from '../components/TalkCreationModal'
 import QRCodeModal from '../components/QRCodeModal'
+import { HiSparkles, HiHeart, HiOutlineHeart } from 'react-icons/hi2'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -161,7 +162,8 @@ function EventPage() {
                             onClick={() => navigate('/create-event')}
                             className="create-button secondary"
                         >
-                            ✨ Create New Event
+                            <HiSparkles style={{ display: 'inline', marginRight: '8px' }} />
+                            Create New Event
                         </button>
                     </div>
                 </div>
@@ -202,7 +204,21 @@ function EventPage() {
                             onClick={handleSaveToggle}
                             disabled={isSaving}
                         >
-                            {isSaving ? '...' : isEventSaved ? '❤️ Saved' : '🤍 Save Event'}
+                            {isSaving ? (
+                                '...'
+                            ) : isEventSaved ? (
+                                <>
+                                    <HiHeart style={{ display: 'inline', marginRight: '4px' }} />
+                                    Saved
+                                </>
+                            ) : (
+                                <>
+                                    <HiOutlineHeart
+                                        style={{ display: 'inline', marginRight: '4px' }}
+                                    />
+                                    Save Event
+                                </>
+                            )}
                         </button>
                     )}
                     {isEventCreator && (

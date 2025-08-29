@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import {
-    Box,
     Container,
     VStack,
     HStack,
@@ -11,6 +10,7 @@ import {
     Button,
     SimpleGrid
 } from '@chakra-ui/react'
+import { HiUserGroup, HiSparkles, HiBolt, HiPaperAirplane, HiRocketLaunch } from 'react-icons/hi2'
 
 function LandingPage() {
     return (
@@ -47,9 +47,7 @@ function LandingPage() {
                         <Card.Body>
                             <VStack gap={6}>
                                 <Heading size="2xl" textAlign="center">
-                                    <Text as="span" fontSize="2xl" mr={3}>
-                                        👥
-                                    </Text>
+                                    <HiUserGroup size={24} style={{ marginRight: '12px' }} />
                                     Join an Event
                                 </Heading>
 
@@ -71,7 +69,10 @@ function LandingPage() {
                                     borderRadius="full"
                                     fontWeight="semibold"
                                 >
-                                    ✨ Zero barriers to participation
+                                    <HStack gap={1}>
+                                        <HiSparkles size={16} />
+                                        <Text>Zero barriers to participation</Text>
+                                    </HStack>
                                 </Badge>
                             </VStack>
                         </Card.Body>
@@ -94,9 +95,7 @@ function LandingPage() {
                         <Card.Body>
                             <VStack gap={6}>
                                 <Heading size="2xl" textAlign="center">
-                                    <Text as="span" fontSize="2xl" mr={3}>
-                                        ✨
-                                    </Text>
+                                    <HiSparkles size={24} style={{ marginRight: '12px' }} />
                                     Host Your Own
                                 </Heading>
 
@@ -113,7 +112,7 @@ function LandingPage() {
                                 {/* Creation Flow */}
                                 <HStack gap={4} py={4}>
                                     <VStack gap={2}>
-                                        <Box fontSize="2xl">⚡</Box>
+                                        <HiBolt size={32} />
                                         <Text fontSize="sm" fontWeight="semibold" color="fg.muted">
                                             Create event
                                         </Text>
@@ -127,7 +126,7 @@ function LandingPage() {
                                         •
                                     </Text>
                                     <VStack gap={2}>
-                                        <Box fontSize="2xl">📤</Box>
+                                        <HiPaperAirplane size={32} />
                                         <Text fontSize="sm" fontWeight="semibold" color="fg.muted">
                                             Share URL
                                         </Text>
@@ -141,7 +140,12 @@ function LandingPage() {
                                     borderRadius="full"
                                     px={8}
                                 >
-                                    <Link to="/create-event">🚀 Launch Event</Link>
+                                    <Link to="/create-event">
+                                        <HStack gap={2}>
+                                            <HiRocketLaunch size={16} />
+                                            <Text>Launch Event</Text>
+                                        </HStack>
+                                    </Link>
                                 </Button>
                             </VStack>
                         </Card.Body>

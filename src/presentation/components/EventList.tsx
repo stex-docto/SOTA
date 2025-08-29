@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { UserEventItem } from '@application'
 import { VStack, HStack, Text, Card, Badge } from '@chakra-ui/react'
+import { HiMapPin, HiUser, HiHeart } from 'react-icons/hi2'
 
 interface EventListProps {
     events: UserEventItem[]
@@ -63,7 +64,7 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
 
                                     {eventItem.event.location && (
                                         <HStack gap={2}>
-                                            <Text fontSize="sm">📍</Text>
+                                            <HiMapPin size={16} />
                                             <Text fontSize="sm" color="fg.muted">
                                                 {eventItem.event.location}
                                             </Text>
@@ -77,7 +78,19 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                                     px={3}
                                     py={1}
                                 >
-                                    {eventItem.type === 'created' ? '👤 Created' : '❤️ Saved'}
+                                    <HStack gap={1}>
+                                        {eventItem.type === 'created' ? (
+                                            <>
+                                                <HiUser size={14} />
+                                                <Text>Created</Text>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <HiHeart size={14} />
+                                                <Text>Saved</Text>
+                                            </>
+                                        )}
+                                    </HStack>
                                 </Badge>
                             </HStack>
                         </Card.Body>

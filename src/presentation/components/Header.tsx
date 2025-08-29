@@ -2,12 +2,7 @@ import { Link } from 'react-router-dom'
 import { AuthModal } from './AuthModal'
 import CurrentEventsBar from './CurrentEventsBar'
 import { HiHome } from 'react-icons/hi2'
-import {
-    Box,
-    Container,
-    HStack,
-    Link as ChakraLink
-} from '@chakra-ui/react'
+import { Box, Container, HStack, Link as ChakraLink } from '@chakra-ui/react'
 
 function Header() {
     return (

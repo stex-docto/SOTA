@@ -16,6 +16,8 @@ import {
     Spinner,
     Center
 } from '@chakra-ui/react'
+import { HiCalendarDays } from 'react-icons/hi2'
+import { TbTarget } from 'react-icons/tb'
 
 function UserDashboard() {
     const { currentUser } = useAuth()
@@ -113,7 +115,10 @@ function UserDashboard() {
                         <Center py={12}>
                             <VStack gap={6} textAlign="center" maxW="lg">
                                 <Heading size="xl" color="fg.muted">
-                                    All caught up! 📅
+                                    <HStack gap={2}>
+                                        <Text>All caught up!</Text>
+                                        <HiCalendarDays size={20} />
+                                    </HStack>
                                 </Heading>
                                 <Text color="fg.muted" fontSize="lg">
                                     You don't have any upcoming events. Ready to create your next
@@ -136,7 +141,7 @@ function UserDashboard() {
                 // Empty State - No Events at All
                 <Center py={20}>
                     <VStack gap={8} textAlign="center" maxW="lg">
-                        <Text fontSize="6xl">🎯</Text>
+                        <TbTarget size={96} color="currentColor" />
                         <VStack gap={4}>
                             <Heading size="2xl">No events yet</Heading>
                             <Text color="fg.muted" fontSize="lg" lineHeight={1.6}>
