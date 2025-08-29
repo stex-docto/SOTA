@@ -1,4 +1,5 @@
-// All @use imports must come first
+// Global styles are now handled by Chakra UI theme system
+// Keep only non-converted SCSS imports for now
 @use 'styles/variables' as *;
 @use 'styles/mixins' as *;
 @use 'styles/layout';
@@ -8,12 +9,3 @@
 @use 'styles/events';
 @use 'styles/talks';
 @use 'styles/responsive';
-
-body {
-    font-family:
-        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-        'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.6;
-    color: $color-black;
-    background-color: $color-background;
-}
