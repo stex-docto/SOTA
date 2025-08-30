@@ -1,4 +1,4 @@
-import { TalkRepository, TalkEntity, EventId, LocationId } from '@/domain'
+import { TalkRepository, TalkEntity, EventId, RoomId } from '@/domain'
 import { SignInUseCase } from '@application'
 
 export interface TalkCreationData {
@@ -7,7 +7,7 @@ export interface TalkCreationData {
     pitch: string
     startDateTime: Date
     expectedDurationMinutes: number
-    locationId: LocationId
+    roomId: RoomId
 }
 
 export class CreateTalkUseCase {
@@ -26,7 +26,7 @@ export class CreateTalkUseCase {
             data.pitch,
             data.startDateTime,
             data.expectedDurationMinutes,
-            data.locationId
+            data.roomId
         )
 
         await this.talkRepository.save(talk)

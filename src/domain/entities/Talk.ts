@@ -1,4 +1,4 @@
-import { EventId, LocationId, TalkId, UserId } from '@/domain'
+import { EventId, RoomId, TalkId, UserId } from '@/domain'
 
 export interface Talk {
     id: TalkId
@@ -7,7 +7,7 @@ export interface Talk {
     pitch: string
     startDateTime: Date
     endDateTime: Date
-    locationId: LocationId
+    roomId: RoomId
 }
 
 export class TalkEntity implements Talk {
@@ -18,7 +18,7 @@ export class TalkEntity implements Talk {
         public readonly pitch: string,
         public readonly startDateTime: Date,
         public readonly endDateTime: Date,
-        public readonly locationId: LocationId
+        public readonly roomId: RoomId
     ) {}
 
     static create(
@@ -28,7 +28,7 @@ export class TalkEntity implements Talk {
         pitch: string,
         startDateTime: Date,
         expectedDurationMinutes: number,
-        locationId: LocationId
+        roomId: RoomId
     ): TalkEntity {
         const endDateTime = new Date(startDateTime)
         endDateTime.setMinutes(endDateTime.getMinutes() + expectedDurationMinutes)
@@ -40,7 +40,7 @@ export class TalkEntity implements Talk {
             pitch,
             startDateTime,
             endDateTime,
-            locationId
+            roomId
         )
     }
 
@@ -49,7 +49,7 @@ export class TalkEntity implements Talk {
         pitch?: string,
         startDateTime?: Date,
         expectedDurationMinutes?: number,
-        locationId?: LocationId
+        roomId?: RoomId
     ): TalkEntity {
         const newStartDateTime = startDateTime ?? this.startDateTime
         let newEndDateTime = this.endDateTime
@@ -70,7 +70,7 @@ export class TalkEntity implements Talk {
             pitch ?? this.pitch,
             newStartDateTime,
             newEndDateTime,
-            locationId ?? this.locationId
+            roomId ?? this.roomId
         )
     }
 

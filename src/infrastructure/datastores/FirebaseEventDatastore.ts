@@ -1,4 +1,13 @@
-import { EventEntity, EventId, EventRepository, UserId, UserRepository } from '@domain'
+import {
+    EventEntity,
+    EventId,
+    EventRepository,
+    UserId,
+    UserRepository,
+    RoomId,
+    RoomEntity,
+    RoomSet
+} from '@domain'
 import {
     collection,
     deleteDoc,
@@ -12,6 +21,12 @@ import {
     where
 } from 'firebase/firestore'
 
+type FirebaseRoomDocument = {
+    id: string
+    name: string
+    description: string
+}
+
 type FirebaseEventDocument = {
     id: string
     title: string
@@ -24,6 +39,7 @@ type FirebaseEventDocument = {
     location: string
     status: 'active' | 'inactive'
     createdBy: string
+    rooms: { [roomId: string]: FirebaseRoomDocument }
 }
 
 export class FirebaseEventDatastore implements EventRepository {
@@ -37,6 +53,15 @@ export class FirebaseEventDatastore implements EventRepository {
     }
 
     async save(event: EventEntity): Promise<void> {
+        const rooms: { [roomId: string]: FirebaseRoomDocument } = {}
+        event.rooms.forEach((room: any, roomId) => {
+            rooms[roomId.value] = {
+                id: room.id.value,
+                name: room.name,
+                description: room.description
+            }
+        })
+
         const eventDoc: FirebaseEventDocument = {
             id: event.id.value,
             title: event.title,
@@ -48,7 +73,8 @@ export class FirebaseEventDatastore implements EventRepository {
             endDate: event.endDate.toISOString(),
             location: event.location,
             status: event.status,
-            createdBy: event.createdBy.value
+            createdBy: event.createdBy.value,
+            rooms: rooms
         }
 
         await setDoc(doc(this.collection, event.id.value), eventDoc)
@@ -124,6 +150,19 @@ export class FirebaseEventDatastore implements EventRepository {
     }
 
     private mapToEntity(doc: FirebaseEventDocument): EventEntity {
+        const roomEntities: RoomEntity[] = []
+        if (doc.rooms) {
+            Object.entries(doc.rooms).forEach(([_roomIdString, roomDoc]) => {
+                const room = new RoomEntity(
+                    RoomId.from(roomDoc.id),
+                    roomDoc.name,
+                    roomDoc.description
+                )
+                roomEntities.push(room)
+            })
+        }
+        const rooms = new RoomSet(roomEntities)
+
         return new EventEntity(
             EventId.from(doc.id),
             doc.title,
@@ -135,7 +174,8 @@ export class FirebaseEventDatastore implements EventRepository {
             new Date(doc.endDate),
             doc.location,
             doc.status,
-            UserId.from(doc.createdBy)
+            UserId.from(doc.createdBy),
+            rooms
         )
     }
 }

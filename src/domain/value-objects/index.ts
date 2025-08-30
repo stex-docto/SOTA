@@ -1,6 +1,6 @@
 export { UserId } from './UserId'
 export { EventId } from './EventId'
-export { LocationId } from './LocationId'
+export { RoomId } from './RoomId'
 export { TalkId } from './TalkId'
 export { EventIdSet } from './EventIdSet'
 export * from './Credential.ts'

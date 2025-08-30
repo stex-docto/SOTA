@@ -1,14 +1,16 @@
+import { EventEntity, EventId } from '@domain'
+import { HiHeart, HiOutlineHeart, HiSparkles } from 'react-icons/hi2'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+
+import ConfirmationModal from '../components/ConfirmationModal'
+import QRCodeModal from '../components/QRCodeModal'
 import ReactMarkdown from 'react-markdown'
+import RoomManagement from '../components/RoomManagement'
+import TalkCreationModal from '../components/TalkCreationModal'
 import remarkBreaks from 'remark-breaks'
 import { useAuth } from '../hooks/useAuth'
 import { useDependencies } from '../hooks/useDependencies'
-import { EventEntity, EventId } from '@domain'
-import ConfirmationModal from '../components/ConfirmationModal'
-import TalkCreationModal from '../components/TalkCreationModal'
-import QRCodeModal from '../components/QRCodeModal'
-import { HiSparkles, HiHeart, HiOutlineHeart } from 'react-icons/hi2'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -250,6 +252,11 @@ function EventPage() {
                                     Delete Event
                                 </button>
                             </div>
+
+                            <RoomManagement
+                                eventId={EventId.from(eventId!)}
+                                isEventCreator={isEventCreator}
+                            />
 
                             <div className="event-stats">
                                 <h3>Event Statistics</h3>

@@ -1,4 +1,4 @@
-import { TalkEntity, TalkId, TalkRepository, EventId, UserId, LocationId } from '@domain'
+import { TalkEntity, TalkId, TalkRepository, EventId, UserId, RoomId } from '@domain'
 import { collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc } from 'firebase/firestore'
 
 type FirebaseTalkDocument = {
@@ -9,7 +9,7 @@ type FirebaseTalkDocument = {
     pitch: string
     startDateTime: string
     endDateTime: string
-    locationId: string
+    roomId: string
 }
 
 export class FirebaseTalkDatastore implements TalkRepository {
@@ -28,7 +28,7 @@ export class FirebaseTalkDatastore implements TalkRepository {
             pitch: talk.pitch,
             startDateTime: talk.startDateTime.toISOString(),
             endDateTime: talk.endDateTime.toISOString(),
-            locationId: talk.locationId.value
+            roomId: talk.roomId.value
         }
 
         const talkCollection = this.getTalkCollection(talk.id.eventId)
@@ -80,7 +80,7 @@ export class FirebaseTalkDatastore implements TalkRepository {
             doc.pitch,
             new Date(doc.startDateTime),
             new Date(doc.endDateTime),
-            LocationId.from(doc.locationId)
+            RoomId.from(doc.roomId)
         )
     }
 }

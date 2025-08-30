@@ -9,7 +9,11 @@ import {
     SaveEventUseCase,
     RemoveSavedEventUseCase,
     UpdateUserProfileUseCase,
-    GetUserAllEventsUseCase
+    GetUserAllEventsUseCase,
+    CreateRoomUseCase,
+    UpdateRoomUseCase,
+    DeleteRoomUseCase,
+    GetRoomsByEventUseCase
 } from '@application'
 
 export interface DependencyContext {
@@ -23,6 +27,10 @@ export interface DependencyContext {
     removeSavedEventUseCase: RemoveSavedEventUseCase
     updateUserProfileUseCase: UpdateUserProfileUseCase
     getUserAllEventsUseCase: GetUserAllEventsUseCase
+    createRoomUseCase: CreateRoomUseCase
+    updateRoomUseCase: UpdateRoomUseCase
+    deleteRoomUseCase: DeleteRoomUseCase
+    getRoomsByEventUseCase: GetRoomsByEventUseCase
 }
 
 export const Dependencies = createContext<DependencyContext | undefined>(undefined)
