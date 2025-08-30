@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { UserEventItem } from '@application'
+import { VStack, HStack, Text, Card, Badge } from '@chakra-ui/react'
+import { HiMapPin, HiUser, HiHeart } from 'react-icons/hi2'
 
 interface EventListProps {
     events: UserEventItem[]
@@ -19,37 +21,83 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
     }
 
     if (events.length === 0) {
-        return <p className="no-events-message">{emptyMessage}</p>
+        return (
+            <Text colorPalette="gray" textAlign="center" py={8}>
+                {emptyMessage}
+            </Text>
+        )
     }
 
     return (
-        <div className="events-list-items">
-            {events.map(eventItem => {
-                const className = `event-list-item${isPastEvent ? ' past-event' : ''}`
-
-                return (
-                    <Link
-                        key={`${eventItem.event.id.value}-${eventItem.type}`}
-                        to={`/event/${eventItem.event.id.value}`}
-                        className={className}
+        <VStack gap={4} align="stretch">
+            {events.map(eventItem => (
+                <Link
+                    key={`${eventItem.event.id.value}-${eventItem.type}`}
+                    to={`/event/${eventItem.event.id.value}`}
+                    style={{ textDecoration: 'none' }}
+                >
+                    <Card.Root
+                        opacity={isPastEvent ? 0.7 : 1}
+                        _hover={{
+                            transform: 'translateY(-2px)',
+                            shadow: 'md'
+                        }}
+                        transition="all 0.2s ease"
+                        cursor="pointer"
                     >
-                        <div className="event-content">
-                            <h3 className="event-title">{eventItem.event.title}</h3>
-                            <div className="event-dates">
-                                <span>Start: {formatDate(eventItem.event.startDate)}</span>
-                                <span>End: {formatDate(eventItem.event.endDate)}</span>
-                            </div>
-                            {eventItem.event.location && (
-                                <p className="event-location">📍 {eventItem.event.location}</p>
-                            )}
-                        </div>
-                        <div className="event-type">
-                            {eventItem.type === 'created' ? '👤 Created' : '❤️ Saved'}
-                        </div>
-                    </Link>
-                )
-            })}
-        </div>
+                        <Card.Body p={6}>
+                            <HStack justify="space-between" align="flex-start">
+                                <VStack align="flex-start" gap={3} flex={1}>
+                                    <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
+                                        {eventItem.event.title}
+                                    </Text>
+
+                                    <VStack
+                                        align="flex-start"
+                                        gap={1}
+                                        fontSize="sm"
+                                        colorPalette="gray"
+                                    >
+                                        <Text>Start: {formatDate(eventItem.event.startDate)}</Text>
+                                        <Text>End: {formatDate(eventItem.event.endDate)}</Text>
+                                    </VStack>
+
+                                    {eventItem.event.location && (
+                                        <HStack gap={2}>
+                                            <HiMapPin size={16} />
+                                            <Text fontSize="sm" colorPalette="gray">
+                                                {eventItem.event.location}
+                                            </Text>
+                                        </HStack>
+                                    )}
+                                </VStack>
+
+                                <Badge
+                                    colorPalette={eventItem.type === 'created' ? 'blue' : 'red'}
+                                    borderRadius="full"
+                                    px={3}
+                                    py={1}
+                                >
+                                    <HStack gap={1}>
+                                        {eventItem.type === 'created' ? (
+                                            <>
+                                                <HiUser size={14} />
+                                                <Text>Created</Text>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <HiHeart size={14} />
+                                                <Text>Saved</Text>
+                                            </>
+                                        )}
+                                    </HStack>
+                                </Badge>
+                            </HStack>
+                        </Card.Body>
+                    </Card.Root>
+                </Link>
+            ))}
+        </VStack>
     )
 }
 

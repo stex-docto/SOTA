@@ -1,13 +1,16 @@
+import { EventEntity, EventId } from '@domain'
+import { HiHeart, HiOutlineHeart, HiSparkles } from 'react-icons/hi2'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+
+import ConfirmationModal from '../components/ConfirmationModal'
+import QRCodeModal from '../components/QRCodeModal'
 import ReactMarkdown from 'react-markdown'
+import RoomManagement from '../components/RoomManagement'
+import TalkCreationModal from '../components/TalkCreationModal'
 import remarkBreaks from 'remark-breaks'
 import { useAuth } from '../hooks/useAuth'
 import { useDependencies } from '../hooks/useDependencies'
-import { EventEntity, EventId } from '@domain'
-import ConfirmationModal from '../components/ConfirmationModal'
-import TalkCreationModal from '../components/TalkCreationModal'
-import RoomManagement from '../components/RoomManagement'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -161,7 +164,8 @@ function EventPage() {
                             onClick={() => navigate('/create-event')}
                             className="create-button secondary"
                         >
-                            ✨ Create New Event
+                            <HiSparkles style={{ display: 'inline', marginRight: '8px' }} />
+                            Create New Event
                         </button>
                     </div>
                 </div>
@@ -191,13 +195,32 @@ function EventPage() {
                 </div>
 
                 <div className="event-controls">
+                    <QRCodeModal
+                        url={window.location.href}
+                        title={event.title}
+                        buttonClassName="share-button secondary"
+                    />
                     {!isEventCreator && (
                         <button
                             className={`save-button ${isEventSaved ? 'saved' : 'unsaved'}`}
                             onClick={handleSaveToggle}
                             disabled={isSaving}
                         >
-                            {isSaving ? '...' : isEventSaved ? '❤️ Saved' : '🤍 Save Event'}
+                            {isSaving ? (
+                                '...'
+                            ) : isEventSaved ? (
+                                <>
+                                    <HiHeart style={{ display: 'inline', marginRight: '4px' }} />
+                                    Saved
+                                </>
+                            ) : (
+                                <>
+                                    <HiOutlineHeart
+                                        style={{ display: 'inline', marginRight: '4px' }}
+                                    />
+                                    Save Event
+                                </>
+                            )}
                         </button>
                     )}
                     {isEventCreator && (

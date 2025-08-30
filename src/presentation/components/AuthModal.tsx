@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react'
 import { useDependencies } from '../hooks/useDependencies'
 import { useAuth } from '../hooks/useAuth'
 import { useSignInProvider } from '../hooks/useSignInProvider'
-import styles from './AuthModal.module.scss'
 import { Credential } from '@/domain'
-import { AuthButton, CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
+import { CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
+import { Dialog, VStack, CloseButton, IconButton } from '@chakra-ui/react'
+import { HiUser } from 'react-icons/hi2'
+import { OpenChangeDetails } from '@zag-js/dialog'
+import { toaster } from '@presentation/ui/toaster-config'
 
 export function AuthModal() {
     const { signInUseCase } = useDependencies()
     const { currentUser } = useAuth()
     const { answerAllRequests, hasPendingRequests } = useSignInProvider(signInUseCase)
-    const [showAuthModal, setShowAuthModal] = useState(false)
     const [credential, setCredential] = useState<Credential | null>()
+    const [open, setOpen] = useState(false)
 
     useEffect(() => {
         setCredential(signInUseCase.getCurrentCredential())
@@ -24,67 +27,77 @@ export function AuthModal() {
         }
     }, [currentUser, hasPendingRequests, answerAllRequests])
 
-    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        // Only close if clicking the overlay itself, not the modal content
-        if (e.target === e.currentTarget) {
-            handleClose()
+    const handleOpenChange = (e: OpenChangeDetails) => {
+        setOpen(e.open)
+        if (!open) {
+            // Reject all pending sign-in requests when closing
+            if (hasPendingRequests) {
+                answerAllRequests(false)
+            }
         }
     }
 
-    const handleClose = () => {
-        // Reject all pending sign-in requests
-        if (hasPendingRequests) {
-            answerAllRequests(false)
-        }
-        setShowAuthModal(false)
-    }
+    // Force open when there are pending requests
+    const shouldBeOpen = open || hasPendingRequests
 
     return (
-        <div className="auth-buttons">
-            <AuthButton onClick={() => setShowAuthModal(true)} />
+        <Dialog.Root onOpenChange={handleOpenChange} open={shouldBeOpen}>
+            <Dialog.Trigger asChild>
+                <IconButton
+                    variant="ghost"
+                    aria-label={currentUser ? 'User Profile' : 'Sign In'}
+                    title={currentUser ? 'User' : 'Sign In'}
+                >
+                    <HiUser size={20} />
+                </IconButton>
+            </Dialog.Trigger>
 
-            {(showAuthModal || hasPendingRequests) && (
-                <div className={styles.overlay} onClick={handleOverlayClick}>
-                    <div className={styles.modal}>
-                        <button className={styles.closeButton} onClick={handleClose}>
-                            ×
-                        </button>
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+                <Dialog.Content maxW="500px" w="90%">
+                    <Dialog.Header>
+                        <Dialog.Title>Device Connection</Dialog.Title>
+                        <Dialog.CloseTrigger asChild>
+                            <CloseButton />
+                        </Dialog.CloseTrigger>
+                    </Dialog.Header>
 
-                        <h2 className={styles.title}>Device Connection</h2>
-
+                    <Dialog.Body>
                         {!currentUser ? (
-                            <div className={styles.content}>
+                            <VStack align="stretch" gap={6}>
                                 <SignInForm
                                     onCredentialSet={setCredential}
-                                    onError={error => console.error(error)}
+                                    onError={error => {
+                                        toaster.create({
+                                            title: 'Sign In Error',
+                                            description:
+                                                error || 'An error occurred during sign in',
+                                            type: 'error',
+                                            duration: 5000
+                                        })
+                                    }}
                                 />
-                            </div>
+                            </VStack>
                         ) : (
-                            <div className={styles.content}>
+                            <VStack align="stretch" gap={6}>
                                 {credential && (
-                                    <div className={styles.sharingActive}>
-                                        <CredentialDisplay
-                                            credential={credential}
-                                            currentUser={currentUser}
-                                        />
-                                    </div>
+                                    <CredentialDisplay
+                                        credential={credential}
+                                        currentUser={currentUser}
+                                    />
                                 )}
 
-                                <div className={styles.profileSection}>
-                                    <UserProfile currentUser={currentUser} />
-                                </div>
+                                <UserProfile currentUser={currentUser} />
 
-                                <div className={styles.userSection}>
-                                    <UserActions
-                                        onSignOut={() => setCredential(null)}
-                                        onDeleteAccount={() => setCredential(null)}
-                                    />
-                                </div>
-                            </div>
+                                <UserActions
+                                    onSignOut={() => setCredential(null)}
+                                    onDeleteAccount={() => setCredential(null)}
+                                />
+                            </VStack>
                         )}
-                    </div>
-                </div>
-            )}
-        </div>
+                    </Dialog.Body>
+                </Dialog.Content>
+            </Dialog.Positioner>
+        </Dialog.Root>
     )
 }
