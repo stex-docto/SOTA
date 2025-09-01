@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { EventId, LocationId } from '@domain'
-import { useDependencies } from '../hooks/useDependencies'
-import { HiMicrophone, HiXMark } from 'react-icons/hi2'
 import {
-    Dialog,
-    Button,
-    Input,
-    Textarea,
-    Field,
-    VStack,
-    HStack,
     Box,
+    Button,
+    Dialog,
+    Field,
+    HStack,
+    IconButton,
+    Input,
     Text,
-    IconButton
+    Textarea,
+    VStack
 } from '@chakra-ui/react'
+import { EventId, RoomId } from '@domain'
+import { HiMicrophone, HiXMark } from 'react-icons/hi2'
+import React, { useEffect, useState } from 'react'
+
 import { toaster } from '@presentation/ui/toaster-config'
+import { useDependencies } from '../hooks/useDependencies'
 
 interface TalkCreationModalProps {
     isOpen: boolean
@@ -27,7 +28,7 @@ interface TalkFormData {
     pitch: string
     startDateTime: string
     expectedDurationMinutes: number
-    locationId: string
+    roomId: string
 }
 
 function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps) {
@@ -37,7 +38,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
         pitch: '',
         startDateTime: '',
         expectedDurationMinutes: 15,
-        locationId: ''
+        roomId: ''
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string>('')
@@ -48,7 +49,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
             pitch: '',
             startDateTime: '',
             expectedDurationMinutes: 15,
-            locationId: ''
+            roomId: ''
         })
         setError('')
     }
@@ -73,7 +74,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
         e.preventDefault()
         setError('')
 
-        if (!formData.name.trim() || !formData.startDateTime || !formData.locationId) {
+        if (!formData.name.trim() || !formData.startDateTime || !formData.roomId) {
             setError('Please fill in all required fields')
             return
         }
@@ -86,7 +87,7 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
                 pitch: formData.pitch.trim(),
                 startDateTime: new Date(formData.startDateTime),
                 expectedDurationMinutes: formData.expectedDurationMinutes,
-                locationId: LocationId.from(formData.locationId)
+                roomId: RoomId.from(formData.roomId)
             })
 
             toaster.create({

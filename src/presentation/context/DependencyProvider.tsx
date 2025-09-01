@@ -10,7 +10,11 @@ import {
     SaveEventUseCase,
     RemoveSavedEventUseCase,
     UpdateUserProfileUseCase,
-    GetUserAllEventsUseCase
+    GetUserAllEventsUseCase,
+    CreateRoomUseCase,
+    UpdateRoomUseCase,
+    DeleteRoomUseCase,
+    GetRoomsByEventUseCase
 } from '@application'
 import { FirebaseUserDatastore } from '@infrastructure/datastores/FirebaseUserDatastore'
 import { FirebaseEventDatastore } from '@infrastructure/datastores/FirebaseEventDatastore'
@@ -36,18 +40,21 @@ async function initDependencies() {
     )
     const talkRepository: TalkRepository = new FirebaseTalkDatastore(firebase.firestore)
     const credentialRepository = new LocalCredentialDataStore()
-
     // Initialize use cases
     const signInUseCase = new SignInUseCase(userRepository, credentialRepository)
     const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository)
     const createTalkUseCase = new CreateTalkUseCase(talkRepository, signInUseCase)
     const getEventUseCase = new GetEventUseCase(eventRepository)
     const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository)
-    const deleteEventUseCase = new DeleteEventUseCase(eventRepository, userRepository)
+    const deleteEventUseCase = new DeleteEventUseCase(eventRepository, signInUseCase)
     const saveEventUseCase = new SaveEventUseCase(userRepository, signInUseCase)
-    const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository)
+    const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository, signInUseCase)
     const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository)
-    const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, userRepository)
+    const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, signInUseCase)
+    const createRoomUseCase = new CreateRoomUseCase(eventRepository, signInUseCase)
+    const updateRoomUseCase = new UpdateRoomUseCase(eventRepository, signInUseCase)
+    const deleteRoomUseCase = new DeleteRoomUseCase(eventRepository, userRepository)
+    const getRoomsByEventUseCase = new GetRoomsByEventUseCase(eventRepository)
 
     return {
         signInUseCase,
@@ -59,7 +66,11 @@ async function initDependencies() {
         saveEventUseCase,
         removeSavedEventUseCase,
         updateUserProfileUseCase,
-        getUserAllEventsUseCase
+        getUserAllEventsUseCase,
+        createRoomUseCase,
+        updateRoomUseCase,
+        deleteRoomUseCase,
+        getRoomsByEventUseCase
     }
 }
 

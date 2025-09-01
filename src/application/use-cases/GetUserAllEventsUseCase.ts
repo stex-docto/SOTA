@@ -1,4 +1,5 @@
-import { EventEntity, EventRepository, UserRepository } from '@/domain'
+import { EventEntity, EventRepository } from '@/domain'
+import { SignInUseCase } from '@application'
 
 export type UserEventType = 'created' | 'saved'
 
@@ -14,15 +15,12 @@ export interface GetUserAllEventsResult {
 export class GetUserAllEventsUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(): Promise<GetUserAllEventsResult> {
         // Check if user is authenticated
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated to view events')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         // Get created events
         const createdEvents = await this.eventRepository.findByCurrentUser()

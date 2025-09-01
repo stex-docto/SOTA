@@ -1,16 +1,3 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
-import remarkBreaks from 'remark-breaks'
-import { useAuth } from '../hooks/useAuth'
-import { useDependencies } from '../hooks/useDependencies'
-import { EventEntity, EventId } from '@domain'
-import ConfirmationModal from '../components/ConfirmationModal'
-import TalkCreationModal from '../components/TalkCreationModal'
-import QRCodeModal from '../components/QRCodeModal'
-import { LoadingEvent } from '../components/LoadingEvent'
-import { NonExistingEvent } from '../components/NonExistingEvent'
-import { HiHeart, HiOutlineHeart, HiPlus } from 'react-icons/hi2'
 import {
     Badge,
     Box,
@@ -22,7 +9,22 @@ import {
     Text,
     VStack
 } from '@chakra-ui/react'
+import { EventEntity, EventId } from '@domain'
+import { HiHeart, HiOutlineHeart, HiPlus } from 'react-icons/hi2'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import ConfirmationModal from '../components/ConfirmationModal'
+import { LoadingEvent } from '../components/LoadingEvent'
+import { NonExistingEvent } from '../components/NonExistingEvent'
+import QRCodeModal from '../components/QRCodeModal'
+import ReactMarkdown from 'react-markdown'
+import RoomManagement from '../components/RoomManagement'
+import TalkCreationModal from '../components/TalkCreationModal'
+import remarkBreaks from 'remark-breaks'
 import { toaster } from '@presentation/ui/toaster-config'
+import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -281,6 +283,11 @@ function EventPage() {
                                         </Button>
                                     </VStack>
                                 </VStack>
+
+                                <RoomManagement
+                                    eventId={EventId.from(eventId!)}
+                                    isEventCreator={isEventCreator}
+                                />
 
                                 <VStack gap={4} align="stretch">
                                     <Heading size="lg" colorPalette="gray">

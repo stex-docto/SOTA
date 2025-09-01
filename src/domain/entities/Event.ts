@@ -1,4 +1,4 @@
-import { EventId, UserId } from '@/domain'
+import { EventId, UserId, RoomId, RoomEntity, RoomSet } from '@/domain'
 
 export interface Event {
     id: EventId
@@ -12,6 +12,7 @@ export interface Event {
     location: string
     status: 'active' | 'inactive'
     createdBy: UserId
+    rooms: RoomSet
 }
 
 export class EventEntity implements Event {
@@ -26,7 +27,8 @@ export class EventEntity implements Event {
         public readonly endDate: Date,
         public readonly location: string,
         public readonly status: 'active' | 'inactive',
-        public readonly createdBy: UserId
+        public readonly createdBy: UserId,
+        public readonly rooms: RoomSet = new RoomSet()
     ) {}
 
     static create(
@@ -53,7 +55,77 @@ export class EventEntity implements Event {
             endDate,
             location,
             'active',
-            createdBy
+            createdBy,
+            new RoomSet()
         )
+    }
+
+    addRoom(room: RoomEntity): EventEntity {
+        const newRooms = this.rooms.add(room)
+
+        return new EventEntity(
+            this.id,
+            this.title,
+            this.description,
+            this.talkRules,
+            this.publicUrl,
+            this.createdDate,
+            this.startDate,
+            this.endDate,
+            this.location,
+            this.status,
+            this.createdBy,
+            newRooms
+        )
+    }
+
+    updateRoom(room: RoomEntity): EventEntity {
+        if (!this.rooms.has(room.id)) {
+            throw new Error('Room not found')
+        }
+
+        const newRooms = this.rooms.add(room)
+
+        return new EventEntity(
+            this.id,
+            this.title,
+            this.description,
+            this.talkRules,
+            this.publicUrl,
+            this.createdDate,
+            this.startDate,
+            this.endDate,
+            this.location,
+            this.status,
+            this.createdBy,
+            newRooms
+        )
+    }
+
+    removeRoom(roomId: RoomId): EventEntity {
+        if (!this.rooms.has(roomId)) {
+            throw new Error('Room not found')
+        }
+
+        const newRooms = this.rooms.remove(roomId)
+
+        return new EventEntity(
+            this.id,
+            this.title,
+            this.description,
+            this.talkRules,
+            this.publicUrl,
+            this.createdDate,
+            this.startDate,
+            this.endDate,
+            this.location,
+            this.status,
+            this.createdBy,
+            newRooms
+        )
+    }
+
+    getRooms(): RoomEntity[] {
+        return this.rooms.toArray()
     }
 }
