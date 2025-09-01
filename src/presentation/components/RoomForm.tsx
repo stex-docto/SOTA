@@ -1,14 +1,5 @@
 import React, { useState } from 'react'
-import { 
-    VStack, 
-    HStack, 
-    Text, 
-    Button, 
-    Box, 
-    Input, 
-    Textarea, 
-    Field 
-} from '@chakra-ui/react'
+import { VStack, HStack, Text, Button, Box, Input, Textarea, Field } from '@chakra-ui/react'
 import { IoWarningOutline } from 'react-icons/io5'
 
 export interface RoomFormData {
@@ -54,13 +45,13 @@ function RoomForm({
     }
 
     return (
-        <Box 
-            p={6} 
-            borderRadius="lg" 
-            border="1px solid" 
+        <Box
+            p={6}
+            borderRadius="lg"
+            border="1px solid"
             colorPalette="gray"
-            bg={{ base: "white", _dark: "colorPalette.900" }}
-            borderColor={{ base: "colorPalette.200", _dark: "colorPalette.700" }}
+            bg={{ base: 'white', _dark: 'colorPalette.900' }}
+            borderColor={{ base: 'colorPalette.200', _dark: 'colorPalette.700' }}
         >
             <VStack gap={6} align="stretch">
                 <Text fontSize="xl" fontWeight="bold" colorPalette="gray">
@@ -96,13 +87,16 @@ function RoomForm({
                         </Field.Root>
 
                         {error && (
-                            <Box 
-                                p={3} 
-                                borderRadius="md" 
-                                border="1px solid" 
+                            <Box
+                                p={3}
+                                borderRadius="md"
+                                border="1px solid"
                                 colorPalette="red"
-                                bg={{ base: "colorPalette.50", _dark: "colorPalette.900" }}
-                                borderColor={{ base: "colorPalette.200", _dark: "colorPalette.700" }}
+                                bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                                borderColor={{
+                                    base: 'colorPalette.200',
+                                    _dark: 'colorPalette.700'
+                                }}
                             >
                                 <HStack gap={2}>
                                     <IoWarningOutline />
@@ -123,9 +117,9 @@ function RoomForm({
                             >
                                 Cancel
                             </Button>
-                            <Button 
-                                type="submit" 
-                                colorPalette="blue" 
+                            <Button
+                                type="submit"
+                                colorPalette="blue"
                                 disabled={isSubmitting}
                                 loading={isSubmitting}
                             >

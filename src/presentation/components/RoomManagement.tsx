@@ -85,7 +85,11 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
     }
 
     const handleDeleteRoom = async (room: RoomEntity) => {
-        if (!confirm(`Are you sure you want to delete "${room.name}"? This action cannot be undone.`)) {
+        if (
+            !confirm(
+                `Are you sure you want to delete "${room.name}"? This action cannot be undone.`
+            )
+        ) {
             return
         }
 
@@ -111,7 +115,6 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
         setViewMode('edit')
     }
 
-
     const handleCancel = () => {
         setViewMode('list')
         setEditingRoom(null)
@@ -122,7 +125,9 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
         return (
             <Box p={4} textAlign="center">
                 <Spinner size="md" />
-                <Text mt={2} colorPalette="gray">Loading rooms...</Text>
+                <Text mt={2} colorPalette="gray">
+                    Loading rooms...
+                </Text>
             </Box>
         )
     }
@@ -135,11 +140,7 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
                         Event Rooms
                     </Text>
                     {isEventCreator && viewMode === 'list' && (
-                        <Button 
-                            colorPalette="blue" 
-                            onClick={() => setViewMode('create')}
-                            size="sm"
-                        >
+                        <Button colorPalette="blue" onClick={() => setViewMode('create')} size="sm">
                             <IoAddCircleOutline style={{ marginRight: '8px' }} />
                             Add Room
                         </Button>
@@ -147,19 +148,17 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
                 </HStack>
 
                 {error && (
-                    <Box 
-                        p={3} 
-                        bg="red.50" 
-                        borderRadius="md" 
-                        border="1px solid" 
+                    <Box
+                        p={3}
+                        bg="red.50"
+                        borderRadius="md"
+                        border="1px solid"
                         borderColor="red.200"
                         colorPalette="red"
                     >
                         <HStack gap={2}>
                             <IoWarningOutline />
-                            <Text fontSize="sm">
-                                {error}
-                            </Text>
+                            <Text fontSize="sm">{error}</Text>
                         </HStack>
                     </Box>
                 )}
@@ -198,7 +197,6 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
                         submitButtonText="Update Room"
                     />
                 )}
-
             </VStack>
         </Box>
     )
