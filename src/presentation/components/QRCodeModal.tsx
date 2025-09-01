@@ -59,7 +59,6 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
                         <VStack>
                             <Box
                                 p={6}
-                                bg="white"
                                 borderRadius="md"
                                 border="1px solid"
                                 borderColor="gray.200"
@@ -76,7 +75,7 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
                             </Text>
 
                             <HStack w="full">
-                                <Input value={url} readOnly bg="gray.50" fontSize="sm" />
+                                <Input value={url} readOnly colorPalette="grey" fontSize="sm" />
                                 <IconButton
                                     aria-label="Copy URL"
                                     onClick={handleCopyUrl}
