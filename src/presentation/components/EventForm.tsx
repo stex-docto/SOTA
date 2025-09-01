@@ -1,6 +1,18 @@
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
+import {
+    Box,
+    VStack,
+    HStack,
+    Heading,
+    Text,
+    Input,
+    Textarea,
+    Button,
+    Field,
+    Container
+} from '@chakra-ui/react'
 
 export interface EventFormData {
     title: string
@@ -80,161 +92,189 @@ function EventForm({
     }
 
     return (
-        <div className="event-form-container">
-            <div className="page-header">
-                <h1>{title}</h1>
-                <p>{subtitle}</p>
-            </div>
+        <Container maxW="4xl" py={8}>
+            {title && (
+                <VStack gap={2} mb={8} textAlign="center">
+                    <Heading size="2xl" colorPalette="gray">
+                        {title}
+                    </Heading>
+                    {subtitle && (
+                        <Text fontSize="lg" colorPalette="gray">
+                            {subtitle}
+                        </Text>
+                    )}
+                </VStack>
+            )}
 
-            <form onSubmit={handleSubmit} className="event-form">
-                <div className="form-section">
-                    <h2>Basic Information</h2>
+            <Box as="form" onSubmit={handleSubmit}>
+                <VStack gap={8} align="stretch">
+                    <Box>
+                        <Heading size="lg" mb={6} colorPalette="gray">
+                            Basic Information
+                        </Heading>
 
-                    <div className="form-group">
-                        <label htmlFor="title">Event Title *</label>
-                        <input
-                            id="title"
-                            name="title"
-                            type="text"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            placeholder="Enter event title"
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                        <VStack gap={6} align="stretch">
+                            <Field.Root required>
+                                <Field.Label>Event Title *</Field.Label>
+                                <Input
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter event title"
+                                />
+                            </Field.Root>
 
-                    <div className="form-group">
-                        <div className="field-header">
-                            <label htmlFor="description">Description (Markdown supported)</label>
-                            <button
-                                type="button"
-                                onClick={() => setDescriptionPreview(!descriptionPreview)}
-                                className="preview-toggle"
-                            >
-                                {descriptionPreview ? 'Edit' : 'Preview'}
-                            </button>
-                        </div>
-                        {descriptionPreview ? (
-                            <div className="markdown-preview">
-                                {formData.description ? (
-                                    <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                                        {formData.description}
-                                    </ReactMarkdown>
+                            <Field.Root>
+                                <HStack justify="space-between" align="center" mb={2}>
+                                    <Field.Label>Description (Markdown supported)</Field.Label>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setDescriptionPreview(!descriptionPreview)}
+                                    >
+                                        {descriptionPreview ? 'Edit' : 'Preview'}
+                                    </Button>
+                                </HStack>
+                                {descriptionPreview ? (
+                                    <Box
+                                        colorPalette="gray"
+                                        p={4}
+                                        borderWidth="1px"
+                                        borderColor="colorPalette.200"
+                                        borderRadius="md"
+                                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.800' }}
+                                        minH="100px"
+                                    >
+                                        {formData.description ? (
+                                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                                {formData.description}
+                                            </ReactMarkdown>
+                                        ) : (
+                                            <Text colorPalette="gray" fontStyle="italic">
+                                                No description provided
+                                            </Text>
+                                        )}
+                                    </Box>
                                 ) : (
-                                    <p className="preview-placeholder">No description provided</p>
+                                    <Textarea
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleInputChange}
+                                        placeholder="Describe your event... (Markdown formatting supported)"
+                                        rows={4}
+                                        autoresize
+                                    />
                                 )}
-                            </div>
-                        ) : (
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
-                                placeholder="Describe your event... (Markdown formatting supported)"
-                                rows={4}
-                                className="form-textarea"
-                            />
-                        )}
-                    </div>
+                            </Field.Root>
 
-                    <div className="form-group">
-                        <div className="field-header">
-                            <label htmlFor="talkRules">Talk Rules (Markdown supported)</label>
-                            <button
-                                type="button"
-                                onClick={() => setTalkRulesPreview(!talkRulesPreview)}
-                                className="preview-toggle"
-                            >
-                                {talkRulesPreview ? 'Edit' : 'Preview'}
-                            </button>
-                        </div>
-                        {talkRulesPreview ? (
-                            <div className="markdown-preview large">
-                                <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                                    {formData.talkRules}
-                                </ReactMarkdown>
-                            </div>
-                        ) : (
-                            <textarea
-                                id="talkRules"
-                                name="talkRules"
-                                value={formData.talkRules}
-                                onChange={handleInputChange}
-                                placeholder="Rules for talk sessions..."
-                                rows={10}
-                                className="form-textarea"
-                            />
-                        )}
-                        <small className="help-text">
-                            These guidelines will be shown to participants about how the talk
-                            sessions work.
-                        </small>
-                    </div>
+                            <Field.Root>
+                                <HStack justify="space-between" align="center" mb={2}>
+                                    <Field.Label>Talk Rules (Markdown supported)</Field.Label>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setTalkRulesPreview(!talkRulesPreview)}
+                                    >
+                                        {talkRulesPreview ? 'Edit' : 'Preview'}
+                                    </Button>
+                                </HStack>
+                                {talkRulesPreview ? (
+                                    <Box
+                                        colorPalette="gray"
+                                        p={4}
+                                        borderWidth="1px"
+                                        borderColor="colorPalette.200"
+                                        borderRadius="md"
+                                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.800' }}
+                                        minH="200px"
+                                        maxH="400px"
+                                        overflowY="auto"
+                                    >
+                                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                            {formData.talkRules}
+                                        </ReactMarkdown>
+                                    </Box>
+                                ) : (
+                                    <Textarea
+                                        name="talkRules"
+                                        value={formData.talkRules}
+                                        onChange={handleInputChange}
+                                        placeholder="Rules for talk sessions..."
+                                        rows={4}
+                                        autoresize
+                                    />
+                                )}
+                                <Field.HelperText>
+                                    These guidelines will be shown to participants about how the
+                                    talk sessions work.
+                                </Field.HelperText>
+                            </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="startDate">Start Date & Time *</label>
-                        <input
-                            id="startDate"
-                            name="startDate"
-                            type="datetime-local"
-                            value={formData.startDate}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                            <Field.Root required>
+                                <Field.Label>Start Date & Time *</Field.Label>
+                                <Input
+                                    name="startDate"
+                                    type="datetime-local"
+                                    value={formData.startDate}
+                                    onChange={handleInputChange}
+                                />
+                            </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="endDate">End Date & Time *</label>
-                        <input
-                            id="endDate"
-                            name="endDate"
-                            type="datetime-local"
-                            value={formData.endDate}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                            <Field.Root required>
+                                <Field.Label>End Date & Time *</Field.Label>
+                                <Input
+                                    name="endDate"
+                                    type="datetime-local"
+                                    value={formData.endDate}
+                                    onChange={handleInputChange}
+                                />
+                            </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="location">Location</label>
-                        <input
-                            id="location"
-                            name="location"
-                            type="text"
-                            value={formData.location}
-                            onChange={handleInputChange}
-                            placeholder="e.g., Conference Room A, Virtual Meeting, etc."
-                            className="form-input"
-                        />
-                    </div>
-                </div>
+                            <Field.Root>
+                                <Field.Label>Location</Field.Label>
+                                <Input
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Conference Room A, Virtual Meeting, etc."
+                                />
+                            </Field.Root>
+                        </VStack>
+                    </Box>
 
-                {error && (
-                    <div className="error-message">
-                        {typeof error === 'string' ? error : error.message}
-                    </div>
-                )}
+                    {error && (
+                        <Box
+                            colorPalette="red"
+                            p={4}
+                            bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                            borderColor="colorPalette.200"
+                            borderWidth="1px"
+                            borderRadius="md"
+                        >
+                            <Text colorPalette="red" fontWeight="medium">
+                                {typeof error === 'string' ? error : error.message}
+                            </Text>
+                        </Box>
+                    )}
 
-                <div className="form-actions">
-                    <button
-                        type="button"
-                        onClick={onCancel}
-                        className="cancel-button"
-                        disabled={isSubmitting}
-                    >
-                        Cancel
-                    </button>
-                    <button type="submit" className="submit-button" disabled={isSubmitting}>
-                        {isSubmitting
-                            ? `${submitButtonText.replace(/e$/, 'ing')}...`
-                            : submitButtonText}
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <HStack justify="flex-end" gap={4}>
+                        <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            colorPalette="blue"
+                            disabled={isSubmitting}
+                            loading={isSubmitting}
+                        >
+                            {isSubmitting
+                                ? `${submitButtonText.replace(/e$/, 'ing')}...`
+                                : submitButtonText}
+                        </Button>
+                    </HStack>
+                </VStack>
+            </Box>
+        </Container>
     )
 }
 

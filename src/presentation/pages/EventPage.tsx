@@ -8,7 +8,21 @@ import { EventEntity, EventId } from '@domain'
 import ConfirmationModal from '../components/ConfirmationModal'
 import TalkCreationModal from '../components/TalkCreationModal'
 import QRCodeModal from '../components/QRCodeModal'
-import { HiSparkles, HiHeart, HiOutlineHeart } from 'react-icons/hi2'
+import { LoadingEvent } from '../components/LoadingEvent'
+import { NonExistingEvent } from '../components/NonExistingEvent'
+import { HiHeart, HiOutlineHeart, HiPlus } from 'react-icons/hi2'
+import {
+    Badge,
+    Box,
+    Button,
+    Container,
+    Grid,
+    Heading,
+    IconButton,
+    Text,
+    VStack
+} from '@chakra-ui/react'
+import { toaster } from '@presentation/ui/toaster-config'
 
 function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -93,9 +107,15 @@ function EventPage() {
             navigate('/')
         } catch (error) {
             console.error('Failed to delete event:', error)
-            alert(
-                error instanceof Error ? error.message : 'Failed to delete event. Please try again.'
-            )
+            toaster.create({
+                title: 'Delete Failed',
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to delete event. Please try again.',
+                type: 'error',
+                duration: 5000
+            })
         } finally {
             setIsDeleting(false)
             setShowDeleteConfirmation(false)
@@ -121,190 +141,305 @@ function EventPage() {
             }
         } catch (error) {
             console.error('Failed to toggle save state:', error)
-            alert(
-                error instanceof Error
-                    ? error.message
-                    : 'Failed to save/unsave event. Please try again.'
-            )
+            toaster.create({
+                title: 'Save Failed',
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to save/unsave event. Please try again.',
+                type: 'error',
+                duration: 5000
+            })
         } finally {
             setIsSaving(false)
         }
     }
 
     if (loading) {
-        return (
-            <div className="event-page">
-                <div className="loading-message">
-                    <h2>Loading event...</h2>
-                </div>
-            </div>
-        )
+        return <LoadingEvent />
     }
 
     if (error || !event) {
-        return (
-            <div className="event-page">
-                <div className="error-section">
-                    <div className="error-icon">🎪</div>
-                    <h1>Dang, this event doesn't exist!</h1>
-                    <p className="error-message">
-                        Check your link — it might have been deleted or never existed in the first
-                        place.
-                    </p>
-                    <p className="error-suggestion">
-                        But hey, no worries! You can create your own amazing event instead.
-                    </p>
-                    <div className="error-actions">
-                        <button onClick={() => navigate('/')} className="back-button primary">
-                            🏠 Back to Home
-                        </button>
-                        <button
-                            onClick={() => navigate('/create-event')}
-                            className="create-button secondary"
-                        >
-                            <HiSparkles style={{ display: 'inline', marginRight: '8px' }} />
-                            Create New Event
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )
+        return <NonExistingEvent />
     }
 
     return (
-        <div className="event-page">
-            <div className="event-header">
-                <div className="event-title-section">
-                    <h1>{event.title}</h1>
-                    <p className="event-id">Event ID: {eventId}</p>
-                    <div className="event-dates">
-                        <p>
-                            <strong>Start:</strong> {formatDate(event.startDate)}
-                        </p>
-                        <p>
-                            <strong>End:</strong> {formatDate(event.endDate)}
-                        </p>
-                    </div>
-                    {event.location && (
-                        <p className="event-location">
-                            <strong>Location:</strong> {event.location}
-                        </p>
-                    )}
-                </div>
+        <Container maxW="6xl" py={8}>
+            <VStack gap={8} align="stretch">
+                {/* Event Header */}
+                <Box
+                    colorPalette="blue"
+                    p={8}
+                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
+                    borderRadius="lg"
+                    borderWidth="1px"
+                    borderColor="colorPalette.200"
+                >
+                    <Grid
+                        templateColumns={{ base: '1fr', lg: '2fr 1fr' }}
+                        gap={8}
+                        alignItems="start"
+                    >
+                        <VStack gap={4} align="start">
+                            <Heading size="3xl" colorPalette="gray">
+                                {event.title}
+                            </Heading>
+                            <Badge colorPalette="gray" size="sm" fontFamily="mono">
+                                Event ID: {eventId}
+                            </Badge>
+                            <VStack gap={2} align="start" fontSize="sm" colorPalette="gray">
+                                <Text>
+                                    <Text as="span" fontWeight="semibold">
+                                        Start:
+                                    </Text>{' '}
+                                    {formatDate(event.startDate)}
+                                </Text>
+                                <Text>
+                                    <Text as="span" fontWeight="semibold">
+                                        End:
+                                    </Text>{' '}
+                                    {formatDate(event.endDate)}
+                                </Text>
+                                {event.location && (
+                                    <Text>
+                                        <Text as="span" fontWeight="semibold">
+                                            Location:
+                                        </Text>{' '}
+                                        {event.location}
+                                    </Text>
+                                )}
+                            </VStack>
+                        </VStack>
 
-                <div className="event-controls">
-                    <QRCodeModal
-                        url={window.location.href}
-                        title={event.title}
-                        buttonClassName="share-button secondary"
-                    />
-                    {!isEventCreator && (
-                        <button
-                            className={`save-button ${isEventSaved ? 'saved' : 'unsaved'}`}
-                            onClick={handleSaveToggle}
-                            disabled={isSaving}
-                        >
-                            {isSaving ? (
-                                '...'
-                            ) : isEventSaved ? (
-                                <>
-                                    <HiHeart style={{ display: 'inline', marginRight: '4px' }} />
-                                    Saved
-                                </>
-                            ) : (
-                                <>
-                                    <HiOutlineHeart
-                                        style={{ display: 'inline', marginRight: '4px' }}
-                                    />
-                                    Save Event
-                                </>
-                            )}
-                        </button>
-                    )}
-                    {isEventCreator && (
-                        <button
-                            className="admin-button primary"
-                            onClick={() => setShowManagement(!showManagement)}
-                        >
-                            {showManagement ? 'Hide Management' : 'Manage Event'}
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            <div className="event-content">
-                {isEventCreator && showManagement && (
-                    <div className="management-section">
-                        <h2>Event Management</h2>
-                        <div className="management-actions">
-                            <div className="action-group">
-                                <h3>Event Actions</h3>
-                                <button
-                                    className="admin-button secondary"
-                                    onClick={() => navigate(`/event/${eventId}/edit`)}
+                        <VStack gap={3} align="stretch">
+                            <QRCodeModal url={window.location.href} title={event.title} />
+                            {!isEventCreator && (
+                                <Button
+                                    onClick={handleSaveToggle}
+                                    disabled={isSaving}
+                                    loading={isSaving}
+                                    variant={isEventSaved ? 'solid' : 'outline'}
+                                    colorPalette={isEventSaved ? 'red' : 'gray'}
+                                    size="lg"
                                 >
-                                    Edit Event Details
-                                </button>
-                                <button className="admin-button primary">Generate Schedule</button>
-                                <button className="admin-button danger" onClick={handleDeleteClick}>
-                                    Delete Event
-                                </button>
-                            </div>
+                                    {isEventSaved ? <HiHeart /> : <HiOutlineHeart />}
+                                    {isEventSaved ? 'Saved' : 'Save Event'}
+                                </Button>
+                            )}
+                            {isEventCreator && (
+                                <Button
+                                    onClick={() => setShowManagement(!showManagement)}
+                                    colorPalette="blue"
+                                    size="lg"
+                                >
+                                    {showManagement ? 'Hide Management' : 'Manage Event'}
+                                </Button>
+                            )}
+                        </VStack>
+                    </Grid>
+                </Box>
 
-                            <div className="event-stats">
-                                <h3>Event Statistics</h3>
-                                <div className="stats-grid">
-                                    <div className="stat-card">
-                                        <h4>0</h4>
-                                        <p>Total Talks</p>
-                                    </div>
-                                    <div className="stat-card">
-                                        <h4>0</h4>
-                                        <p>Participants</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                {/* Event Management Section */}
+                {isEventCreator && showManagement && (
+                    <Box
+                        colorPalette="blue"
+                        p={6}
+                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
+                        borderWidth="1px"
+                        borderColor="colorPalette.200"
+                        borderRadius="lg"
+                    >
+                        <VStack gap={6} align="stretch">
+                            <Heading size="xl" colorPalette="gray">
+                                Event Management
+                            </Heading>
+
+                            <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8}>
+                                <VStack gap={4} align="stretch">
+                                    <Heading size="lg" colorPalette="gray">
+                                        Event Actions
+                                    </Heading>
+                                    <VStack gap={3} align="stretch">
+                                        <Button
+                                            colorPalette="blue"
+                                            variant="outline"
+                                            size="lg"
+                                            onClick={() => navigate(`/event/${eventId}/edit`)}
+                                        >
+                                            Edit Event Details
+                                        </Button>
+                                        <Button colorPalette="green" size="lg">
+                                            Generate Schedule
+                                        </Button>
+                                        <Button
+                                            colorPalette="red"
+                                            variant="outline"
+                                            size="lg"
+                                            onClick={handleDeleteClick}
+                                        >
+                                            Delete Event
+                                        </Button>
+                                    </VStack>
+                                </VStack>
+
+                                <VStack gap={4} align="stretch">
+                                    <Heading size="lg" colorPalette="gray">
+                                        Event Statistics
+                                    </Heading>
+                                    <Grid templateColumns="1fr 1fr" gap={4}>
+                                        <Box
+                                            colorPalette="gray"
+                                            p={4}
+                                            textAlign="center"
+                                            bg={{
+                                                base: 'colorPalette.50',
+                                                _dark: 'colorPalette.900'
+                                            }}
+                                            borderWidth="1px"
+                                            borderColor="colorPalette.200"
+                                            borderRadius="md"
+                                        >
+                                            <Text
+                                                fontSize="2xl"
+                                                fontWeight="bold"
+                                                colorPalette="gray"
+                                            >
+                                                0
+                                            </Text>
+                                            <Text fontSize="sm" colorPalette="gray">
+                                                Total Talks
+                                            </Text>
+                                        </Box>
+                                        <Box
+                                            colorPalette="gray"
+                                            p={4}
+                                            textAlign="center"
+                                            bg={{
+                                                base: 'colorPalette.50',
+                                                _dark: 'colorPalette.900'
+                                            }}
+                                            borderWidth="1px"
+                                            borderColor="colorPalette.200"
+                                            borderRadius="md"
+                                        >
+                                            <Text
+                                                fontSize="2xl"
+                                                fontWeight="bold"
+                                                colorPalette="gray"
+                                            >
+                                                0
+                                            </Text>
+                                            <Text fontSize="sm" colorPalette="gray">
+                                                Participants
+                                            </Text>
+                                        </Box>
+                                    </Grid>
+                                </VStack>
+                            </Grid>
+                        </VStack>
+                    </Box>
                 )}
 
-                <div className="event-info">
-                    <h2>Description</h2>
-                    <div className="markdown-preview">
-                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                            {event.description}
-                        </ReactMarkdown>
-                    </div>
-                </div>
+                {/* Description Section */}
+                <Box
+                    colorPalette="gray"
+                    p={6}
+                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
+                    borderWidth="1px"
+                    borderColor="colorPalette.200"
+                    borderRadius="lg"
+                >
+                    <VStack gap={4} align="stretch">
+                        <Heading size="xl" colorPalette="gray">
+                            Description
+                        </Heading>
+                        <Box
+                            colorPalette="gray"
+                            p={4}
+                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
+                            borderWidth="1px"
+                            borderColor="colorPalette.200"
+                            borderRadius="md"
+                        >
+                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                {event.description}
+                            </ReactMarkdown>
+                        </Box>
+                    </VStack>
+                </Box>
 
-                <div className="talk-rules">
-                    <h2>Talk Rules</h2>
-                    <div className="markdown-preview large">
-                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                            {event.talkRules}
-                        </ReactMarkdown>
-                    </div>
-                </div>
+                {/* Talk Rules Section */}
+                <Box
+                    colorPalette="green"
+                    p={6}
+                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
+                    borderWidth="1px"
+                    borderColor="colorPalette.200"
+                    borderRadius="lg"
+                >
+                    <VStack gap={4} align="stretch">
+                        <Heading size="xl" colorPalette="gray">
+                            Talk Rules
+                        </Heading>
+                        <Box
+                            colorPalette="green"
+                            p={4}
+                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
+                            borderWidth="1px"
+                            borderColor="colorPalette.200"
+                            borderRadius="md"
+                        >
+                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                                {event.talkRules}
+                            </ReactMarkdown>
+                        </Box>
+                    </VStack>
+                </Box>
 
-                <div className="talk-schedule">
-                    <h2>Talk Schedule</h2>
-                    <div className="schedule-placeholder">
-                        <p>
-                            Schedule will be displayed here once talks are submitted and approved.
-                        </p>
-                    </div>
-                </div>
-            </div>
+                {/* Talk Schedule Section */}
+                <Box
+                    colorPalette="purple"
+                    p={6}
+                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
+                    borderWidth="1px"
+                    borderColor="colorPalette.200"
+                    borderRadius="lg"
+                >
+                    <VStack gap={4} align="stretch">
+                        <Heading size="xl" colorPalette="gray">
+                            Talk Schedule
+                        </Heading>
+                        <Box
+                            colorPalette="purple"
+                            p={6}
+                            textAlign="center"
+                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
+                            borderWidth="1px"
+                            borderColor="colorPalette.200"
+                            borderRadius="md"
+                        >
+                            <Text colorPalette="gray" fontStyle="italic">
+                                Schedule will be displayed here once talks are submitted and
+                                approved.
+                            </Text>
+                        </Box>
+                    </VStack>
+                </Box>
 
-            {/* Floating Action Button */}
-            <button
-                className="floating-action-button"
-                onClick={() => setShowTalkCreationModal(true)}
-                aria-label="Submit a talk"
-                title="Submit a talk"
-            >
-                +
-            </button>
+                {/* Floating Action Button */}
+                <IconButton
+                    position="fixed"
+                    bottom={8}
+                    right={8}
+                    borderRadius="full"
+                    size="2xl"
+                    colorPalette="blue"
+                    onClick={() => setShowTalkCreationModal(true)}
+                    title="Submit a talk"
+                >
+                    <HiPlus />
+                </IconButton>
+            </VStack>
 
             <TalkCreationModal
                 isOpen={showTalkCreationModal}
@@ -322,7 +457,7 @@ function EventPage() {
                 isDestructive={true}
                 isLoading={isDeleting}
             />
-        </div>
+        </Container>
     )
 }
 

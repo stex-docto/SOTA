@@ -4,6 +4,8 @@ import { useAuth } from '../hooks/useAuth'
 import { useDependencies } from '../hooks/useDependencies'
 import { UserEventItem } from '@application'
 import moment from 'moment'
+import { HiSignal, HiClock } from 'react-icons/hi2'
+import { Box, HStack, Text, Badge, Separator } from '@chakra-ui/react'
 
 function CurrentEventsBar() {
     const { currentUser } = useAuth()
@@ -82,41 +84,104 @@ function CurrentEventsBar() {
     }
 
     return (
-        <div className="header-events-info">
-            {/* Live Events */}
-            {currentEvents.length > 0 && (
-                <div className="event-items">
-                    {currentEvents.slice(0, 2).map(eventItem => (
-                        <Link
-                            key={`${eventItem.event.id.value}-${eventItem.type}`}
-                            to={`/event/${eventItem.event.id.value}`}
-                            className="header-event-item live-event"
-                        >
-                            {' '}
-                            <span className="live-indicator">🔴 Live</span>
-                            <span className="event-title">{eventItem.event.title}</span>
-                        </Link>
-                    ))}
-                    {currentEvents.length > 2 && (
-                        <span className="more-events">+{currentEvents.length - 2}</span>
-                    )}
-                </div>
-            )}
+        <Box colorPalette="gray" py={2}>
+            <HStack gap={4} flexWrap="wrap" justify="center">
+                {/* Live Events */}
+                {currentEvents.length > 0 && (
+                    <HStack gap={3} flexWrap="wrap">
+                        {currentEvents.slice(0, 2).map(eventItem => (
+                            <Link
+                                key={`${eventItem.event.id.value}-${eventItem.type}`}
+                                to={`/event/${eventItem.event.id.value}`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <HStack
+                                    gap={2}
+                                    colorPalette="red"
+                                    p={2}
+                                    px={3}
+                                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                                    borderWidth="1px"
+                                    borderColor="colorPalette.200"
+                                    borderRadius="4px"
+                                    _hover={{
+                                        bg: { base: 'colorPalette.100', _dark: 'colorPalette.800' }
+                                    }}
+                                >
+                                    <HStack gap={1} align="center">
+                                        <HiSignal size={18} color="red" />
+                                        <Text
+                                            fontSize="xs"
+                                            fontWeight="semibold"
+                                            colorPalette="red"
+                                        >
+                                            Live
+                                        </Text>
+                                    </HStack>
+                                    <Text
+                                        fontSize="xs"
+                                        fontWeight="medium"
+                                        colorPalette="gray"
+                                        maxW="150px"
+                                        truncate
+                                    >
+                                        {eventItem.event.title}
+                                    </Text>
+                                </HStack>
+                            </Link>
+                        ))}
+                        {currentEvents.length > 2 && (
+                            <Badge colorPalette="gray" size="sm" borderRadius="full">
+                                +{currentEvents.length - 2}
+                            </Badge>
+                        )}
+                    </HStack>
+                )}
 
-            {/* Next Event - show alongside live events or alone */}
-            {nextEvent && timeToNext && (
-                <>
-                    {currentEvents.length > 0 && <span className="separator">•</span>}
+                {/* Separator */}
+                {currentEvents.length > 0 && nextEvent && timeToNext && (
+                    <Separator orientation="vertical" height="20px" />
+                )}
+
+                {/* Next Event */}
+                {nextEvent && timeToNext && (
                     <Link
                         to={`/event/${nextEvent.event.id.value}`}
-                        className="header-event-item next-event"
+                        style={{ textDecoration: 'none' }}
                     >
-                        <span className="countdown">⏰ in {timeToNext}</span>
-                        <span className="event-title">{nextEvent.event.title}</span>
+                        <HStack
+                            gap={2}
+                            colorPalette="blue"
+                            p={2}
+                            px={3}
+                            bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                            borderWidth="1px"
+                            borderColor="colorPalette.200"
+                            borderRadius="4px"
+                            _hover={{
+                                bg: { base: 'colorPalette.100', _dark: 'colorPalette.800' }
+                            }}
+                        >
+                            <HStack gap={1} align="center">
+                                <HiClock size={18} />
+                                <Text fontSize="xs" fontWeight="semibold" colorPalette="blue">
+                                    in {timeToNext}
+                                </Text>
+                            </HStack>
+                            <Text
+                                fontSize="xs"
+                                fontWeight="medium"
+                                colorPalette="gray"
+                                maxW="150px"
+                                truncate
+                            >
+                                {nextEvent.event.title}
+                            </Text>
+                        </HStack>
                     </Link>
-                </>
-            )}
-        </div>
+                )}
+            </HStack>
+        </Box>
     )
 }
 
