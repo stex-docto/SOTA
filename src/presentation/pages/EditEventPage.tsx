@@ -190,7 +190,8 @@ function EditEventPage() {
                                 Cannot Edit Event
                             </Heading>
                             <Text fontSize="lg" colorPalette="gray">
-                                {error?.message || 'The event you are trying to edit does not exist.'}
+                                {error?.message ||
+                                    'The event you are trying to edit does not exist.'}
                             </Text>
                             {getErrorSuggestion() && (
                                 <Text fontSize="md" colorPalette="gray" fontStyle="italic">
@@ -208,11 +209,7 @@ function EditEventPage() {
                                     🔙 View Event
                                 </Button>
                             )}
-                            <Button 
-                                onClick={() => navigate('/')} 
-                                variant="outline"
-                                size="lg"
-                            >
+                            <Button onClick={() => navigate('/')} variant="outline" size="lg">
                                 🏠 Back to Home
                             </Button>
                         </HStack>
@@ -236,18 +233,22 @@ function EditEventPage() {
                         </Text>
                         <VStack gap={2} fontSize="sm" colorPalette="gray">
                             <Text>
-                                <Text as="span" fontWeight="semibold">Created:</Text>{' '}
+                                <Text as="span" fontWeight="semibold">
+                                    Created:
+                                </Text>{' '}
                                 {formatDate(event.createdDate)}
                             </Text>
                             <Text>
-                                <Text as="span" fontWeight="semibold">Event ID:</Text>{' '}
+                                <Text as="span" fontWeight="semibold">
+                                    Event ID:
+                                </Text>{' '}
                                 {eventId}
                             </Text>
                         </VStack>
                     </VStack>
                 </VStack>
             </Container>
-            
+
             <EventForm
                 initialData={initialFormData}
                 onSubmit={handleSubmit}

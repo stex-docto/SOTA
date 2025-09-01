@@ -1,4 +1,5 @@
-import React from 'react'
+import { HiExclamationTriangle, HiXMark } from 'react-icons/hi2'
+import { Dialog, Button, VStack, HStack, Box, Text, IconButton } from '@chakra-ui/react'
 
 export interface ConfirmationModalProps {
     isOpen: boolean
@@ -25,46 +26,46 @@ function ConfirmationModal({
 }: ConfirmationModalProps) {
     if (!isOpen) return null
 
-    const handleBackdropClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose()
-        }
-    }
-
     return (
-        <div className="modal-overlay" onClick={handleBackdropClick}>
-            <div className="modal-content confirmation-modal">
-                <div className="modal-header">
-                    <h2>{title}</h2>
-                    <button className="modal-close-button" onClick={onClose} disabled={isLoading}>
-                        ×
-                    </button>
-                </div>
+        <Dialog.Root open={isOpen} onOpenChange={({ open }) => !open && onClose()}>
+            <Dialog.Content maxW="md">
+                <Dialog.Header>
+                    <Dialog.Title>
+                        <HStack gap={3}>
+                            <Box colorPalette={isDestructive ? 'red' : 'blue'}>
+                                <HiExclamationTriangle size={24} />
+                            </Box>
+                            <Text>{title}</Text>
+                        </HStack>
+                    </Dialog.Title>
+                    <Dialog.CloseTrigger asChild>
+                        <IconButton variant="outline" size="sm" disabled={isLoading}>
+                            <HiXMark />
+                        </IconButton>
+                    </Dialog.CloseTrigger>
+                </Dialog.Header>
 
-                <div className="modal-body">
-                    <p>{message}</p>
-                </div>
+                <VStack gap={6} p={6} align="stretch">
+                    <Text fontSize="md" colorPalette="gray" textAlign="center">
+                        {message}
+                    </Text>
 
-                <div className="modal-actions">
-                    <button
-                        type="button"
-                        className="cancel-button"
-                        onClick={onClose}
-                        disabled={isLoading}
-                    >
-                        {cancelButtonText}
-                    </button>
-                    <button
-                        type="button"
-                        className={`confirm-button ${isDestructive ? 'destructive' : 'primary'}`}
-                        onClick={onConfirm}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Loading...' : confirmButtonText}
-                    </button>
-                </div>
-            </div>
-        </div>
+                    <HStack justify="flex-end" gap={3}>
+                        <Button variant="outline" onClick={onClose} disabled={isLoading}>
+                            {cancelButtonText}
+                        </Button>
+                        <Button
+                            colorPalette={isDestructive ? 'red' : 'blue'}
+                            onClick={onConfirm}
+                            disabled={isLoading}
+                            loading={isLoading}
+                        >
+                            {isLoading ? 'Loading...' : confirmButtonText}
+                        </Button>
+                    </HStack>
+                </VStack>
+            </Dialog.Content>
+        </Dialog.Root>
     )
 }
 

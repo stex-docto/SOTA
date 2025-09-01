@@ -142,7 +142,7 @@ function EventForm({
                                         borderWidth="1px"
                                         borderColor="colorPalette.200"
                                         borderRadius="md"
-                                        bg={{ base: "colorPalette.50", _dark: "colorPalette.800" }}
+                                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.800' }}
                                         minH="100px"
                                     >
                                         {formData.description ? (
@@ -185,7 +185,7 @@ function EventForm({
                                         borderWidth="1px"
                                         borderColor="colorPalette.200"
                                         borderRadius="md"
-                                        bg={{ base: "colorPalette.50", _dark: "colorPalette.800" }}
+                                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.800' }}
                                         minH="200px"
                                         maxH="400px"
                                         overflowY="auto"
@@ -205,7 +205,8 @@ function EventForm({
                                     />
                                 )}
                                 <Field.HelperText>
-                                    These guidelines will be shown to participants about how the talk sessions work.
+                                    These guidelines will be shown to participants about how the
+                                    talk sessions work.
                                 </Field.HelperText>
                             </Field.Root>
 
@@ -245,7 +246,7 @@ function EventForm({
                         <Box
                             colorPalette="red"
                             p={4}
-                            bg={{ base: "colorPalette.50", _dark: "colorPalette.900" }}
+                            bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
                             borderColor="colorPalette.200"
                             borderWidth="1px"
                             borderRadius="md"
@@ -257,11 +258,7 @@ function EventForm({
                     )}
 
                     <HStack justify="flex-end" gap={4}>
-                        <Button
-                            variant="outline"
-                            onClick={onCancel}
-                            disabled={isSubmitting}
-                        >
+                        <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
                             Cancel
                         </Button>
                         <Button
