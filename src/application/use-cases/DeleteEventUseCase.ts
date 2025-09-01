@@ -1,4 +1,5 @@
-import { EventId, EventRepository, UserRepository } from '@/domain'
+import { EventId, EventRepository } from '@/domain'
+import { SignInUseCase } from '@application'
 
 export interface DeleteEventCommand {
     eventId: EventId
@@ -11,7 +12,7 @@ export interface DeleteEventResult {
 export class DeleteEventUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(command: DeleteEventCommand): Promise<DeleteEventResult> {
@@ -22,10 +23,7 @@ export class DeleteEventUseCase {
         }
 
         // Get current user to verify permissions
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated to delete an event')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         // Verify the user is the creator of the event
         if (existingEvent.createdBy.value !== currentUser.id.value) {

@@ -1,4 +1,5 @@
 import { UserRepository, EventId } from '@/domain'
+import { SignInUseCase } from '@application'
 
 export interface RemoveSavedEventCommand {
     eventId: EventId
@@ -9,14 +10,14 @@ export interface RemoveSavedEventResult {
 }
 
 export class RemoveSavedEventUseCase {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly signInUseCase: SignInUseCase
+    ) {}
 
     async execute(command: RemoveSavedEventCommand): Promise<RemoveSavedEventResult> {
         // Get current user
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated to remove saved events')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         // Remove event from saved events and save user
         const updatedUser = currentUser.removeSavedEvent(command.eventId)

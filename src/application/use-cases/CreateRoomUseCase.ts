@@ -1,4 +1,5 @@
-import { EventId, EventRepository, RoomEntity, UserRepository } from '@domain'
+import { EventId, EventRepository, RoomEntity } from '@domain'
+import { SignInUseCase } from '@application'
 
 export interface CreateRoomCommand {
     eventId: EventId
@@ -13,14 +14,11 @@ export interface CreateRoomResult {
 export class CreateRoomUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(command: CreateRoomCommand): Promise<CreateRoomResult> {
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         const event = await this.eventRepository.findById(command.eventId)
         if (!event) {
