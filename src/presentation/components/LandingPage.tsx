@@ -18,10 +18,10 @@ function LandingPage() {
             <VStack gap={12} textAlign="center">
                 {/* Hero Section */}
                 <VStack gap={6}>
-                    <Heading size="4xl" color="fg.emphasized">
+                    <Heading size="4xl" colorPalette="gray">
                         Welcome to SOTA
                     </Heading>
-                    <Text fontSize="xl" color="fg.muted" lineHeight={1.8} maxW="2xl">
+                    <Text fontSize="xl" colorPalette="gray" lineHeight={1.8} maxW="2xl">
                         Simple Open Talk App - Organize and participate in open talk sessions. Share
                         your knowledge, learn from others, and build a vibrant community of speakers
                         and learners.
@@ -53,7 +53,7 @@ function LandingPage() {
 
                                 <Text
                                     fontSize="lg"
-                                    color="fg.muted"
+                                    colorPalette="gray"
                                     textAlign="center"
                                     lineHeight={1.6}
                                 >
@@ -62,7 +62,7 @@ function LandingPage() {
                                 </Text>
 
                                 <Badge
-                                    colorScheme="green"
+                                    colorPalette="green"
                                     size="lg"
                                     px={3}
                                     py={1}
@@ -101,7 +101,7 @@ function LandingPage() {
 
                                 <Text
                                     fontSize="lg"
-                                    color="fg.muted"
+                                    colorPalette="gray"
                                     textAlign="center"
                                     lineHeight={1.6}
                                 >
@@ -113,12 +113,16 @@ function LandingPage() {
                                 <HStack gap={4} py={4}>
                                     <VStack gap={2}>
                                         <HiBolt size={32} />
-                                        <Text fontSize="sm" fontWeight="semibold" color="fg.muted">
+                                        <Text
+                                            fontSize="sm"
+                                            fontWeight="semibold"
+                                            colorPalette="gray"
+                                        >
                                             Create event
                                         </Text>
                                     </VStack>
                                     <Text
-                                        color="blue.500"
+                                        colorPalette="blue"
                                         fontSize="lg"
                                         fontWeight="bold"
                                         opacity={0.6}
@@ -127,7 +131,11 @@ function LandingPage() {
                                     </Text>
                                     <VStack gap={2}>
                                         <HiPaperAirplane size={32} />
-                                        <Text fontSize="sm" fontWeight="semibold" color="fg.muted">
+                                        <Text
+                                            fontSize="sm"
+                                            fontWeight="semibold"
+                                            colorPalette="gray"
+                                        >
                                             Share URL
                                         </Text>
                                     </VStack>
@@ -135,7 +143,7 @@ function LandingPage() {
 
                                 <Button
                                     asChild
-                                    colorScheme="blue"
+                                    colorPalette="blue"
                                     size="lg"
                                     borderRadius="full"
                                     px={8}

@@ -64,11 +64,12 @@ export function UserProfile({ currentUser }: UserProfileProps) {
 
     return (
         <Box
+            colorPalette="gray"
             p={6}
-            bg={{ base: 'gray.50', _dark: 'gray.900' }}
+            bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
             borderRadius="lg"
             borderWidth="1px"
-            borderColor={{ base: 'gray.200', _dark: 'gray.700' }}
+            borderColor="colorPalette.200"
         >
             <VStack gap={4} align="stretch">
                 <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
@@ -110,14 +111,15 @@ export function UserProfile({ currentUser }: UserProfileProps) {
                         </VStack>
                     ) : (
                         <HStack
+                            colorPalette="gray"
                             justify="space-between"
                             align="center"
                             py={3}
                             px={4}
-                            bg={{ base: 'white', _dark: 'gray.800' }}
+                            bg={{ base: 'white', _dark: 'colorPalette.800' }}
                             borderRadius="md"
-                            border="1px solid"
-                            borderColor={{ base: 'gray.200', _dark: 'gray.600' }}
+                            borderWidth="1px"
+                            borderColor="colorPalette.200"
                             width="100%"
                         >
                             <Text fontSize="md" colorPalette="gray" fontWeight="medium">

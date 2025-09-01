@@ -1,5 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import {
+    Box,
+    Button,
+    Dialog,
+    Field,
+    HStack,
+    IconButton,
+    Input,
+    Text,
+    Textarea,
+    VStack
+} from '@chakra-ui/react'
 import { EventId, RoomId } from '@domain'
+import { HiMicrophone, HiXMark } from 'react-icons/hi2'
+import React, { useEffect, useState } from 'react'
+
+import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
 
 interface TalkCreationModalProps {
@@ -75,13 +90,25 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
                 roomId: RoomId.from(formData.roomId)
             })
 
+            toaster.create({
+                title: 'Talk Submitted Successfully',
+                description: 'Your talk has been submitted and is pending approval.',
+                type: 'success',
+                duration: 5000
+            })
             onClose()
             resetForm()
         } catch (error) {
             console.error('Failed to create talk:', error)
-            setError(
+            const errorMessage =
                 error instanceof Error ? error.message : 'Failed to create talk. Please try again.'
-            )
+            setError(errorMessage)
+            toaster.create({
+                title: 'Talk Creation Failed',
+                description: errorMessage,
+                type: 'error',
+                duration: 5000
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -90,121 +117,126 @@ function TalkCreationModal({ isOpen, onClose, eventId }: TalkCreationModalProps)
     if (!isOpen) return null
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content talk-creation-modal" onClick={e => e.stopPropagation()}>
-                <div className="modal-header">
-                    <div className="modal-title">
-                        <span className="talk-icon">🎤</span>
-                        <h2>Submit a Talk</h2>
-                    </div>
-                    <button className="modal-close" onClick={onClose} type="button">
-                        ×
-                    </button>
-                </div>
+        <Dialog.Root open={isOpen} onOpenChange={({ open }) => !open && onClose()}>
+            <Dialog.Content maxW="2xl">
+                <Dialog.Header>
+                    <Dialog.Title>
+                        <HStack gap={2}>
+                            <HiMicrophone size={24} />
+                            <Text>Submit a Talk</Text>
+                        </HStack>
+                    </Dialog.Title>
+                    <Dialog.CloseTrigger asChild>
+                        <IconButton variant="outline" size="sm">
+                            <HiXMark />
+                        </IconButton>
+                    </Dialog.CloseTrigger>
+                </Dialog.Header>
 
-                <form onSubmit={handleSubmit} className="talk-form">
-                    {error && <div className="error-banner">{error}</div>}
+                <Box as="form" onSubmit={handleSubmit} p={6}>
+                    <VStack gap={6} align="stretch">
+                        {error && (
+                            <Box
+                                colorPalette="red"
+                                p={4}
+                                bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                                borderWidth="1px"
+                                borderColor="colorPalette.200"
+                                borderRadius="md"
+                            >
+                                <Text colorPalette="red" fontWeight="medium">
+                                    {error}
+                                </Text>
+                            </Box>
+                        )}
 
-                    <div className="form-group">
-                        <label htmlFor="name">Title*</label>
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            placeholder="Enter your talk title"
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                        <Field.Root required>
+                            <Field.Label>Title *</Field.Label>
+                            <Input
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                placeholder="Enter your talk title"
+                            />
+                        </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="pitch">Pitch</label>
-                        <textarea
-                            id="pitch"
-                            name="pitch"
-                            value={formData.pitch}
-                            onChange={handleInputChange}
-                            placeholder="What's your talk about? What will attendees learn? Why should they be excited to attend? 🎯"
-                            rows={4}
-                            className="form-textarea"
-                        />
-                    </div>
+                        <Field.Root>
+                            <Field.Label>Pitch</Field.Label>
+                            <Textarea
+                                name="pitch"
+                                value={formData.pitch}
+                                onChange={handleInputChange}
+                                placeholder="What's your talk about? What will attendees learn? Why should they be excited to attend? 🎯"
+                                rows={4}
+                                autoresize
+                            />
+                        </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="startDateTime">Start Time*</label>
-                        <input
-                            id="startDateTime"
-                            name="startDateTime"
-                            type="datetime-local"
-                            value={formData.startDateTime}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
+                        <Field.Root required>
+                            <Field.Label>Start Time *</Field.Label>
+                            <Input
+                                name="startDateTime"
+                                type="datetime-local"
+                                value={formData.startDateTime}
+                                onChange={handleInputChange}
+                            />
+                        </Field.Root>
 
-                    <div className="form-group">
-                        <label>Expected Duration*</label>
-                        <div className="duration-button-group">
-                            {[
-                                { value: 5, label: '5min' },
-                                { value: 15, label: '15min' },
-                                { value: 30, label: '30min' },
-                                { value: 60, label: '1hour' }
-                            ].map(({ value, label }) => (
-                                <button
-                                    key={value}
-                                    type="button"
-                                    className={`duration-btn ${formData.expectedDurationMinutes === value ? 'selected' : ''}`}
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            expectedDurationMinutes: value
-                                        }))
-                                    }
-                                >
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                        <Field.Root>
+                            <Field.Label>Expected Duration *</Field.Label>
+                            <HStack gap={2} flexWrap="wrap">
+                                {[
+                                    { value: 5, label: '5min' },
+                                    { value: 15, label: '15min' },
+                                    { value: 30, label: '30min' },
+                                    { value: 60, label: '1hour' }
+                                ].map(({ value, label }) => (
+                                    <Button
+                                        key={value}
+                                        variant={
+                                            formData.expectedDurationMinutes === value
+                                                ? 'solid'
+                                                : 'outline'
+                                        }
+                                        colorPalette={
+                                            formData.expectedDurationMinutes === value
+                                                ? 'blue'
+                                                : 'gray'
+                                        }
+                                        onClick={() =>
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                expectedDurationMinutes: value
+                                            }))
+                                        }
+                                    >
+                                        {label}
+                                    </Button>
+                                ))}
+                            </HStack>
+                        </Field.Root>
 
-                    <div className="form-group">
-                        <label htmlFor="roomId">Preferred Room*</label>
-                        <select
-                            id="roomId"
-                            name="roomId"
-                            value={formData.roomId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                            required
-                        >
-                            <option value="">Select a room</option>
-                            <option value="main-room">Main Room</option>
-                            <option value="workshop-room">Workshop Room</option>
-                            <option value="discussion-room">Discussion Room</option>
-                            <option value="outdoor-space">Outdoor Space</option>
-                        </select>
-                    </div>
+                        <Field.Root required>
+                            <Field.Label>Preferred Room *</Field.Label>
+                        </Field.Root>
 
-                    <div className="form-actions">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="btn secondary"
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button type="submit" className="btn primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : 'Submit Talk'}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                        <HStack justify="flex-end" gap={4} pt={4}>
+                            <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                colorPalette="blue"
+                                disabled={isSubmitting}
+                                loading={isSubmitting}
+                            >
+                                {isSubmitting ? 'Submitting...' : 'Submit Talk'}
+                            </Button>
+                        </HStack>
+                    </VStack>
+                </Box>
+            </Dialog.Content>
+        </Dialog.Root>
     )
 }
 

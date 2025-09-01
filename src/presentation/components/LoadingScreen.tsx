@@ -1,21 +1,38 @@
 import React from 'react'
 import LoadingImage from '@/assets/loading.jpeg'
-import styles from './LoadingScreen.module.scss'
+import { Box, VStack, Spinner, Text } from '@chakra-ui/react'
 
 export const LoadingScreen: React.FC = () => {
     return (
-        <div
-            className={styles.container}
-            style={{
-                backgroundImage: `url(${LoadingImage})`
-            }}
+        <Box
+            position="fixed"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bgImage={`url(${LoadingImage})`}
+            bgSize="cover"
+            bgPos="center"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
         >
-            <div className={styles.card}>
-                <div className={styles.content}>
-                    <div className={styles.spinner} />
-                    Loading...
-                </div>
-            </div>
-        </div>
+            <Box
+                bg={{ base: 'white', _dark: 'gray.800' }}
+                borderRadius="lg"
+                p={8}
+                shadow="xl"
+                backdropFilter="blur(10px)"
+                border="1px solid"
+                borderColor={{ base: 'gray.200', _dark: 'gray.700' }}
+            >
+                <VStack gap={4}>
+                    <Spinner size="xl" colorPalette="blue" />
+                    <Text fontSize="lg" fontWeight="medium" colorPalette="gray">
+                        Loading...
+                    </Text>
+                </VStack>
+            </Box>
+        </Box>
     )
 }

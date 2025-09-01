@@ -12,6 +12,17 @@ import {
 import EventForm, { EventFormData } from '../components/EventForm'
 import { HiLockClosed, HiKey, HiExclamationTriangle } from 'react-icons/hi2'
 import { HiArchiveBox } from 'react-icons/hi2'
+import {
+    Container,
+    VStack,
+    HStack,
+    Center,
+    Spinner,
+    Text,
+    Heading,
+    Box,
+    Button
+} from '@chakra-ui/react'
 
 function EditEventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -135,11 +146,16 @@ function EditEventPage() {
 
     if (loading) {
         return (
-            <div className="edit-event-page">
-                <div className="loading-message">
-                    <h2>Loading event...</h2>
-                </div>
-            </div>
+            <Container maxW="4xl" py={8}>
+                <Center py={16}>
+                    <VStack gap={4}>
+                        <Spinner size="xl" colorPalette="blue" />
+                        <Heading size="lg" colorPalette="gray">
+                            Loading event...
+                        </Heading>
+                    </VStack>
+                </Center>
+            </Container>
         )
     }
 
@@ -165,56 +181,74 @@ function EditEventPage() {
         }
 
         return (
-            <div className="edit-event-page">
-                <div className="error-section">
-                    <div className="error-icon">{getErrorIcon()}</div>
-                    <h1>Cannot Edit Event</h1>
-                    <p className="error-message">
-                        {error?.message || 'The event you are trying to edit does not exist.'}
-                    </p>
-                    {getErrorSuggestion() && (
-                        <p className="error-suggestion">{getErrorSuggestion()}</p>
-                    )}
-                    <div className="error-actions">
-                        {eventId && (
-                            <button
-                                onClick={() => navigate(`/event/${eventId}`)}
-                                className="back-button primary"
-                            >
-                                🔙 View Event
-                            </button>
-                        )}
-                        <button onClick={() => navigate('/')} className="home-button secondary">
-                            🏠 Back to Home
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <Container maxW="4xl" py={8}>
+                <Center py={16}>
+                    <VStack gap={6} textAlign="center" maxW="lg">
+                        <Box fontSize="48px">{getErrorIcon()}</Box>
+                        <VStack gap={4}>
+                            <Heading size="2xl" colorPalette="gray">
+                                Cannot Edit Event
+                            </Heading>
+                            <Text fontSize="lg" colorPalette="gray">
+                                {error?.message ||
+                                    'The event you are trying to edit does not exist.'}
+                            </Text>
+                            {getErrorSuggestion() && (
+                                <Text fontSize="md" colorPalette="gray" fontStyle="italic">
+                                    {getErrorSuggestion()}
+                                </Text>
+                            )}
+                        </VStack>
+                        <HStack gap={4}>
+                            {eventId && (
+                                <Button
+                                    onClick={() => navigate(`/event/${eventId}`)}
+                                    colorPalette="blue"
+                                    size="lg"
+                                >
+                                    🔙 View Event
+                                </Button>
+                            )}
+                            <Button onClick={() => navigate('/')} variant="outline" size="lg">
+                                🏠 Back to Home
+                            </Button>
+                        </HStack>
+                    </VStack>
+                </Center>
+            </Container>
         )
     }
 
-    // Custom title with event metadata
-    const customTitle = (
-        <div>
-            <h1>Edit Event</h1>
-            <p>Update your event details</p>
-            <div
-                className="event-meta"
-                style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6b7280' }}
-            >
-                <p>
-                    <strong>Created:</strong> {formatDate(event.createdDate)}
-                </p>
-                <p>
-                    <strong>Event ID:</strong> {eventId}
-                </p>
-            </div>
-        </div>
-    )
-
     return (
-        <div className="edit-event-page">
-            <div className="page-header">{customTitle}</div>
+        <>
+            <Container maxW="4xl" py={8}>
+                <VStack gap={8} align="stretch">
+                    {/* Event Metadata */}
+                    <VStack gap={4} textAlign="center">
+                        <Heading size="2xl" colorPalette="gray">
+                            Edit Event
+                        </Heading>
+                        <Text fontSize="lg" colorPalette="gray">
+                            Update your event details
+                        </Text>
+                        <VStack gap={2} fontSize="sm" colorPalette="gray">
+                            <Text>
+                                <Text as="span" fontWeight="semibold">
+                                    Created:
+                                </Text>{' '}
+                                {formatDate(event.createdDate)}
+                            </Text>
+                            <Text>
+                                <Text as="span" fontWeight="semibold">
+                                    Event ID:
+                                </Text>{' '}
+                                {eventId}
+                            </Text>
+                        </VStack>
+                    </VStack>
+                </VStack>
+            </Container>
+
             <EventForm
                 initialData={initialFormData}
                 onSubmit={handleSubmit}
@@ -225,7 +259,7 @@ function EditEventPage() {
                 title=""
                 subtitle=""
             />
-        </div>
+        </>
     )
 }
 
