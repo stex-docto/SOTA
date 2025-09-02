@@ -4,8 +4,8 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import RoomManagement from '@presentation/components/RoomManagement.tsx'
 import { EventActions } from '@presentation/pages/EventPageParts/EventActions.tsx'
-import {useEffect, useState} from "react";
-import {useAuth} from "@presentation/hooks/useAuth.ts";
+import { useEffect, useState } from 'react'
+import { useAuth } from '@presentation/hooks/useAuth.ts'
 
 interface EventHeaderProps {
     event: EventEntity
@@ -47,7 +47,7 @@ export function EventHeader({ event, eventId }: EventHeaderProps) {
                     <Heading size="3xl" colorPalette="gray">
                         {event.title}
                     </Heading>
-                    <EventActions event={event} isEventCreator={isEventCreator}/>
+                    <EventActions event={event} isEventCreator={isEventCreator} />
                 </HStack>
 
                 <Badge colorPalette="gray" size="sm" fontFamily="mono">

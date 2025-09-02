@@ -1,5 +1,5 @@
-import {HiExclamationTriangle, HiXMark} from 'react-icons/hi2'
-import {Box, Button, Dialog, HStack, IconButton, Text, VStack} from '@chakra-ui/react'
+import { HiExclamationTriangle, HiXMark } from 'react-icons/hi2'
+import { Box, Button, Dialog, HStack, IconButton, Text, VStack } from '@chakra-ui/react'
 
 export interface ConfirmationModalProps {
     isOpen: boolean
@@ -14,36 +14,34 @@ export interface ConfirmationModalProps {
 }
 
 function ConfirmationModal({
-                               isOpen,
-                               onClose,
-                               onConfirm,
-                               title,
-                               message,
-                               confirmButtonText = 'Confirm',
-                               cancelButtonText = 'Cancel',
-                               isDestructive = false,
-                               isLoading = false
-                           }: ConfirmationModalProps) {
+    isOpen,
+    onClose,
+    onConfirm,
+    title,
+    message,
+    confirmButtonText = 'Confirm',
+    cancelButtonText = 'Cancel',
+    isDestructive = false,
+    isLoading = false
+}: ConfirmationModalProps) {
     if (!isOpen) return null
 
     return (
-        <Dialog.Root open={isOpen} onOpenChange={({open}) => !open && onClose()}>
+        <Dialog.Root open={isOpen} onOpenChange={({ open }) => !open && onClose()}>
             <Dialog.Positioner>
-
-
                 <Dialog.Content maxW="md">
                     <Dialog.Header>
                         <Dialog.Title>
                             <HStack gap={3}>
                                 <Box colorPalette={isDestructive ? 'red' : 'blue'}>
-                                    <HiExclamationTriangle size={24}/>
+                                    <HiExclamationTriangle size={24} />
                                 </Box>
                                 <Text>{title}</Text>
                             </HStack>
                         </Dialog.Title>
                         <Dialog.CloseTrigger asChild>
                             <IconButton variant="outline" size="sm" disabled={isLoading}>
-                                <HiXMark/>
+                                <HiXMark />
                             </IconButton>
                         </Dialog.CloseTrigger>
                     </Dialog.Header>
@@ -71,7 +69,6 @@ function ConfirmationModal({
                 </Dialog.Content>
             </Dialog.Positioner>
         </Dialog.Root>
-
     )
 }
 
