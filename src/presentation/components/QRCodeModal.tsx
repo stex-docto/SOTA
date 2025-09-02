@@ -8,10 +8,9 @@ import { toaster } from '@presentation/ui'
 interface QRCodeModalProps {
     url: string
     title?: string
-    buttonClassName?: string
 }
 
-function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeModalProps) {
+function QRCodeModal({ url, title }: QRCodeModalProps) {
     const handleCopyUrl = async () => {
         try {
             await navigator.clipboard.writeText(url)
@@ -35,12 +34,7 @@ function QRCodeModal({ url, title, buttonClassName = 'share-button' }: QRCodeMod
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
-                <IconButton
-                    className={buttonClassName}
-                    variant="outline"
-                    size="sm"
-                    aria-label="Share QR Code"
-                >
+                <IconButton variant="outline" aria-label="Share QR Code">
                     <IoQrCodeOutline />
                 </IconButton>
             </Dialog.Trigger>

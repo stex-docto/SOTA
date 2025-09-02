@@ -1,15 +1,16 @@
 import { Badge, Box, Grid, Heading, Text, VStack } from '@chakra-ui/react'
-import { EventEntity } from '@domain'
+import { EventEntity, EventId } from '@domain'
 import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
+import RoomManagement from '@presentation/components/RoomManagement.tsx'
+import { EventActions } from '@presentation/pages/EventPageParts/EventActions.tsx'
 
 interface EventHeaderProps {
     event: EventEntity
     eventId: string
-    children?: React.ReactNode
 }
 
-export function EventHeader({ event, eventId, children }: EventHeaderProps) {
+export function EventHeader({ event, eventId }: EventHeaderProps) {
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat(undefined, {
             weekday: 'long',
@@ -73,11 +74,13 @@ export function EventHeader({ event, eventId, children }: EventHeaderProps) {
                         <ReactMarkdown remarkPlugins={[remarkBreaks]}>
                             {event.description}
                         </ReactMarkdown>
+
+                        <RoomManagement eventId={EventId.from(eventId)} isEventCreator={false} />
                     </Box>
                 </VStack>
 
                 <VStack gap={3} align="stretch">
-                    {children}
+                    <EventActions event={event} />
                 </VStack>
             </Grid>
         </Box>

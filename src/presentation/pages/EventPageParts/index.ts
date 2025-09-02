@@ -1,5 +1,4 @@
 export { EventActions } from './EventActions'
 export { EventHeader } from './EventHeader'
-export { EventManagement } from './EventManagement'
 export { TalkRules } from './TalkRules'
 export { TalkSchedule } from './TalkSchedule'
