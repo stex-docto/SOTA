@@ -1,4 +1,4 @@
-import { Badge, Box, Grid, Heading, Text, VStack } from '@chakra-ui/react'
+import { Badge, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId } from '@domain'
 import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
@@ -31,58 +31,56 @@ export function EventHeader({ event, eventId }: EventHeaderProps) {
             borderWidth="1px"
             borderColor="colorPalette.200"
         >
-            <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8} alignItems="start">
-                <VStack gap={4} align="start">
+            <VStack gap={4} align="stretch">
+                <HStack gap={4} justify="space-between">
                     <Heading size="3xl" colorPalette="gray">
                         {event.title}
                     </Heading>
-                    <Badge colorPalette="gray" size="sm" fontFamily="mono">
-                        Event ID: {eventId}
-                    </Badge>
-                    <VStack gap={2} align="start" fontSize="sm" colorPalette="gray">
-                        <Text>
-                            <Text as="span" fontWeight="semibold">
-                                Start:
-                            </Text>{' '}
-                            {formatDate(event.startDate)}
-                        </Text>
-                        <Text>
-                            <Text as="span" fontWeight="semibold">
-                                End:
-                            </Text>{' '}
-                            {formatDate(event.endDate)}
-                        </Text>
-                        {event.location && (
-                            <Text>
-                                <Text as="span" fontWeight="semibold">
-                                    Location:
-                                </Text>{' '}
-                                {event.location}
-                            </Text>
-                        )}
-                    </VStack>
-
-                    <Box
-                        colorPalette="gray"
-                        p={4}
-                        bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
-                        borderWidth="1px"
-                        borderColor="colorPalette.200"
-                        borderRadius="md"
-                        w="full"
-                    >
-                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                            {event.description}
-                        </ReactMarkdown>
-
-                        <RoomManagement eventId={EventId.from(eventId)} isEventCreator={false} />
-                    </Box>
-                </VStack>
-
-                <VStack gap={3} align="stretch">
                     <EventActions event={event} />
+                </HStack>
+
+                <Badge colorPalette="gray" size="sm" fontFamily="mono">
+                    Event ID: {eventId}
+                </Badge>
+                <VStack gap={2} align="start" fontSize="sm" colorPalette="gray">
+                    <Text>
+                        <Text as="span" fontWeight="semibold">
+                            Start:
+                        </Text>{' '}
+                        {formatDate(event.startDate)}
+                    </Text>
+                    <Text>
+                        <Text as="span" fontWeight="semibold">
+                            End:
+                        </Text>{' '}
+                        {formatDate(event.endDate)}
+                    </Text>
+                    {event.location && (
+                        <Text>
+                            <Text as="span" fontWeight="semibold">
+                                Location:
+                            </Text>{' '}
+                            {event.location}
+                        </Text>
+                    )}
                 </VStack>
-            </Grid>
+
+                <Box
+                    colorPalette="gray"
+                    p={4}
+                    bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
+                    borderWidth="1px"
+                    borderColor="colorPalette.200"
+                    borderRadius="md"
+                    w="full"
+                >
+                    <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                        {event.description}
+                    </ReactMarkdown>
+                </Box>
+
+                <RoomManagement eventId={EventId.from(eventId)} isEventCreator={false} />
+            </VStack>
         </Box>
     )
 }
