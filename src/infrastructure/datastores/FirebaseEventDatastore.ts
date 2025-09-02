@@ -54,7 +54,7 @@ export class FirebaseEventDatastore implements EventRepository {
 
     async save(event: EventEntity): Promise<void> {
         const rooms: { [roomId: string]: FirebaseRoomDocument } = {}
-        event.rooms.forEach((room: any, roomId) => {
+        event.rooms.forEach((room, roomId) => {
             rooms[roomId.value] = {
                 id: room.id.value,
                 name: room.name,

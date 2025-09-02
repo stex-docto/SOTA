@@ -7,7 +7,7 @@ import {
     GetEventUseCase,
     UpdateEventUseCase,
     DeleteEventUseCase,
-    SaveEventUseCase,
+    AddSavedEventUseCase,
     RemoveSavedEventUseCase,
     UpdateUserProfileUseCase,
     GetUserAllEventsUseCase,
@@ -47,7 +47,7 @@ async function initDependencies() {
     const getEventUseCase = new GetEventUseCase(eventRepository)
     const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository)
     const deleteEventUseCase = new DeleteEventUseCase(eventRepository, signInUseCase)
-    const saveEventUseCase = new SaveEventUseCase(userRepository, signInUseCase)
+    const addSavedEventUseCase = new AddSavedEventUseCase(userRepository, signInUseCase)
     const removeSavedEventUseCase = new RemoveSavedEventUseCase(userRepository, signInUseCase)
     const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository)
     const getUserAllEventsUseCase = new GetUserAllEventsUseCase(eventRepository, signInUseCase)
@@ -63,7 +63,7 @@ async function initDependencies() {
         getEventUseCase,
         updateEventUseCase,
         deleteEventUseCase,
-        saveEventUseCase,
+        addSavedEventUseCase,
         removeSavedEventUseCase,
         updateUserProfileUseCase,
         getUserAllEventsUseCase,
