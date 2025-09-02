@@ -1,27 +1,20 @@
-import {
-    Badge,
-    Box,
-    Button,
-    Container,
-    Grid,
-    Heading,
-    IconButton,
-    Text,
-    VStack
-} from '@chakra-ui/react'
+import { Container, IconButton, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId } from '@domain'
-import { HiHeart, HiOutlineHeart, HiPlus } from 'react-icons/hi2'
+import { HiPlus } from 'react-icons/hi2'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import ConfirmationModal from '../components/ConfirmationModal'
+import {
+    EventActions,
+    EventHeader,
+    EventManagement,
+    TalkRules,
+    TalkSchedule
+} from './EventPageParts'
 import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
 import QRCodeModal from '../components/QRCodeModal'
-import ReactMarkdown from 'react-markdown'
-import RoomManagement from '../components/RoomManagement'
 import TalkCreationModal from '../components/TalkCreationModal'
-import remarkBreaks from 'remark-breaks'
 import { toaster } from '@presentation/ui/toaster-config'
 import { useAuth } from '../hooks/useAuth'
 import { useDependencies } from '../hooks/useDependencies'
@@ -82,17 +75,6 @@ function EventPage() {
             setIsEventSaved(currentUser.hasEventSaved(EventId.from(eventId)))
         }
     }, [currentUser, eventId])
-
-    const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat(undefined, {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).format(date)
-    }
 
     const handleDeleteClick = () => {
         setShowDeleteConfirmation(true)
@@ -168,274 +150,31 @@ function EventPage() {
     return (
         <Container maxW="6xl" py={8}>
             <VStack gap={8} align="stretch">
-                {/* Event Header */}
-                <Box
-                    colorPalette="blue"
-                    p={8}
-                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                    borderRadius="lg"
-                    borderWidth="1px"
-                    borderColor="colorPalette.200"
-                >
-                    <Grid
-                        templateColumns={{ base: '1fr', lg: '2fr 1fr' }}
-                        gap={8}
-                        alignItems="start"
-                    >
-                        <VStack gap={4} align="start">
-                            <Heading size="3xl" colorPalette="gray">
-                                {event.title}
-                            </Heading>
-                            <Badge colorPalette="gray" size="sm" fontFamily="mono">
-                                Event ID: {eventId}
-                            </Badge>
-                            <VStack gap={2} align="start" fontSize="sm" colorPalette="gray">
-                                <Text>
-                                    <Text as="span" fontWeight="semibold">
-                                        Start:
-                                    </Text>{' '}
-                                    {formatDate(event.startDate)}
-                                </Text>
-                                <Text>
-                                    <Text as="span" fontWeight="semibold">
-                                        End:
-                                    </Text>{' '}
-                                    {formatDate(event.endDate)}
-                                </Text>
-                                {event.location && (
-                                    <Text>
-                                        <Text as="span" fontWeight="semibold">
-                                            Location:
-                                        </Text>{' '}
-                                        {event.location}
-                                    </Text>
-                                )}
-                            </VStack>
-                        </VStack>
+                <EventHeader event={event} eventId={eventId!}>
+                    <QRCodeModal url={window.location.href} title={event.title} />
+                    <EventActions
+                        isEventCreator={isEventCreator}
+                        isEventSaved={isEventSaved}
+                        isSaving={isSaving}
+                        showManagement={showManagement}
+                        onSaveToggle={handleSaveToggle}
+                        onToggleManagement={() => setShowManagement(!showManagement)}
+                        onEditEvent={() => navigate(`/event/${eventId}/edit`)}
+                        onDeleteEvent={handleDeleteClick}
+                    />
+                </EventHeader>
 
-                        <VStack gap={3} align="stretch">
-                            <QRCodeModal url={window.location.href} title={event.title} />
-                            {!isEventCreator && (
-                                <Button
-                                    onClick={handleSaveToggle}
-                                    disabled={isSaving}
-                                    loading={isSaving}
-                                    variant={isEventSaved ? 'solid' : 'outline'}
-                                    colorPalette={isEventSaved ? 'red' : 'gray'}
-                                    size="lg"
-                                >
-                                    {isEventSaved ? <HiHeart /> : <HiOutlineHeart />}
-                                    {isEventSaved ? 'Saved' : 'Save Event'}
-                                </Button>
-                            )}
-                            {isEventCreator && (
-                                <Button
-                                    onClick={() => setShowManagement(!showManagement)}
-                                    colorPalette="blue"
-                                    size="lg"
-                                >
-                                    {showManagement ? 'Hide Management' : 'Manage Event'}
-                                </Button>
-                            )}
-                        </VStack>
-                    </Grid>
-                </Box>
-
-                {/* Event Management Section */}
                 {isEventCreator && showManagement && (
-                    <Box
-                        colorPalette="blue"
-                        p={6}
-                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                        borderWidth="1px"
-                        borderColor="colorPalette.200"
-                        borderRadius="lg"
-                    >
-                        <VStack gap={6} align="stretch">
-                            <Heading size="xl" colorPalette="gray">
-                                Event Management
-                            </Heading>
-
-                            <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8}>
-                                <VStack gap={4} align="stretch">
-                                    <Heading size="lg" colorPalette="gray">
-                                        Event Actions
-                                    </Heading>
-                                    <VStack gap={3} align="stretch">
-                                        <Button
-                                            colorPalette="blue"
-                                            variant="outline"
-                                            size="lg"
-                                            onClick={() => navigate(`/event/${eventId}/edit`)}
-                                        >
-                                            Edit Event Details
-                                        </Button>
-                                        <Button colorPalette="green" size="lg">
-                                            Generate Schedule
-                                        </Button>
-                                        <Button
-                                            colorPalette="red"
-                                            variant="outline"
-                                            size="lg"
-                                            onClick={handleDeleteClick}
-                                        >
-                                            Delete Event
-                                        </Button>
-                                    </VStack>
-                                </VStack>
-
-                                <VStack gap={4} align="stretch">
-                                    <Heading size="lg" colorPalette="gray">
-                                        Event Statistics
-                                    </Heading>
-                                    <Grid templateColumns="1fr 1fr" gap={4}>
-                                        <Box
-                                            colorPalette="gray"
-                                            p={4}
-                                            textAlign="center"
-                                            bg={{
-                                                base: 'colorPalette.50',
-                                                _dark: 'colorPalette.900'
-                                            }}
-                                            borderWidth="1px"
-                                            borderColor="colorPalette.200"
-                                            borderRadius="md"
-                                        >
-                                            <Text
-                                                fontSize="2xl"
-                                                fontWeight="bold"
-                                                colorPalette="gray"
-                                            >
-                                                0
-                                            </Text>
-                                            <Text fontSize="sm" colorPalette="gray">
-                                                Total Talks
-                                            </Text>
-                                        </Box>
-                                        <Box
-                                            colorPalette="gray"
-                                            p={4}
-                                            textAlign="center"
-                                            bg={{
-                                                base: 'colorPalette.50',
-                                                _dark: 'colorPalette.900'
-                                            }}
-                                            borderWidth="1px"
-                                            borderColor="colorPalette.200"
-                                            borderRadius="md"
-                                        >
-                                            <Text
-                                                fontSize="2xl"
-                                                fontWeight="bold"
-                                                colorPalette="gray"
-                                            >
-                                                0
-                                            </Text>
-                                            <Text fontSize="sm" colorPalette="gray">
-                                                Participants
-                                            </Text>
-                                        </Box>
-                                    </Grid>
-                                </VStack>
-                            </Grid>
-
-                            <VStack gap={4} align="stretch">
-                                <RoomManagement
-                                    eventId={EventId.from(eventId!)}
-                                    isEventCreator={isEventCreator}
-                                />
-                            </VStack>
-                        </VStack>
-                    </Box>
+                    <EventManagement
+                        eventId={EventId.from(eventId!)}
+                        isEventCreator={isEventCreator}
+                    />
                 )}
 
-                {/* Description Section */}
-                <Box
-                    colorPalette="gray"
-                    p={6}
-                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                    borderWidth="1px"
-                    borderColor="colorPalette.200"
-                    borderRadius="lg"
-                >
-                    <VStack gap={4} align="stretch">
-                        <Heading size="xl" colorPalette="gray">
-                            Description
-                        </Heading>
-                        <Box
-                            colorPalette="gray"
-                            p={4}
-                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
-                            borderWidth="1px"
-                            borderColor="colorPalette.200"
-                            borderRadius="md"
-                        >
-                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                                {event.description}
-                            </ReactMarkdown>
-                        </Box>
-                    </VStack>
-                </Box>
+                <TalkRules talkRules={event.talkRules} />
 
-                {/* Talk Rules Section */}
-                <Box
-                    colorPalette="green"
-                    p={6}
-                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                    borderWidth="1px"
-                    borderColor="colorPalette.200"
-                    borderRadius="lg"
-                >
-                    <VStack gap={4} align="stretch">
-                        <Heading size="xl" colorPalette="gray">
-                            Talk Rules
-                        </Heading>
-                        <Box
-                            colorPalette="green"
-                            p={4}
-                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
-                            borderWidth="1px"
-                            borderColor="colorPalette.200"
-                            borderRadius="md"
-                        >
-                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                                {event.talkRules}
-                            </ReactMarkdown>
-                        </Box>
-                    </VStack>
-                </Box>
+                <TalkSchedule />
 
-                {/* Talk Schedule Section */}
-                <Box
-                    colorPalette="purple"
-                    p={6}
-                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                    borderWidth="1px"
-                    borderColor="colorPalette.200"
-                    borderRadius="lg"
-                >
-                    <VStack gap={4} align="stretch">
-                        <Heading size="xl" colorPalette="gray">
-                            Talk Schedule
-                        </Heading>
-                        <Box
-                            colorPalette="purple"
-                            p={6}
-                            textAlign="center"
-                            bg={{ base: 'colorPalette.100', _dark: 'colorPalette.800' }}
-                            borderWidth="1px"
-                            borderColor="colorPalette.200"
-                            borderRadius="md"
-                        >
-                            <Text colorPalette="gray" fontStyle="italic">
-                                Schedule will be displayed here once talks are submitted and
-                                approved.
-                            </Text>
-                        </Box>
-                    </VStack>
-                </Box>
-
-                {/* Floating Action Button */}
                 <IconButton
                     position="fixed"
                     bottom={8}
