@@ -57,7 +57,6 @@ An open-source PWA (Progressive Web App) deployed via GitHub Pages with Firebase
 - Event management:
   - Set event dates and schedule
   - Create and manage locations (name + description)
-  - Approve/reject talk proposals
   - Modify talk schedules and assignments
 - Share private admin URL to grant admin access to other authenticated users
 - View analytics and participant management
@@ -116,7 +115,6 @@ An open-source PWA (Progressive Web App) deployed via GitHub Pages with Firebase
 - Short pitch
 - Proposed start date/time
 - Selected location ID
-- Status (pending/approved/rejected)
 - Submission timestamp
 
 ### User
