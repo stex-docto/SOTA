@@ -23,7 +23,7 @@ export interface DependencyContext {
     getEventUseCase: GetEventUseCase
     updateEventUseCase: UpdateEventUseCase
     deleteEventUseCase: DeleteEventUseCase
-    saveEventUseCase: AddSavedEventUseCase
+    addSavedEventUseCase: AddSavedEventUseCase
     removeSavedEventUseCase: RemoveSavedEventUseCase
     updateUserProfileUseCase: UpdateUserProfileUseCase
     getUserAllEventsUseCase: GetUserAllEventsUseCase
