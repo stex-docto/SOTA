@@ -1,22 +1,22 @@
 import { UserRepository, EventId } from '@/domain'
 import { SignInUseCase } from '@/application'
 
-export interface SaveEventCommand {
+export interface AddSavedEventCommand {
     eventId: EventId
 }
 
-export interface SaveEventResult {
+export interface AddSavedEventResult {
     success: boolean
     alreadySaved: boolean
 }
 
-export class SaveEventUseCase {
+export class AddSavedEventUseCase {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly signInUseCase: SignInUseCase
     ) {}
 
-    async execute(command: SaveEventCommand): Promise<SaveEventResult> {
+    async execute(command: AddSavedEventCommand): Promise<AddSavedEventResult> {
         // Require current user (will prompt sign-in if needed)
         const currentUser = await this.signInUseCase.requireCurrentUser()
 
