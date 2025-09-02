@@ -9,9 +9,11 @@ import {
     Input,
     Text,
     Textarea,
-    VStack
+    VStack,
+    Select,
+    createListCollection
 } from '@chakra-ui/react'
-import { EventEntity, RoomId } from '@domain'
+import { EventEntity, RoomId, RoomEntity } from '@domain'
 import { HiMicrophone, HiPlus } from 'react-icons/hi2'
 import React, { useEffect, useState } from 'react'
 
@@ -31,7 +33,7 @@ interface TalkFormData {
 }
 
 function TalkCreationModal({ event }: TalkCreationModalProps) {
-    const { createTalkUseCase } = useDependencies()
+    const { createTalkUseCase, getRoomsByEventUseCase } = useDependencies()
     const [formData, setFormData] = useState<TalkFormData>({
         name: '',
         pitch: '',
@@ -42,6 +44,16 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string>('')
     const [open, setOpen] = useState(false)
+    const [rooms, setRooms] = useState<RoomEntity[]>([])
+    const [loadingRooms, setLoadingRooms] = useState(false)
+
+    const roomsCollection = createListCollection({
+        items: rooms.map(room => ({
+            label: room.name,
+            value: room.id.value,
+            description: room.description
+        }))
+    })
 
     const resetForm = () => {
         setFormData({
@@ -57,6 +69,30 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
     useEffect(() => {
         resetForm()
     }, [event.id])
+
+    const fetchRooms = async () => {
+        setLoadingRooms(true)
+        try {
+            const result = await getRoomsByEventUseCase.execute({ eventId: event.id })
+            setRooms(result.rooms)
+        } catch (error) {
+            console.error('Failed to fetch rooms:', error)
+            toaster.create({
+                title: 'Failed to load rooms',
+                description: 'Unable to load available rooms. Please try again.',
+                type: 'error',
+                duration: 3000
+            })
+        } finally {
+            setLoadingRooms(false)
+        }
+    }
+
+    useEffect(() => {
+        if (open) {
+            fetchRooms()
+        }
+    }, [open, event.id])
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -90,10 +126,11 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
 
             toaster.create({
                 title: 'Talk Submitted Successfully',
-                description: 'Your talk has been submitted and is pending approval.',
+                description: 'Your talk has been created.',
                 type: 'success',
                 duration: 5000
             })
+            setOpen(false)
             resetForm()
         } catch (error) {
             console.error('Failed to create talk:', error)
@@ -225,6 +262,57 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
 
                             <Field.Root required>
                                 <Field.Label>Preferred Room *</Field.Label>
+                                <Select.Root
+                                    collection={roomsCollection}
+                                    value={[formData.roomId]}
+                                    onValueChange={e =>
+                                        setFormData(prev => ({ ...prev, roomId: e.value[0] || '' }))
+                                    }
+                                    disabled={loadingRooms || rooms.length === 0}
+                                >
+                                    <Select.HiddenSelect />
+                                    <Select.Control>
+                                        <Select.Trigger>
+                                            <Select.ValueText
+                                                placeholder={
+                                                    loadingRooms
+                                                        ? 'Loading rooms...'
+                                                        : rooms.length === 0
+                                                          ? 'No rooms available'
+                                                          : 'Select a room'
+                                                }
+                                            />
+                                        </Select.Trigger>
+                                        <Select.IndicatorGroup>
+                                            <Select.Indicator />
+                                        </Select.IndicatorGroup>
+                                    </Select.Control>
+                                    <Select.Positioner>
+                                        <Select.Content>
+                                            {roomsCollection.items.map(room => (
+                                                <Select.Item key={room.value} item={room}>
+                                                    <VStack align="flex-start" gap={1}>
+                                                        <Text fontWeight="medium">
+                                                            {room.label}
+                                                        </Text>
+                                                        {room.description && (
+                                                            <Text fontSize="sm" colorPalette="gray">
+                                                                {room.description}
+                                                            </Text>
+                                                        )}
+                                                    </VStack>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            ))}
+                                        </Select.Content>
+                                    </Select.Positioner>
+                                </Select.Root>
+                                {rooms.length === 0 && !loadingRooms && (
+                                    <Text fontSize="sm" colorPalette="gray">
+                                        No rooms have been created for this event yet. Event
+                                        organizers can add rooms in the event management section.
+                                    </Text>
+                                )}
                             </Field.Root>
                         </VStack>
                     </Dialog.Body>
