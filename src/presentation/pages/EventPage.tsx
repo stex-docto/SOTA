@@ -284,11 +284,6 @@ function EventPage() {
                                     </VStack>
                                 </VStack>
 
-                                <RoomManagement
-                                    eventId={EventId.from(eventId!)}
-                                    isEventCreator={isEventCreator}
-                                />
-
                                 <VStack gap={4} align="stretch">
                                     <Heading size="lg" colorPalette="gray">
                                         Event Statistics
@@ -343,6 +338,13 @@ function EventPage() {
                                     </Grid>
                                 </VStack>
                             </Grid>
+
+                            <VStack gap={4} align="stretch">
+                                <RoomManagement
+                                    eventId={EventId.from(eventId!)}
+                                    isEventCreator={isEventCreator}
+                                />
+                            </VStack>
                         </VStack>
                     </Box>
                 )}

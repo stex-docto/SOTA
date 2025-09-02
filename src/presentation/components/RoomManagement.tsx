@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { VStack, HStack, Text, Button, Box, Spinner } from '@chakra-ui/react'
+import { IoAddCircleOutline, IoWarningOutline } from 'react-icons/io5'
 import { EventId, RoomEntity } from '@domain'
 import { useDependencies } from '../hooks/useDependencies'
 import RoomList from './RoomList'
 import RoomForm, { RoomFormData } from './RoomForm'
-import ConfirmationModal from './ConfirmationModal'
 
 export interface RoomManagementProps {
     eventId: EventId
@@ -22,8 +23,6 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('list')
     const [editingRoom, setEditingRoom] = useState<RoomEntity | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-    const [roomToDelete, setRoomToDelete] = useState<RoomEntity | null>(null)
 
     useEffect(() => {
         loadRooms()
@@ -85,8 +84,14 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
         }
     }
 
-    const handleDeleteRoom = async () => {
-        if (!roomToDelete) return
+    const handleDeleteRoom = async (room: RoomEntity) => {
+        if (
+            !confirm(
+                `Are you sure you want to delete "${room.name}"? This action cannot be undone.`
+            )
+        ) {
+            return
+        }
 
         try {
             setIsSubmitting(true)
@@ -94,12 +99,10 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
 
             await deleteRoomUseCase.execute({
                 eventId,
-                roomId: roomToDelete.id
+                roomId: room.id
             })
 
             await loadRooms()
-            setShowDeleteConfirmation(false)
-            setRoomToDelete(null)
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to delete room')
         } finally {
@@ -112,11 +115,6 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
         setViewMode('edit')
     }
 
-    const handleDeleteClick = (room: RoomEntity) => {
-        setRoomToDelete(room)
-        setShowDeleteConfirmation(true)
-    }
-
     const handleCancel = () => {
         setViewMode('list')
         setEditingRoom(null)
@@ -124,74 +122,83 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
     }
 
     if (loading) {
-        return <div className="loading">Loading rooms...</div>
+        return (
+            <Box p={4} textAlign="center">
+                <Spinner size="md" />
+                <Text mt={2} colorPalette="gray">
+                    Loading rooms...
+                </Text>
+            </Box>
+        )
     }
 
     return (
-        <div className="room-management">
-            <div className="action-group">
-                <h3>Event Rooms</h3>
-                {isEventCreator && viewMode === 'list' && (
-                    <button onClick={() => setViewMode('create')} className="admin-button primary">
-                        Add Room
-                    </button>
+        <Box colorPalette="gray">
+            <VStack gap={6} align="stretch">
+                <HStack justify="space-between" align="center">
+                    <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
+                        Event Rooms
+                    </Text>
+                    {isEventCreator && viewMode === 'list' && (
+                        <Button colorPalette="blue" onClick={() => setViewMode('create')} size="sm">
+                            <IoAddCircleOutline style={{ marginRight: '8px' }} />
+                            Add Room
+                        </Button>
+                    )}
+                </HStack>
+
+                {error && (
+                    <Box
+                        p={3}
+                        bg="red.50"
+                        borderRadius="md"
+                        border="1px solid"
+                        borderColor="red.200"
+                        colorPalette="red"
+                    >
+                        <HStack gap={2}>
+                            <IoWarningOutline />
+                            <Text fontSize="sm">{error}</Text>
+                        </HStack>
+                    </Box>
                 )}
-            </div>
 
-            {error && <div className="error-message">{error}</div>}
+                {viewMode === 'list' && (
+                    <RoomList
+                        rooms={rooms}
+                        isEventCreator={isEventCreator}
+                        onEdit={isEventCreator ? handleEditClick : undefined}
+                        onDelete={isEventCreator ? handleDeleteRoom : undefined}
+                    />
+                )}
 
-            {viewMode === 'list' && (
-                <RoomList
-                    rooms={rooms}
-                    isEventCreator={isEventCreator}
-                    onEdit={isEventCreator ? handleEditClick : undefined}
-                    onDelete={isEventCreator ? handleDeleteClick : undefined}
-                />
-            )}
+                {viewMode === 'create' && (
+                    <RoomForm
+                        title="Create New Room"
+                        onSubmit={handleCreateRoom}
+                        onCancel={handleCancel}
+                        isSubmitting={isSubmitting}
+                        error={error}
+                        submitButtonText="Create Room"
+                    />
+                )}
 
-            {viewMode === 'create' && (
-                <RoomForm
-                    title="Create New Room"
-                    onSubmit={handleCreateRoom}
-                    onCancel={handleCancel}
-                    isSubmitting={isSubmitting}
-                    error={error}
-                    submitButtonText="Create Room"
-                />
-            )}
-
-            {viewMode === 'edit' && editingRoom && (
-                <RoomForm
-                    title="Edit Room"
-                    initialData={{
-                        name: editingRoom.name,
-                        description: editingRoom.description
-                    }}
-                    onSubmit={handleUpdateRoom}
-                    onCancel={handleCancel}
-                    isSubmitting={isSubmitting}
-                    error={error}
-                    submitButtonText="Update Room"
-                />
-            )}
-
-            {showDeleteConfirmation && roomToDelete && (
-                <ConfirmationModal
-                    isOpen={showDeleteConfirmation}
-                    title="Delete Room"
-                    message={`Are you sure you want to delete "${roomToDelete.name}"? This action cannot be undone.`}
-                    confirmButtonText="Delete"
-                    cancelButtonText="Cancel"
-                    onConfirm={handleDeleteRoom}
-                    onClose={() => {
-                        setShowDeleteConfirmation(false)
-                        setRoomToDelete(null)
-                    }}
-                    isLoading={isSubmitting}
-                    isDestructive={true}
-                />
-            )}
-        </div>
+                {viewMode === 'edit' && editingRoom && (
+                    <RoomForm
+                        title="Edit Room"
+                        initialData={{
+                            name: editingRoom.name,
+                            description: editingRoom.description
+                        }}
+                        onSubmit={handleUpdateRoom}
+                        onCancel={handleCancel}
+                        isSubmitting={isSubmitting}
+                        error={error}
+                        submitButtonText="Update Room"
+                    />
+                )}
+            </VStack>
+        </Box>
     )
 }
 
