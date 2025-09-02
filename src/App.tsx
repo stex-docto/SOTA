@@ -9,7 +9,6 @@ import EventPage from './presentation/pages/EventPage'
 import CreateEventPage from './presentation/pages/CreateEventPage'
 import EditEventPage from './presentation/pages/EditEventPage'
 import { Box, Flex } from '@chakra-ui/react'
-import './App.scss'
 import './sw-update' // Import service worker update handler
 
 function App() {
