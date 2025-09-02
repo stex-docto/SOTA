@@ -4,6 +4,8 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import RoomManagement from '@presentation/components/RoomManagement.tsx'
 import { EventActions } from '@presentation/pages/EventPageParts/EventActions.tsx'
+import {useEffect, useState} from "react";
+import {useAuth} from "@presentation/hooks/useAuth.ts";
 
 interface EventHeaderProps {
     event: EventEntity
@@ -11,6 +13,7 @@ interface EventHeaderProps {
 }
 
 export function EventHeader({ event, eventId }: EventHeaderProps) {
+    const { currentUser } = useAuth()
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat(undefined, {
             weekday: 'long',
@@ -21,6 +24,14 @@ export function EventHeader({ event, eventId }: EventHeaderProps) {
             minute: '2-digit'
         }).format(date)
     }
+    const [isEventCreator, setIsEventCreator] = useState(false)
+
+    useEffect(() => {
+        // Check if current user is the event creator
+        if (currentUser && event) {
+            setIsEventCreator(currentUser.id.value === event.createdBy.value)
+        }
+    }, [currentUser, event])
 
     return (
         <Box
@@ -36,7 +47,7 @@ export function EventHeader({ event, eventId }: EventHeaderProps) {
                     <Heading size="3xl" colorPalette="gray">
                         {event.title}
                     </Heading>
-                    <EventActions event={event} />
+                    <EventActions event={event} isEventCreator={isEventCreator}/>
                 </HStack>
 
                 <Badge colorPalette="gray" size="sm" fontFamily="mono">
@@ -79,7 +90,7 @@ export function EventHeader({ event, eventId }: EventHeaderProps) {
                     </ReactMarkdown>
                 </Box>
 
-                <RoomManagement eventId={EventId.from(eventId)} isEventCreator={false} />
+                <RoomManagement eventId={EventId.from(eventId)} edition={isEventCreator} />
             </VStack>
         </Box>
     )

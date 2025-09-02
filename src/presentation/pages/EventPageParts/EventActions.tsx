@@ -11,9 +11,10 @@ import ConfirmationModal from '@presentation/components/ConfirmationModal'
 
 interface EventActionsProps {
     event: EventEntity
+    isEventCreator: boolean
 }
 
-export function EventActions({ event }: EventActionsProps) {
+export function EventActions({ event, isEventCreator }: EventActionsProps) {
     const navigate = useNavigate()
     const { currentUser } = useAuth()
     const { addSavedEventUseCase, removeSavedEventUseCase, deleteEventUseCase } = useDependencies()
@@ -21,14 +22,6 @@ export function EventActions({ event }: EventActionsProps) {
     const [isSaving, setIsSaving] = useState(false)
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
-    const [isEventCreator, setIsEventCreator] = useState(false)
-
-    useEffect(() => {
-        // Check if current user is the event creator
-        if (currentUser && event) {
-            setIsEventCreator(currentUser.id.value === event.createdBy.value)
-        }
-    }, [currentUser, event])
 
     useEffect(() => {
         if (currentUser && event.id) {

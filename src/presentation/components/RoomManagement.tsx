@@ -8,12 +8,12 @@ import RoomForm, { RoomFormData } from './RoomForm'
 
 export interface RoomManagementProps {
     eventId: EventId
-    isEventCreator: boolean
+    edition?: boolean
 }
 
 type ViewMode = 'list' | 'create' | 'edit'
 
-function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
+function RoomManagement({ eventId, edition = false }: RoomManagementProps) {
     const { getRoomsByEventUseCase, createRoomUseCase, updateRoomUseCase, deleteRoomUseCase } =
         useDependencies()
 
@@ -139,7 +139,7 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
                     <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                         Event Rooms
                     </Text>
-                    {isEventCreator && viewMode === 'list' && (
+                    {edition && viewMode === 'list' && (
                         <Button colorPalette="blue" onClick={() => setViewMode('create')} size="sm">
                             <IoAddCircleOutline style={{ marginRight: '8px' }} />
                             Add Room
@@ -166,9 +166,9 @@ function RoomManagement({ eventId, isEventCreator }: RoomManagementProps) {
                 {viewMode === 'list' && (
                     <RoomList
                         rooms={rooms}
-                        isEventCreator={isEventCreator}
-                        onEdit={isEventCreator ? handleEditClick : undefined}
-                        onDelete={isEventCreator ? handleDeleteRoom : undefined}
+                        isEventCreator={edition}
+                        onEdit={edition ? handleEditClick : undefined}
+                        onDelete={edition ? handleDeleteRoom : undefined}
                     />
                 )}
 
