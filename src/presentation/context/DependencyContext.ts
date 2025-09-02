@@ -6,7 +6,7 @@ import {
     GetEventUseCase,
     UpdateEventUseCase,
     DeleteEventUseCase,
-    SaveEventUseCase,
+    AddSavedEventUseCase,
     RemoveSavedEventUseCase,
     UpdateUserProfileUseCase,
     GetUserAllEventsUseCase,
@@ -23,7 +23,7 @@ export interface DependencyContext {
     getEventUseCase: GetEventUseCase
     updateEventUseCase: UpdateEventUseCase
     deleteEventUseCase: DeleteEventUseCase
-    saveEventUseCase: SaveEventUseCase
+    saveEventUseCase: AddSavedEventUseCase
     removeSavedEventUseCase: RemoveSavedEventUseCase
     updateUserProfileUseCase: UpdateUserProfileUseCase
     getUserAllEventsUseCase: GetUserAllEventsUseCase
