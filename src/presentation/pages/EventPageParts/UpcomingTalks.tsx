@@ -1,14 +1,15 @@
 import { VStack, Box, Text } from '@chakra-ui/react'
-import { EventEntity } from '@domain'
+import { EventEntity, TalkEntity } from '@domain'
 import { useMoment } from '../../hooks/useMoment'
 import { useTalksForEvent } from '../../hooks/useTalksForEvent'
 import { TalkCard } from '../../components/TalkCard'
 
 interface UpcomingTalksProps {
     event: EventEntity
+    onEdit?: (talk: TalkEntity) => void
 }
 
-export function UpcomingTalks({ event }: UpcomingTalksProps) {
+export function UpcomingTalks({ event, onEdit }: UpcomingTalksProps) {
     const { now } = useMoment()
     const { upcomingTalks, currentTalks, talksMap, loading } = useTalksForEvent(event)
 
@@ -29,7 +30,12 @@ export function UpcomingTalks({ event }: UpcomingTalksProps) {
                     {[...currentTalks, ...upcomingTalks].map(talk => {
                         const talkWithRoom = talksMap.get(talk.id)
                         return (
-                            <TalkCard key={talk.id.value} talk={talk} room={talkWithRoom?.room} />
+                            <TalkCard
+                                key={talk.id.value}
+                                talk={talk}
+                                room={talkWithRoom?.room}
+                                onEdit={onEdit}
+                            />
                         )
                     })}
                 </VStack>

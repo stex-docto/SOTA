@@ -1,11 +1,12 @@
 import { Container, Tabs, Box, Badge, HStack } from '@chakra-ui/react'
-import { EventEntity, EventId } from '@domain'
+import { EventEntity, EventId, TalkEntity } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { EventHeader, EventDetails, UpcomingTalks, PastTalks } from './EventPageParts'
 import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
 import TalkCreationModal from '../components/TalkCreationModal'
+import { TalkEditModal } from '../components/TalkEditModal'
 import { useDependencies } from '../hooks/useDependencies'
 import { useTalksForEvent } from '../hooks/useTalksForEvent'
 
@@ -55,6 +56,13 @@ export default function EventPage() {
 
 function EventPageContent({ event }: { event: EventEntity }) {
     const { upcomingTalks, currentTalks, pastTalks } = useTalksForEvent(event)
+    const [editTalk, setEditTalk] = useState<TalkEntity | null>(null)
+    const [editModalOpen, setEditModalOpen] = useState(false)
+
+    const handleEditTalk = (talk: TalkEntity) => {
+        setEditTalk(talk)
+        setEditModalOpen(true)
+    }
 
     return (
         <>
@@ -103,15 +111,21 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     </Tabs.Content>
 
                     <Tabs.Content value="upcoming" pt={6}>
-                        <UpcomingTalks event={event} />
+                        <UpcomingTalks event={event} onEdit={handleEditTalk} />
                     </Tabs.Content>
 
                     <Tabs.Content value="past" pt={6}>
-                        <PastTalks event={event} />
+                        <PastTalks event={event} onEdit={handleEditTalk} />
                     </Tabs.Content>
                 </Tabs.Root>
 
                 <TalkCreationModal event={event} />
+                <TalkEditModal
+                    event={event}
+                    editTalk={editTalk}
+                    open={editModalOpen}
+                    onOpenChange={setEditModalOpen}
+                />
             </Container>
         </>
     )

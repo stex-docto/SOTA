@@ -1,7 +1,8 @@
-import { Badge, Card, Heading, HStack, Text, VStack } from '@chakra-ui/react'
-import { HiMapPin, HiMicrophone, HiSignal } from 'react-icons/hi2'
+import { Badge, Card, Heading, HStack, Text, VStack, IconButton } from '@chakra-ui/react'
+import { HiMapPin, HiMicrophone, HiSignal, HiPencil } from 'react-icons/hi2'
 import { RoomEntity, TalkEntity } from '@domain'
 import { useMoment } from '../hooks/useMoment'
+import { useAuth } from '../hooks/useAuth'
 import moment from 'moment'
 import { GiDuration } from 'react-icons/gi'
 import { CiCalendarDate } from 'react-icons/ci'
@@ -9,11 +10,16 @@ import { CiCalendarDate } from 'react-icons/ci'
 interface TalkCardProps {
     talk: TalkEntity
     room?: RoomEntity
+    onEdit?: (talk: TalkEntity) => void
 }
 
-export function TalkCard({ talk, room }: TalkCardProps) {
+export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
     const { now, toNow } = useMoment()
+    const { currentUser } = useAuth()
     const nowDate = now.toDate()
+
+    // Check if current user is the creator of this talk
+    const isCreator = currentUser && talk.createdBy.equals(currentUser.id)
 
     // Determine the actual status based on timing if variant is not explicitly set
     const getStatus = () => {
@@ -78,14 +84,27 @@ export function TalkCard({ talk, room }: TalkCardProps) {
                             )}
                         </VStack>
 
-                        <Badge
-                            colorPalette={badgeProps.colorPalette}
-                            borderRadius="full"
-                            px={3}
-                            py={1}
-                        >
-                            {badgeProps.children}
-                        </Badge>
+                        <HStack gap={2}>
+                            {isCreator && onEdit && (
+                                <IconButton
+                                    size="sm"
+                                    variant="ghost"
+                                    colorPalette="gray"
+                                    onClick={() => onEdit(talk)}
+                                    title="Edit talk"
+                                >
+                                    <HiPencil size={14} />
+                                </IconButton>
+                            )}
+                            <Badge
+                                colorPalette={badgeProps.colorPalette}
+                                borderRadius="full"
+                                px={3}
+                                py={1}
+                            >
+                                {badgeProps.children}
+                            </Badge>
+                        </HStack>
                     </HStack>
 
                     <VStack align="flex-start" gap={2} w="full">
