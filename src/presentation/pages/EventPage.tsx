@@ -1,4 +1,4 @@
-import { Container, Tabs, Box } from '@chakra-ui/react'
+import { Container, Tabs, Box, Badge, HStack } from '@chakra-ui/react'
 import { EventEntity, EventId } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
 import TalkCreationModal from '../components/TalkCreationModal'
 import { useDependencies } from '../hooks/useDependencies'
+import { useTalksForEvent } from '../hooks/useTalksForEvent'
 
 export default function EventPage() {
     const { eventId } = useParams<{ eventId: string }>()
@@ -49,6 +50,12 @@ export default function EventPage() {
         return <NonExistingEvent />
     }
 
+    return <EventPageContent event={event} />
+}
+
+function EventPageContent({ event }: { event: EventEntity }) {
+    const { upcomingTalks, currentTalks, pastTalks } = useTalksForEvent(event)
+
     return (
         <>
             <Box
@@ -69,8 +76,26 @@ export default function EventPage() {
                 <Tabs.Root defaultValue="details">
                     <Tabs.List>
                         <Tabs.Trigger value="details">Event Details</Tabs.Trigger>
-                        <Tabs.Trigger value="upcoming">Upcoming Talks</Tabs.Trigger>
-                        <Tabs.Trigger value="past">Past Talks</Tabs.Trigger>
+                        <Tabs.Trigger value="upcoming">
+                            <HStack gap={2}>
+                                <span>Upcoming Talks</span>
+                                {upcomingTalks.length + currentTalks.length > 0 && (
+                                    <Badge colorPalette="blue" size="sm">
+                                        {upcomingTalks.length + currentTalks.length}
+                                    </Badge>
+                                )}
+                            </HStack>
+                        </Tabs.Trigger>
+                        <Tabs.Trigger value="past">
+                            <HStack gap={2}>
+                                <span>Past Talks</span>
+                                {pastTalks.length > 0 && (
+                                    <Badge colorPalette="gray" size="sm">
+                                        {pastTalks.length}
+                                    </Badge>
+                                )}
+                            </HStack>
+                        </Tabs.Trigger>
                     </Tabs.List>
 
                     <Tabs.Content value="details" pt={6}>

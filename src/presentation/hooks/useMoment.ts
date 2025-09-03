@@ -89,7 +89,11 @@ export interface MomentHook {
     setLocale: (locale: string) => void
 }
 
-export function useMoment(updateInterval: number = 60000): MomentHook {
+export function useMoment(updateInterval: number = 60000): {
+    now: moment.Moment
+    setLocale: (locale: string) => void
+    toNow: (date: moment.Moment | Date | string) => moment.Duration
+} {
     const [now, setNow] = useState<Moment>(() => timeManager.now())
 
     useEffect(() => {
@@ -102,5 +106,9 @@ export function useMoment(updateInterval: number = 60000): MomentHook {
         moment.locale(locale)
     }
 
-    return { now, setLocale }
+    const toNow = (date: Moment | Date | string): moment.Duration => {
+        return moment.duration(moment(date).diff(now))
+    }
+
+    return { now, setLocale, toNow }
 }
