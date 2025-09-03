@@ -10,7 +10,7 @@ service cloud.firestore {
 
     match /events/{eventId}/talk/{talkId} {
       allow get: if true;
-      allow list: if false;
+      allow list: if true;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.createdBy;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
     }

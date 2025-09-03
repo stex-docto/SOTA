@@ -126,9 +126,6 @@ This project uses **Chakra UI v3** as the primary UI framework for building cons
 ### Event Admins
 - All participant features
 - Create and manage events
-- Add/manage event locations
-- Approve/reject talk proposals
-- Share admin access with other users
 
 ## Firebase Security
 
