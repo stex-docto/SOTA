@@ -3,6 +3,7 @@ import {
     SignInUseCase,
     CreateEventUseCase,
     CreateTalkUseCase,
+    UpdateTalkUseCase,
     GetEventUseCase,
     GetTalksByEventUseCase,
     UpdateEventUseCase,
@@ -21,6 +22,7 @@ export interface DependencyContext {
     signInUseCase: SignInUseCase
     createEventUseCase: CreateEventUseCase
     createTalkUseCase: CreateTalkUseCase
+    updateTalkUseCase: UpdateTalkUseCase
     getEventUseCase: GetEventUseCase
     getTalksByEventUseCase: GetTalksByEventUseCase
     updateEventUseCase: UpdateEventUseCase

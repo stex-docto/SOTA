@@ -1,13 +1,14 @@
 import { VStack, Box, Text } from '@chakra-ui/react'
-import { EventEntity } from '@domain'
+import { EventEntity, TalkEntity } from '@domain'
 import { useTalksForEvent } from '../../hooks/useTalksForEvent'
 import { TalkCard } from '../../components/TalkCard'
 
 interface PastTalksProps {
     event: EventEntity
+    onEdit?: (talk: TalkEntity) => void
 }
 
-export function PastTalks({ event }: PastTalksProps) {
+export function PastTalks({ event, onEdit }: PastTalksProps) {
     const { pastTalks, talksMap, loading } = useTalksForEvent(event)
 
     if (loading) {
@@ -25,7 +26,12 @@ export function PastTalks({ event }: PastTalksProps) {
                     {pastTalks.map(talk => {
                         const talkWithRoom = talksMap.get(talk.id)
                         return (
-                            <TalkCard key={talk.id.value} talk={talk} room={talkWithRoom?.room} />
+                            <TalkCard
+                                key={talk.id.value}
+                                talk={talk}
+                                room={talkWithRoom?.room}
+                                onEdit={onEdit}
+                            />
                         )
                     })}
                 </VStack>

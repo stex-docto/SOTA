@@ -4,6 +4,7 @@ import {
     SignInUseCase,
     CreateEventUseCase,
     CreateTalkUseCase,
+    UpdateTalkUseCase,
     GetEventUseCase,
     GetTalksByEventUseCase,
     UpdateEventUseCase,
@@ -45,6 +46,7 @@ async function initDependencies() {
     const signInUseCase = new SignInUseCase(userRepository, credentialRepository)
     const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository)
     const createTalkUseCase = new CreateTalkUseCase(talkRepository, signInUseCase)
+    const updateTalkUseCase = new UpdateTalkUseCase(talkRepository, signInUseCase)
     const getEventUseCase = new GetEventUseCase(eventRepository)
     const getTalksByEventUseCase = new GetTalksByEventUseCase(talkRepository)
     const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository)
@@ -62,6 +64,7 @@ async function initDependencies() {
         signInUseCase,
         createEventUseCase,
         createTalkUseCase,
+        updateTalkUseCase,
         getEventUseCase,
         getTalksByEventUseCase,
         updateEventUseCase,
