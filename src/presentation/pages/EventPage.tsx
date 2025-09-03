@@ -1,8 +1,8 @@
-import { Container, VStack } from '@chakra-ui/react'
+import { Container, Tabs, Box } from '@chakra-ui/react'
 import { EventEntity, EventId } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { EventHeader, TalkRules, TalkList } from './EventPageParts'
+import { EventHeader, EventDetails, UpcomingTalks, PastTalks } from './EventPageParts'
 import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
 import TalkCreationModal from '../components/TalkCreationModal'
@@ -50,16 +50,44 @@ export default function EventPage() {
     }
 
     return (
-        <Container maxW="6xl" py={8}>
-            <VStack gap={8} align="stretch">
-                <EventHeader event={event} eventId={eventId!} />
+        <>
+            <Box
+                position="sticky"
+                top={0}
+                bg={{ base: 'white', _dark: 'gray.900' }}
+                borderBottomWidth="1px"
+                borderBottomColor={{ base: 'gray.200', _dark: 'gray.700' }}
+                zIndex="sticky"
+                py={4}
+            >
+                <Container maxW="6xl">
+                    <EventHeader event={event} />
+                </Container>
+            </Box>
 
-                <TalkRules talkRules={event.talkRules} />
+            <Container maxW="6xl" py={8}>
+                <Tabs.Root defaultValue="details">
+                    <Tabs.List>
+                        <Tabs.Trigger value="details">Event Details</Tabs.Trigger>
+                        <Tabs.Trigger value="upcoming">Upcoming Talks</Tabs.Trigger>
+                        <Tabs.Trigger value="past">Past Talks</Tabs.Trigger>
+                    </Tabs.List>
 
-                <TalkList event={event} />
-            </VStack>
+                    <Tabs.Content value="details" pt={6}>
+                        <EventDetails event={event} />
+                    </Tabs.Content>
 
-            <TalkCreationModal event={event} />
-        </Container>
+                    <Tabs.Content value="upcoming" pt={6}>
+                        <UpcomingTalks event={event} />
+                    </Tabs.Content>
+
+                    <Tabs.Content value="past" pt={6}>
+                        <PastTalks event={event} />
+                    </Tabs.Content>
+                </Tabs.Root>
+
+                <TalkCreationModal event={event} />
+            </Container>
+        </>
     )
 }
