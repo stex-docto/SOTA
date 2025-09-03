@@ -1,6 +1,7 @@
 export * from './CreateEventUseCase'
 export * from './CreateTalkUseCase'
 export * from './GetEventUseCase'
+export * from './GetTalksByEventUseCase'
 export * from './UpdateEventUseCase'
 export * from './DeleteEventUseCase'
 export * from './RemoveSavedEventUseCase'

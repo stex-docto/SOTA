@@ -5,6 +5,7 @@ import {
     CreateEventUseCase,
     CreateTalkUseCase,
     GetEventUseCase,
+    GetTalksByEventUseCase,
     UpdateEventUseCase,
     DeleteEventUseCase,
     AddSavedEventUseCase,
@@ -45,6 +46,7 @@ async function initDependencies() {
     const createEventUseCase = new CreateEventUseCase(eventRepository, userRepository)
     const createTalkUseCase = new CreateTalkUseCase(talkRepository, signInUseCase)
     const getEventUseCase = new GetEventUseCase(eventRepository)
+    const getTalksByEventUseCase = new GetTalksByEventUseCase(talkRepository)
     const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository)
     const deleteEventUseCase = new DeleteEventUseCase(eventRepository, signInUseCase)
     const addSavedEventUseCase = new AddSavedEventUseCase(userRepository, signInUseCase)
@@ -61,6 +63,7 @@ async function initDependencies() {
         createEventUseCase,
         createTalkUseCase,
         getEventUseCase,
+        getTalksByEventUseCase,
         updateEventUseCase,
         deleteEventUseCase,
         addSavedEventUseCase,

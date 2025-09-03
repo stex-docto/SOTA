@@ -4,6 +4,7 @@ import {
     CreateEventUseCase,
     CreateTalkUseCase,
     GetEventUseCase,
+    GetTalksByEventUseCase,
     UpdateEventUseCase,
     DeleteEventUseCase,
     AddSavedEventUseCase,
@@ -21,6 +22,7 @@ export interface DependencyContext {
     createEventUseCase: CreateEventUseCase
     createTalkUseCase: CreateTalkUseCase
     getEventUseCase: GetEventUseCase
+    getTalksByEventUseCase: GetTalksByEventUseCase
     updateEventUseCase: UpdateEventUseCase
     deleteEventUseCase: DeleteEventUseCase
     addSavedEventUseCase: AddSavedEventUseCase

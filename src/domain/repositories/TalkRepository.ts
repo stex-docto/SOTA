@@ -7,5 +7,7 @@ export interface TalkRepository {
 
     findByEventId(eventId: EventId): Promise<TalkEntity[]>
 
+    subscribeByEventId(eventId: EventId, callback: (talks: TalkEntity[]) => void): () => void
+
     delete(id: TalkId): Promise<void>
 }

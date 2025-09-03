@@ -2,7 +2,7 @@ import { Container, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { EventHeader, TalkRules, TalkSchedule } from './EventPageParts'
+import { EventHeader, TalkRules, TalkList } from './EventPageParts'
 import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
 import TalkCreationModal from '../components/TalkCreationModal'
@@ -56,7 +56,7 @@ export default function EventPage() {
 
                 <TalkRules talkRules={event.talkRules} />
 
-                <TalkSchedule />
+                <TalkList event={event} />
             </VStack>
 
             <TalkCreationModal event={event} />

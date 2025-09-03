@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { EventEntity, RoomId, RoomEntity } from '@domain'
 import { HiMicrophone, HiPlus } from 'react-icons/hi2'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
@@ -70,7 +70,7 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
         resetForm()
     }, [event.id])
 
-    const fetchRooms = async () => {
+    const fetchRooms = useCallback(async () => {
         setLoadingRooms(true)
         try {
             const result = await getRoomsByEventUseCase.execute({ eventId: event.id })
@@ -86,13 +86,11 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
         } finally {
             setLoadingRooms(false)
         }
-    }
+    }, [event.id, getRoomsByEventUseCase])
 
     useEffect(() => {
-        if (open) {
-            fetchRooms()
-        }
-    }, [open, event.id])
+        fetchRooms()
+    }, [open, event.id, fetchRooms])
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

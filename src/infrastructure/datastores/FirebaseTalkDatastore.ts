@@ -1,5 +1,14 @@
 import { TalkEntity, TalkId, TalkRepository, EventId, UserId, RoomId } from '@domain'
-import { collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc } from 'firebase/firestore'
+import {
+    collection,
+    deleteDoc,
+    doc,
+    Firestore,
+    getDoc,
+    getDocs,
+    setDoc,
+    onSnapshot
+} from 'firebase/firestore'
 
 type FirebaseTalkDocument = {
     id: string
@@ -60,6 +69,29 @@ export class FirebaseTalkDatastore implements TalkRepository {
             console.error('Error finding talks by event id:', error)
             return []
         }
+    }
+
+    subscribeByEventId(eventId: EventId, callback: (talks: TalkEntity[]) => void): () => void {
+        const talkCollection = this.getTalkCollection(eventId)
+
+        return onSnapshot(
+            talkCollection,
+            querySnapshot => {
+                try {
+                    const talks = querySnapshot.docs.map(doc =>
+                        this.documentToEntity(doc.data() as FirebaseTalkDocument)
+                    )
+                    callback(talks)
+                } catch (error) {
+                    console.error('Error in talks subscription:', error)
+                    callback([])
+                }
+            },
+            error => {
+                console.error('Error subscribing to talks:', error)
+                callback([])
+            }
+        )
     }
 
     async delete(id: TalkId): Promise<void> {
