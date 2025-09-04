@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { VStack, HStack, Text, Button, Box, Input, Textarea, Field } from '@chakra-ui/react'
+import { Box, Button, Field, HStack, Input, Text, Textarea, VStack } from '@chakra-ui/react'
 import { IoWarningOutline } from 'react-icons/io5'
 
 export interface RoomFormData {

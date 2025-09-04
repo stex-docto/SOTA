@@ -16,7 +16,7 @@ function Header() {
             borderBottomWidth="1px"
             borderColor="border.subtle"
         >
-            <Container maxW="1400px" px={8} py={4}>
+            <Container>
                 <HStack justify="space-between" align="center">
                     {/* Logo */}
                     <Box>

@@ -1,4 +1,4 @@
-import { UserRepository, UserEntity } from '@/domain'
+import { UserEntity, UserRepository } from '@/domain'
 
 export interface UpdateUserProfileCommand {
     displayName: string

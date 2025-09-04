@@ -1,7 +1,7 @@
 import { HStack, IconButton } from '@chakra-ui/react'
 import { EventEntity } from '@domain'
 import { HiHeart, HiOutlineHeart, HiPencil, HiTrash } from 'react-icons/hi2'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toaster } from '@presentation/ui/toaster-config'
 import { useAuth } from '@presentation/hooks/useAuth'

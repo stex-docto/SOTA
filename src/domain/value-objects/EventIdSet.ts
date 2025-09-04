@@ -10,6 +10,10 @@ export class EventIdSet {
         })
     }
 
+    get size(): number {
+        return this.eventIds.size
+    }
+
     add(eventId: EventId): EventIdSet {
         const newEventIds = new Map(this.eventIds)
         newEventIds.set(eventId.value, eventId)
@@ -24,10 +28,6 @@ export class EventIdSet {
 
     has(eventId: EventId): boolean {
         return this.eventIds.has(eventId.value)
-    }
-
-    get size(): number {
-        return this.eventIds.size
     }
 
     toArray(): EventId[] {

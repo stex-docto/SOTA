@@ -1,4 +1,4 @@
-import { EventRepository, RoomId, EventId } from '@domain'
+import { EventId, EventRepository, RoomId } from '@domain'
 import { SignInUseCase } from '@application'
 
 export interface UpdateRoomCommand {

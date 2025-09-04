@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { UserEventItem } from '@application'
-import { VStack, HStack, Text, Card, Badge } from '@chakra-ui/react'
-import { HiMapPin, HiUser, HiHeart } from 'react-icons/hi2'
+import { Badge, Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { HiHeart, HiMapPin, HiUser } from 'react-icons/hi2'
 
 interface EventListProps {
     events: UserEventItem[]

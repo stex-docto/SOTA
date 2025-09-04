@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { UserEntity } from '@/domain'
 import { useDependencies } from '../../hooks/useDependencies'
-import { VStack, HStack, Text, Button, Input, Field, Box } from '@chakra-ui/react'
+import { Box, Button, Field, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import { toaster } from '@presentation/ui/toaster-config'
 
 interface UserProfileProps {

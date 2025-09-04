@@ -1,4 +1,4 @@
-import { TalkRepository, TalkEntity, EventId, RoomId } from '@/domain'
+import { EventId, RoomId, TalkEntity, TalkRepository } from '@/domain'
 import { SignInUseCase } from '@application'
 
 export interface TalkCreationData {

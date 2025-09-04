@@ -1,4 +1,4 @@
-import { Credential, UserEntity, UserId, UserRepository, EventId, EventIdSet } from '@domain'
+import { Credential, EventId, EventIdSet, UserEntity, UserId, UserRepository } from '@domain'
 import {
     Auth,
     createUserWithEmailAndPassword,
@@ -79,33 +79,6 @@ export class FirebaseUserDatastore implements UserRepository {
         }
     }
 
-    private mapFromFirebase(
-        uid: UserId,
-        publicData: FirebasePublicUser,
-        privateData: Partial<FirebasePrivateUser> = {}
-    ): UserEntity {
-        // Convert string array from Firebase to EventIdSet
-        const eventIds = (privateData?.savedEventIds || []).map(id => EventId.from(id))
-        const savedEventIds = new EventIdSet(eventIds)
-        return new UserEntity(uid, savedEventIds, publicData.displayName)
-    }
-
-    private mapToFirebase(user: UserEntity): {
-        publicData: FirebasePublicUser
-        privateData: FirebasePrivateUser
-    } {
-        return {
-            publicData: {
-                id: user.id.value,
-                displayName: user.displayName
-            },
-            privateData: {
-                id: user.id.value,
-                savedEventIds: user.savedEventIds.toArray().map(eventId => eventId.value)
-            }
-        }
-    }
-
     async saveUser(user: UserEntity): Promise<UserEntity> {
         const currentUser = this.auth.currentUser
         if (!currentUser) throw new Error('No authenticated user')
@@ -179,6 +152,33 @@ export class FirebaseUserDatastore implements UserRepository {
             this.currentUserUnsubscribe = () => {
                 publicUnsubScribe()
                 privateUnsubScribe()
+            }
+        }
+    }
+
+    private mapFromFirebase(
+        uid: UserId,
+        publicData: FirebasePublicUser,
+        privateData: Partial<FirebasePrivateUser> = {}
+    ): UserEntity {
+        // Convert string array from Firebase to EventIdSet
+        const eventIds = (privateData?.savedEventIds || []).map(id => EventId.from(id))
+        const savedEventIds = new EventIdSet(eventIds)
+        return new UserEntity(uid, savedEventIds, publicData.displayName)
+    }
+
+    private mapToFirebase(user: UserEntity): {
+        publicData: FirebasePublicUser
+        privateData: FirebasePrivateUser
+    } {
+        return {
+            publicData: {
+                id: user.id.value,
+                displayName: user.displayName
+            },
+            privateData: {
+                id: user.id.value,
+                savedEventIds: user.savedEventIds.toArray().map(eventId => eventId.value)
             }
         }
     }

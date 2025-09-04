@@ -1,5 +1,5 @@
 import { useDependencies } from '../../hooks/useDependencies'
-import { HStack, Button } from '@chakra-ui/react'
+import { Button, HStack } from '@chakra-ui/react'
 import { toaster } from '@presentation/ui/toaster-config'
 
 interface UserActionsProps {

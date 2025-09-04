@@ -1,5 +1,5 @@
 import { Credential, UserEntity } from '@/domain'
-import { VStack, Text, Box } from '@chakra-ui/react'
+import { Box, Text, VStack } from '@chakra-ui/react'
 
 interface CredentialDisplayProps {
     credential: Credential

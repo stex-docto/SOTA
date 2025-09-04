@@ -1,21 +1,22 @@
 import { createContext } from 'react'
 import {
-    SignInUseCase,
-    CreateEventUseCase,
-    CreateTalkUseCase,
-    UpdateTalkUseCase,
-    GetEventUseCase,
-    GetTalksByEventUseCase,
-    UpdateEventUseCase,
-    DeleteEventUseCase,
     AddSavedEventUseCase,
-    RemoveSavedEventUseCase,
-    UpdateUserProfileUseCase,
-    GetUserAllEventsUseCase,
+    CreateEventUseCase,
     CreateRoomUseCase,
-    UpdateRoomUseCase,
+    CreateTalkUseCase,
+    DeleteEventUseCase,
     DeleteRoomUseCase,
-    GetRoomsByEventUseCase
+    GetEventUseCase,
+    GetRoomsByEventUseCase,
+    GetTalksByEventUseCase,
+    GetUserAllEventsUseCase,
+    GetUserUseCase,
+    RemoveSavedEventUseCase,
+    SignInUseCase,
+    UpdateEventUseCase,
+    UpdateRoomUseCase,
+    UpdateTalkUseCase,
+    UpdateUserProfileUseCase
 } from '@application'
 
 export interface DependencyContext {
@@ -25,6 +26,7 @@ export interface DependencyContext {
     updateTalkUseCase: UpdateTalkUseCase
     getEventUseCase: GetEventUseCase
     getTalksByEventUseCase: GetTalksByEventUseCase
+    getUserUseCase: GetUserUseCase
     updateEventUseCase: UpdateEventUseCase
     deleteEventUseCase: DeleteEventUseCase
     addSavedEventUseCase: AddSavedEventUseCase

@@ -1,4 +1,4 @@
-import { VStack, Box, Text } from '@chakra-ui/react'
+import { Box, Text, VStack } from '@chakra-ui/react'
 import { EventEntity, TalkEntity } from '@domain'
 import { useMoment } from '../../hooks/useMoment'
 import { useTalksForEvent } from '../../hooks/useTalksForEvent'

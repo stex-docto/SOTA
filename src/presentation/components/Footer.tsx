@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Text, Link, IconButton } from '@chakra-ui/react'
+import { Box, Container, HStack, IconButton, Link, StackSeparator, Text } from '@chakra-ui/react'
 import { ColorModeButton } from '@presentation/ui/color-mode'
 import { VscGithub, VscIssues } from 'react-icons/vsc'
 
@@ -36,16 +36,15 @@ Add any other context about the problem here.
     }
 
     return (
-        <Box as="footer" bg="bg.subtle" borderTopWidth="1px" mt="auto" padding={1}>
-            <Flex
-                maxW="1200px"
-                mx="auto"
-                px={6}
-                direction={{ base: 'column', md: 'row' }}
-                justify="space-between"
-                align="center"
-                gap={1}
-            >
+        <Box
+            as="footer"
+            bg="bg.subtle"
+            borderTopWidth="1px"
+            width="100%"
+            padding={1}
+            justify-content="center"
+        >
+            <Container>
                 <HStack gap={4} wrap="wrap" justify="center">
                     <ColorModeButton />
                     <Link
@@ -57,9 +56,9 @@ Add any other context about the problem here.
                         gap={2}
                         fontSize="sm"
                         _hover={{ textDecoration: 'none' }}
+                        title="GitHub Repository"
                     >
-                        <VscGithub size={16} />
-                        GitHub Repository
+                        <VscGithub />
                     </Link>
                     <IconButton
                         onClick={handleReportIssue}
@@ -67,17 +66,23 @@ Add any other context about the problem here.
                         size="sm"
                         aria-label="Report Issue"
                         colorPalette="red"
+                        title="Report Issue"
                     >
-                        <HStack gap={2}>
-                            <VscIssues size={16} />
-                            <Text>Report Issue</Text>
-                        </HStack>
+                        <VscIssues />
                     </IconButton>
+
+                    <StackSeparator flex={1} />
+
+                    <Text
+                        fontSize="sm"
+                        colorPalette="gray"
+                        textAlign={{ base: 'center', md: 'right' }}
+                        title={`&copy; {new Date().getFullYear()} SOTA - Simple Open-Talk App`}
+                    >
+                        &copy; {new Date().getFullYear()} SOTA
+                    </Text>
                 </HStack>
-                <Text fontSize="sm" colorPalette="gray" textAlign={{ base: 'center', md: 'right' }}>
-                    &copy; {new Date().getFullYear()} SOTA - Simple Open-Talk App
-                </Text>
-            </Flex>
+            </Container>
         </Box>
     )
 }

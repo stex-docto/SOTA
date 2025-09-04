@@ -1,9 +1,9 @@
 import {
-    UserRepository,
-    CredentialRepository,
     Credential,
+    CredentialRepository,
+    SignInProvider,
     UserEntity,
-    SignInProvider
+    UserRepository
 } from '@/domain'
 
 export class SignInUseCase {

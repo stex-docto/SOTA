@@ -6,7 +6,7 @@ import {
 } from '@/domain/value-objects/Credential'
 import { useDependencies } from '../../hooks/useDependencies'
 import { Credential } from '@/domain'
-import { VStack, Text, Button, Separator, Field, Input } from '@chakra-ui/react'
+import { Button, Field, Input, Separator, Text, VStack } from '@chakra-ui/react'
 
 interface SignInFormProps {
     onCredentialSet: (credential: Credential) => void

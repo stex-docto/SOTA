@@ -3,15 +3,15 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import {
     Box,
-    VStack,
-    HStack,
-    Heading,
-    Text,
-    Input,
-    Textarea,
     Button,
+    Container,
     Field,
-    Container
+    Heading,
+    HStack,
+    Input,
+    Text,
+    Textarea,
+    VStack
 } from '@chakra-ui/react'
 
 export interface EventFormData {
@@ -92,7 +92,7 @@ function EventForm({
     }
 
     return (
-        <Container maxW="4xl" py={8}>
+        <Container>
             {title && (
                 <VStack gap={2} mb={8} textAlign="center">
                     <Heading size="2xl" colorPalette="gray">

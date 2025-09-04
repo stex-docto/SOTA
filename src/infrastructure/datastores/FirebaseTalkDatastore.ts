@@ -1,4 +1,4 @@
-import { TalkEntity, TalkId, TalkRepository, EventId, UserId, RoomId } from '@domain'
+import { EventId, RoomId, TalkEntity, TalkId, TalkRepository, UserId } from '@domain'
 import {
     collection,
     deleteDoc,
@@ -6,8 +6,8 @@ import {
     Firestore,
     getDoc,
     getDocs,
-    setDoc,
-    onSnapshot
+    onSnapshot,
+    setDoc
 } from 'firebase/firestore'
 
 type FirebaseTalkDocument = {
@@ -23,10 +23,6 @@ type FirebaseTalkDocument = {
 
 export class FirebaseTalkDatastore implements TalkRepository {
     constructor(private readonly firestore: Firestore) {}
-
-    private getTalkCollection(eventId: EventId) {
-        return collection(this.firestore, 'events', eventId.value, 'talk')
-    }
 
     async save(talk: TalkEntity): Promise<void> {
         const talkDoc: FirebaseTalkDocument = {
@@ -102,6 +98,10 @@ export class FirebaseTalkDatastore implements TalkRepository {
             console.error('Error deleting talk:', error)
             throw error
         }
+    }
+
+    private getTalkCollection(eventId: EventId) {
+        return collection(this.firestore, 'events', eventId.value, 'talk')
     }
 
     private documentToEntity(doc: FirebaseTalkDocument): TalkEntity {

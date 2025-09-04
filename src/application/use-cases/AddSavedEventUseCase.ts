@@ -1,4 +1,4 @@
-import { UserRepository, EventId } from '@/domain'
+import { EventId, UserRepository } from '@/domain'
 import { SignInUseCase } from '@/application'
 
 export interface AddSavedEventCommand {

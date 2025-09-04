@@ -4,8 +4,8 @@ import { useAuth } from '../hooks/useAuth'
 import { useDependencies } from '../hooks/useDependencies'
 import { UserEventItem } from '@application'
 import moment from 'moment'
-import { HiSignal, HiClock } from 'react-icons/hi2'
-import { Box, HStack, Text, Badge, Separator } from '@chakra-ui/react'
+import { HiClock, HiSignal } from 'react-icons/hi2'
+import { Badge, Box, HStack, Separator, Text } from '@chakra-ui/react'
 
 function CurrentEventsBar() {
     const { currentUser } = useAuth()
@@ -131,7 +131,7 @@ function CurrentEventsBar() {
                             </Link>
                         ))}
                         {currentEvents.length > 2 && (
-                            <Badge colorPalette="gray" size="sm" borderRadius="full">
+                            <Badge colorPalette="gray" size="sm">
                                 +{currentEvents.length - 2}
                             </Badge>
                         )}
