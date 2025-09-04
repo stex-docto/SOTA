@@ -65,7 +65,7 @@ function EventPageContent({ event }: { event: EventEntity }) {
     }
 
     return (
-        <VStack gap={4}>
+        <VStack gap={4} align="stretch">
             <EventHeader event={event} />
 
             <Tabs.Root defaultValue="details">

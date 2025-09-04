@@ -131,7 +131,7 @@ function CurrentEventsBar() {
                             </Link>
                         ))}
                         {currentEvents.length > 2 && (
-                            <Badge colorPalette="gray" size="sm" borderRadius="full">
+                            <Badge colorPalette="gray" size="sm">
                                 +{currentEvents.length - 2}
                             </Badge>
                         )}
