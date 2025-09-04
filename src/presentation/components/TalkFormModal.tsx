@@ -204,6 +204,10 @@ export function TalkFormModal({
                                     rows={4}
                                     autoresize
                                 />
+                                <Field.HelperText>
+                                    Markdown is supported! Use **bold**, *italic*, [links](url), and
+                                    other formatting.
+                                </Field.HelperText>
                             </Field.Root>
 
                             <Field.Root required>

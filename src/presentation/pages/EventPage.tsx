@@ -1,7 +1,7 @@
 import { Badge, HStack, Tabs, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId, TalkEntity } from '@domain'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { EventDetails, EventHeader, PastTalks, UpcomingTalks } from './EventPageParts'
 import { LoadingEvent } from '../components/LoadingEvent'
 import { NonExistingEvent } from '../components/NonExistingEvent'
@@ -58,6 +58,24 @@ function EventPageContent({ event }: { event: EventEntity }) {
     const { upcomingTalks, currentTalks, pastTalks } = useTalksForEvent(event)
     const [editTalk, setEditTalk] = useState<TalkEntity | null>(null)
     const [editModalOpen, setEditModalOpen] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams()
+
+    // Get tab from URL or default to 'details'
+    const activeTab = searchParams.get('tab') || 'details'
+
+    // Valid tab values
+    const validTabs = ['details', 'upcoming', 'past']
+    const currentTab = validTabs.includes(activeTab) ? activeTab : 'details'
+
+    const handleTabChange = (details: Tabs.TabsValueChangeDetails) => {
+        const newSearchParams = new URLSearchParams(searchParams)
+        if (details.value === 'details') {
+            newSearchParams.delete('tab')
+        } else {
+            newSearchParams.set('tab', details.value)
+        }
+        setSearchParams(newSearchParams, { replace: true })
+    }
 
     const handleEditTalk = (talk: TalkEntity) => {
         setEditTalk(talk)
@@ -68,7 +86,7 @@ function EventPageContent({ event }: { event: EventEntity }) {
         <VStack gap={4} align="stretch">
             <EventHeader event={event} />
 
-            <Tabs.Root defaultValue="details">
+            <Tabs.Root value={currentTab} onValueChange={handleTabChange}>
                 <Tabs.List>
                     <Tabs.Trigger value="details">Event Details</Tabs.Trigger>
                     <Tabs.Trigger value="upcoming">
