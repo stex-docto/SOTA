@@ -1,4 +1,4 @@
-import { EventId, UserId, RoomId, RoomEntity, RoomSet } from '@/domain'
+import { EventId, RoomEntity, RoomId, RoomSet, UserId } from '@/domain'
 
 export interface Event {
     id: EventId

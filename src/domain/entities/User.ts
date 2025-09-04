@@ -1,4 +1,4 @@
-import { UserId, EventId, EventIdSet } from '@/domain'
+import { EventId, EventIdSet, UserId } from '@/domain'
 
 export type PublicUser = {
     id: UserId

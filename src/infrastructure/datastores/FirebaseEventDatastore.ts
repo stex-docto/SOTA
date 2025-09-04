@@ -2,11 +2,11 @@ import {
     EventEntity,
     EventId,
     EventRepository,
-    UserId,
-    UserRepository,
-    RoomId,
     RoomEntity,
-    RoomSet
+    RoomId,
+    RoomSet,
+    UserId,
+    UserRepository
 } from '@domain'
 import {
     collection,

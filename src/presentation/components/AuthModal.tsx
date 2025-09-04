@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
-import { useDependencies } from '../hooks/useDependencies'
-import { useAuth } from '../hooks/useAuth'
-import { useSignInProvider } from '../hooks/useSignInProvider'
-import { Credential } from '@/domain'
-import { CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
-import { CloseButton, Dialog, IconButton, VStack } from '@chakra-ui/react'
-import { HiUser } from 'react-icons/hi2'
-import { OpenChangeDetails } from '@zag-js/dialog'
-import { toaster } from '@presentation/ui/toaster-config'
+import {useEffect, useState} from 'react'
+import {useDependencies} from '../hooks/useDependencies'
+import {useAuth} from '../hooks/useAuth'
+import {useSignInProvider} from '../hooks/useSignInProvider'
+import {Credential} from '@/domain'
+import {CredentialDisplay, SignInForm, UserActions, UserProfile} from './auth'
+import {CloseButton, Dialog, IconButton, VStack} from '@chakra-ui/react'
+import {OpenChangeDetails} from '@zag-js/dialog'
+import {toaster} from '@presentation/ui/toaster-config'
+import {FaUserAstronaut} from "react-icons/fa";
 
 export function AuthModal() {
-    const { signInUseCase } = useDependencies()
-    const { currentUser } = useAuth()
-    const { answerAllRequests, hasPendingRequests } = useSignInProvider(signInUseCase)
+    const {signInUseCase} = useDependencies()
+    const {currentUser} = useAuth()
+    const {answerAllRequests, hasPendingRequests} = useSignInProvider(signInUseCase)
     const [credential, setCredential] = useState<Credential | null>()
     const [open, setOpen] = useState(false)
 
@@ -48,17 +48,17 @@ export function AuthModal() {
                     aria-label={currentUser ? 'User Profile' : 'Sign In'}
                     title={currentUser ? 'User' : 'Sign In'}
                 >
-                    <HiUser size={20} />
+                    <FaUserAstronaut size={20}/>
                 </IconButton>
             </Dialog.Trigger>
 
-            <Dialog.Backdrop />
+            <Dialog.Backdrop/>
             <Dialog.Positioner>
                 <Dialog.Content maxW="500px" w="90%">
                     <Dialog.Header>
                         <Dialog.Title>Device Connection</Dialog.Title>
                         <Dialog.CloseTrigger asChild>
-                            <CloseButton />
+                            <CloseButton/>
                         </Dialog.CloseTrigger>
                     </Dialog.Header>
 
@@ -87,7 +87,7 @@ export function AuthModal() {
                                     />
                                 )}
 
-                                <UserProfile currentUser={currentUser} />
+                                <UserProfile currentUser={currentUser}/>
 
                                 <UserActions
                                     onSignOut={() => setCredential(null)}

@@ -1,4 +1,4 @@
-import { RoomId, RoomEntity } from '@/domain'
+import { RoomEntity, RoomId } from '@/domain'
 
 export class RoomSet {
     private readonly rooms: Map<string, RoomEntity>
@@ -8,6 +8,10 @@ export class RoomSet {
         rooms.forEach(room => {
             this.rooms.set(room.id.value, room)
         })
+    }
+
+    get size(): number {
+        return this.rooms.size
     }
 
     add(room: RoomEntity): RoomSet {
@@ -28,10 +32,6 @@ export class RoomSet {
 
     has(roomId: RoomId): boolean {
         return this.rooms.has(roomId.value)
-    }
-
-    get size(): number {
-        return this.rooms.size
     }
 
     toArray(): RoomEntity[] {

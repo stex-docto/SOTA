@@ -1,4 +1,4 @@
-import { EventRepository, RoomId, UserRepository, EventId } from '@domain'
+import { EventId, EventRepository, RoomId, UserRepository } from '@domain'
 
 export interface DeleteRoomCommand {
     eventId: EventId
