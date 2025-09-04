@@ -5,16 +5,15 @@ import { UserEventItem } from '@application'
 import { useEffect, useState } from 'react'
 import EventList from './EventList'
 import {
-    Container,
-    VStack,
-    HStack,
-    Heading,
-    Text,
-    Button,
     Box,
+    Button,
+    Center,
     Collapsible,
+    Heading,
+    HStack,
     Spinner,
-    Center
+    Text,
+    VStack
 } from '@chakra-ui/react'
 import { HiCalendarDays, HiOutlinePlus } from 'react-icons/hi2'
 import { TbTarget } from 'react-icons/tb'
@@ -53,7 +52,7 @@ function UserDashboard() {
     const hasAnyEvents = allEvents.length > 0
 
     return (
-        <Container maxW="1200px" py={8}>
+        <>
             {/* Header */}
             <HStack justify="space-between" align="center" mb={8}>
                 <Heading size="2xl">Your Events</Heading>
@@ -164,7 +163,7 @@ function UserDashboard() {
                     </VStack>
                 </Center>
             )}
-        </Container>
+        </>
     )
 }
 

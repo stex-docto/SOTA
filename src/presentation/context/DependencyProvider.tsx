@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { EventRepository, UserRepository, TalkRepository } from '@domain'
+import { EventRepository, TalkRepository, UserRepository } from '@domain'
 import {
-    SignInUseCase,
-    CreateEventUseCase,
-    CreateTalkUseCase,
-    UpdateTalkUseCase,
-    GetEventUseCase,
-    GetTalksByEventUseCase,
-    UpdateEventUseCase,
-    DeleteEventUseCase,
     AddSavedEventUseCase,
-    RemoveSavedEventUseCase,
-    UpdateUserProfileUseCase,
-    GetUserAllEventsUseCase,
+    CreateEventUseCase,
     CreateRoomUseCase,
-    UpdateRoomUseCase,
+    CreateTalkUseCase,
+    DeleteEventUseCase,
     DeleteRoomUseCase,
-    GetRoomsByEventUseCase
+    GetEventUseCase,
+    GetRoomsByEventUseCase,
+    GetTalksByEventUseCase,
+    GetUserAllEventsUseCase,
+    GetUserUseCase,
+    RemoveSavedEventUseCase,
+    SignInUseCase,
+    UpdateEventUseCase,
+    UpdateRoomUseCase,
+    UpdateTalkUseCase,
+    UpdateUserProfileUseCase
 } from '@application'
 import { FirebaseUserDatastore } from '@infrastructure/datastores/FirebaseUserDatastore'
 import { FirebaseEventDatastore } from '@infrastructure/datastores/FirebaseEventDatastore'
@@ -49,6 +50,7 @@ async function initDependencies() {
     const updateTalkUseCase = new UpdateTalkUseCase(talkRepository, signInUseCase)
     const getEventUseCase = new GetEventUseCase(eventRepository)
     const getTalksByEventUseCase = new GetTalksByEventUseCase(talkRepository)
+    const getUserUseCase = new GetUserUseCase(userRepository)
     const updateEventUseCase = new UpdateEventUseCase(eventRepository, userRepository)
     const deleteEventUseCase = new DeleteEventUseCase(eventRepository, signInUseCase)
     const addSavedEventUseCase = new AddSavedEventUseCase(userRepository, signInUseCase)
@@ -67,6 +69,7 @@ async function initDependencies() {
         updateTalkUseCase,
         getEventUseCase,
         getTalksByEventUseCase,
+        getUserUseCase,
         updateEventUseCase,
         deleteEventUseCase,
         addSavedEventUseCase,

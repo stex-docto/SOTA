@@ -1,20 +1,10 @@
 import { Link } from 'react-router-dom'
-import {
-    Container,
-    VStack,
-    HStack,
-    Heading,
-    Text,
-    Card,
-    Badge,
-    Button,
-    SimpleGrid
-} from '@chakra-ui/react'
-import { HiUserGroup, HiSparkles, HiBolt, HiPaperAirplane, HiRocketLaunch } from 'react-icons/hi2'
+import { Badge, Button, Card, Heading, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { HiBolt, HiPaperAirplane, HiRocketLaunch, HiSparkles, HiUserGroup } from 'react-icons/hi2'
 
 function LandingPage() {
     return (
-        <Container maxW="1200px" py={16}>
+        <>
             <VStack gap={12} textAlign="center">
                 {/* Hero Section */}
                 <VStack gap={6}>
@@ -160,7 +150,7 @@ function LandingPage() {
                     </Card.Root>
                 </SimpleGrid>
             </VStack>
-        </Container>
+        </>
     )
 }
 

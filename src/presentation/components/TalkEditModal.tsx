@@ -1,5 +1,5 @@
 import { EventEntity, RoomId, TalkEntity } from '@domain'
-import { TalkFormModal, TalkFormData } from './TalkFormModal'
+import { TalkFormData, TalkFormModal } from './TalkFormModal'
 import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
 

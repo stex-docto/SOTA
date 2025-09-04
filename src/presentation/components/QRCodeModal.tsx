@@ -1,6 +1,14 @@
-import { VStack, HStack, Text, Input, IconButton, Box, CloseButton } from '@chakra-ui/react'
-import { Dialog } from '@chakra-ui/react'
-import { QrCode } from '@chakra-ui/react'
+import {
+    Box,
+    CloseButton,
+    Dialog,
+    HStack,
+    IconButton,
+    Input,
+    QrCode,
+    Text,
+    VStack
+} from '@chakra-ui/react'
 import { IoQrCodeOutline } from 'react-icons/io5'
 import { MdContentCopy } from 'react-icons/md'
 import { toaster } from '@presentation/ui'

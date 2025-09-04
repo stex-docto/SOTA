@@ -1,11 +1,21 @@
-import { Badge, Card, Heading, HStack, Text, VStack, IconButton } from '@chakra-ui/react'
-import { HiMapPin, HiMicrophone, HiSignal, HiPencil } from 'react-icons/hi2'
-import { RoomEntity, TalkEntity } from '@domain'
+import { Badge, Button, Card, Heading, HStack, IconButton, Text, VStack } from '@chakra-ui/react'
+import {
+    HiChevronDown,
+    HiChevronRight,
+    HiMapPin,
+    HiMicrophone,
+    HiPencil,
+    HiSignal,
+    HiUser
+} from 'react-icons/hi2'
+import { RoomEntity, TalkEntity, UserEntity } from '@domain'
 import { useMoment } from '../hooks/useMoment'
 import { useAuth } from '../hooks/useAuth'
+import { useDependencies } from '../hooks/useDependencies'
 import moment from 'moment'
 import { GiDuration } from 'react-icons/gi'
 import { CiCalendarDate } from 'react-icons/ci'
+import { useEffect, useState } from 'react'
 
 interface TalkCardProps {
     talk: TalkEntity
@@ -16,10 +26,34 @@ interface TalkCardProps {
 export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
     const { now, toNow } = useMoment()
     const { currentUser } = useAuth()
+    const { getUserUseCase } = useDependencies()
     const nowDate = now.toDate()
+
+    // State for user info and pitch expand/collapse
+    const [creator, setCreator] = useState<UserEntity | null>(null)
+    const [isPitchExpanded, setIsPitchExpanded] = useState(false)
+    const [loadingUser, setLoadingUser] = useState(false)
 
     // Check if current user is the creator of this talk
     const isCreator = currentUser && talk.createdBy.equals(currentUser.id)
+
+    // Fetch creator information
+    useEffect(() => {
+        const fetchCreator = async () => {
+            if (loadingUser) return
+            setLoadingUser(true)
+            try {
+                const result = await getUserUseCase.execute({ userId: talk.createdBy })
+                setCreator(result.user)
+            } catch (error) {
+                console.error('Failed to fetch talk creator:', error)
+            } finally {
+                setLoadingUser(false)
+            }
+        }
+
+        fetchCreator()
+    }, [talk.createdBy, getUserUseCase, loadingUser])
 
     // Determine the actual status based on timing if variant is not explicitly set
     const getStatus = () => {
@@ -58,6 +92,14 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
     const badgeProps = getBadgeProps()
     const isPast = status === 'past'
 
+    // Helper functions for pitch display
+    const PITCH_MAX_LENGTH = 150
+    const shouldTruncatePitch = talk.pitch && talk.pitch.length > PITCH_MAX_LENGTH
+    const displayPitch =
+        shouldTruncatePitch && !isPitchExpanded
+            ? `${talk.pitch.slice(0, PITCH_MAX_LENGTH)}...`
+            : talk.pitch
+
     return (
         <Card.Root opacity={isPast ? 0.8 : 1}>
             <Card.Body p={6}>
@@ -77,10 +119,41 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                                 )}
                             </HStack>
 
+                            {/* Creator information */}
+                            {creator && (
+                                <HStack gap={1} fontSize="sm" colorPalette="gray">
+                                    <HiUser size={14} />
+                                    <Text fontWeight="medium">
+                                        {creator.displayName || 'Anonymous User'}
+                                        {isCreator && ' (You)'}
+                                    </Text>
+                                </HStack>
+                            )}
+
+                            {/* Pitch with expand/collapse functionality */}
                             {talk.pitch && (
-                                <Text colorPalette="gray" fontSize="sm" lineHeight={1.5}>
-                                    {talk.pitch}
-                                </Text>
+                                <VStack align="flex-start" gap={2} w="full">
+                                    <Text colorPalette="gray" fontSize="sm" lineHeight={1.5}>
+                                        {displayPitch}
+                                    </Text>
+                                    {shouldTruncatePitch && (
+                                        <Button
+                                            size="xs"
+                                            variant="ghost"
+                                            colorPalette="blue"
+                                            onClick={() => setIsPitchExpanded(!isPitchExpanded)}
+                                            leftIcon={
+                                                isPitchExpanded ? (
+                                                    <HiChevronDown size={12} />
+                                                ) : (
+                                                    <HiChevronRight size={12} />
+                                                )
+                                            }
+                                        >
+                                            {isPitchExpanded ? 'Show less' : 'Read more'}
+                                        </Button>
+                                    )}
+                                </VStack>
                             )}
                         </VStack>
 

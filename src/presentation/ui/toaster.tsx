@@ -1,6 +1,6 @@
 'use client'
 
-import { Toaster as ChakraToaster, Portal, Spinner, Stack, Toast } from '@chakra-ui/react'
+import { Portal, Spinner, Stack, Toast, Toaster as ChakraToaster } from '@chakra-ui/react'
 import { toaster } from './toaster-config'
 
 export const Toaster = () => {

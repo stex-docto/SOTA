@@ -1,6 +1,6 @@
 import React from 'react'
 import LoadingImage from '@/assets/loading.jpeg'
-import { Box, VStack, Spinner, Text } from '@chakra-ui/react'
+import { Box, Spinner, Text, VStack } from '@chakra-ui/react'
 
 export const LoadingScreen: React.FC = () => {
     return (

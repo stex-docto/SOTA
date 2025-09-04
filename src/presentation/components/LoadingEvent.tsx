@@ -1,4 +1,4 @@
-import { Container, Center, VStack, Spinner, Heading } from '@chakra-ui/react'
+import { Center, Container, Heading, Spinner, VStack } from '@chakra-ui/react'
 
 interface LoadingEventProps {
     message?: string
@@ -6,7 +6,7 @@ interface LoadingEventProps {
 
 export function LoadingEvent({ message = 'Loading event...' }: LoadingEventProps) {
     return (
-        <Container maxW="6xl" py={8}>
+        <Container>
             <Center py={16}>
                 <VStack gap={4}>
                     <Spinner size="xl" colorPalette="blue" />

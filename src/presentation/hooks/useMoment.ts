@@ -53,6 +53,10 @@ class TimeManager {
         }
     }
 
+    public now(): Moment {
+        return this.currentNow.clone()
+    }
+
     private startIntervalIfNeeded(): void {
         if (!this.interval && this.listeners.length > 0) {
             this.interval = window.setInterval(() => {
@@ -72,10 +76,6 @@ class TimeManager {
     private restartInterval(): void {
         this.stopInterval()
         this.startIntervalIfNeeded()
-    }
-
-    public now(): Moment {
-        return this.currentNow.clone()
     }
 }
 

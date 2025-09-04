@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Container, Center, VStack, HStack, Box, Heading, Text, Button } from '@chakra-ui/react'
+import { Box, Button, Center, Container, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import { HiSparkles } from 'react-icons/hi2'
 
 interface NonExistingEventProps {
@@ -18,7 +18,7 @@ export function NonExistingEvent({
     const navigate = useNavigate()
 
     return (
-        <Container maxW="6xl" py={8}>
+        <Container>
             <Center py={16}>
                 <VStack gap={6} textAlign="center" maxW="lg">
                     <Box fontSize="64px">🎪</Box>

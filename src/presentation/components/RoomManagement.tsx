@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { VStack, HStack, Text, Button, Box, Spinner } from '@chakra-ui/react'
+import { Box, Button, HStack, Spinner, Text, VStack } from '@chakra-ui/react'
 import { IoAddCircleOutline, IoWarningOutline } from 'react-icons/io5'
 import { EventId, RoomEntity } from '@domain'
 import { useDependencies } from '../hooks/useDependencies'

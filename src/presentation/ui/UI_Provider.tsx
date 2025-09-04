@@ -1,6 +1,6 @@
 'use client'
 
-import { ChakraProvider, defaultConfig, createSystem, defineConfig } from '@chakra-ui/react'
+import { ChakraProvider, createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
 import { ColorModeProvider, type ColorModeProviderProps } from './color-mode.tsx'
 import { Toaster } from './toaster.tsx'
 
