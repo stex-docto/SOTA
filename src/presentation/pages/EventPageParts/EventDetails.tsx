@@ -51,12 +51,11 @@ export function EventDetails({ event }: EventDetailsProps) {
                     align="space-between"
                     justify="stretch"
                 >
-                    <Flex gap={2} align="center">
+                    <Flex gap={2} align="center" justifyContent={{ base: 'center', md: 'start' }}>
                         <Text title="From">{moment(event.startDate).format('LLL')}</Text>
                     </Flex>
 
-                    <Flex align="center" gap={2}>
-                        {' '}
+                    <Flex align="center" gap={2} grow={1} justifyContent="space-around">
                         <FaArrowRightToBracket />
                         <Text colorPalette="gray" title="duration">
                             {moment
@@ -66,7 +65,7 @@ export function EventDetails({ event }: EventDetailsProps) {
                         <FaArrowRightFromBracket />
                     </Flex>
 
-                    <Flex gap={2} align="center">
+                    <Flex gap={2} align="center" justifyContent={{ base: 'center', md: 'end' }}>
                         <Text title="up to">{moment(event.endDate).format('LLL')}</Text>
                     </Flex>
                 </Stack>
