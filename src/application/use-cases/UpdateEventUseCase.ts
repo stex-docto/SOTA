@@ -1,6 +1,7 @@
-import { EventEntity, EventId, EventRepository, UserRepository } from '@/domain'
+import { EventEntity, EventId, EventRepository, SvgContent } from '@/domain'
+import { SignInUseCase } from '@/application'
 
-export interface UpdateEventCommand {
+export type UpdateEventCommand = { eventId: EventId } & Partial<{
     eventId: EventId
     title: string
     description: string
@@ -8,7 +9,8 @@ export interface UpdateEventCommand {
     startDate: Date
     endDate: Date
     location: string
-}
+    svgContent: string | null
+}>
 
 export interface UpdateEventResult {
     event: EventEntity
@@ -17,7 +19,7 @@ export interface UpdateEventResult {
 export class UpdateEventUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(command: UpdateEventCommand): Promise<UpdateEventResult> {
@@ -27,30 +29,42 @@ export class UpdateEventUseCase {
             throw new Error('Event not found')
         }
 
-        // Get current user to verify permissions
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated to update an event')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         // Verify the user is the creator of the event
         if (existingEvent.createdBy.value !== currentUser.id.value) {
             throw new Error('Only the event creator can update this event')
         }
 
+        // Validate and sanitize SVG content if provided
+        let svgContent: SvgContent | null
+        if (command.svgContent) {
+            try {
+                svgContent = SvgContent.from(command.svgContent)
+            } catch (error) {
+                throw new Error(
+                    `Invalid SVG content: ${error instanceof Error ? error.message : 'Unknown error'}`
+                )
+            }
+        } else {
+            svgContent = existingEvent.svgContent
+        }
+
         // Create updated event with new data but preserve original metadata
         const updatedEvent = new EventEntity(
             existingEvent.id,
-            command.title,
-            command.description,
-            command.talkRules,
+            command.title ?? existingEvent.title,
+            command.description ?? existingEvent.description,
+            command.talkRules ?? existingEvent.talkRules,
             existingEvent.publicUrl, // Keep original public URL
             existingEvent.createdDate, // Keep original creation date
-            command.startDate,
-            command.endDate,
-            command.location,
+            command.startDate ?? existingEvent.startDate,
+            command.endDate ?? existingEvent.endDate,
+            command.location ?? existingEvent.location,
             existingEvent.status, // Keep original status
-            existingEvent.createdBy // Keep original creator
+            existingEvent.createdBy, // Keep original creator
+            existingEvent.rooms, // Keep existing rooms
+            svgContent // Use validated SVG content
         )
 
         await this.eventRepository.save(updatedEvent)

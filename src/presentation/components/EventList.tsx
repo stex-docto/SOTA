@@ -46,7 +46,26 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                         cursor="pointer"
                     >
                         <Card.Body p={6}>
-                            <HStack justify="space-between" align="flex-start">
+                            <HStack justify="space-between" align="flex-start" gap={4}>
+                                {/* Event thumbnail SVG */}
+                                {eventItem.event.svgContent && (
+                                    <img
+                                        src={`data:image/svg+xml;base64,${btoa(eventItem.event.svgContent.value)}`}
+                                        alt={eventItem.event.title}
+                                        style={{
+                                            width: '80px',
+                                            height: '60px',
+                                            objectFit: 'contain',
+                                            borderRadius: '8px',
+                                            flexShrink: 0,
+                                            backgroundColor: '#f7fafc'
+                                        }}
+                                        onError={e => {
+                                            ;(e.target as HTMLImageElement).style.display = 'none'
+                                        }}
+                                    />
+                                )}
+
                                 <VStack align="flex-start" gap={3} flex={1}>
                                     <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                                         {eventItem.event.title}

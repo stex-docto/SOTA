@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import { EventEntity } from '@domain'
 import RoomManagement from '@presentation/components/RoomManagement.tsx'
+import EventImageManagement from '@presentation/components/EventImageManagement.tsx'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/presentation/hooks/useAuth'
 import { HiCalendar, HiMapPin } from 'react-icons/hi2'
@@ -26,6 +27,9 @@ export function EventDetails({ event }: EventDetailsProps) {
 
     return (
         <VStack gap={6} align="stretch">
+            {/* Event Image Management */}
+            <EventImageManagement event={event} isAdmin={isEventCreator} />
+
             {/* Event Dates */}
             <VStack gap={4} align="stretch">
                 <Heading size="md" colorPalette="blue">

@@ -5,6 +5,7 @@ import {
     RoomEntity,
     RoomId,
     RoomSet,
+    SvgContent,
     UserId,
     UserRepository
 } from '@domain'
@@ -40,6 +41,7 @@ type FirebaseEventDocument = {
     status: 'active' | 'inactive'
     createdBy: string
     rooms: { [roomId: string]: FirebaseRoomDocument }
+    svgContent: string | null
 }
 
 export class FirebaseEventDatastore implements EventRepository {
@@ -74,7 +76,8 @@ export class FirebaseEventDatastore implements EventRepository {
             location: event.location,
             status: event.status,
             createdBy: event.createdBy.value,
-            rooms: rooms
+            rooms: rooms,
+            svgContent: event.svgContent?.value || null
         }
 
         await setDoc(doc(this.collection, event.id.value), eventDoc)
@@ -175,7 +178,8 @@ export class FirebaseEventDatastore implements EventRepository {
             doc.location,
             doc.status,
             UserId.from(doc.createdBy),
-            rooms
+            rooms,
+            SvgContent.fromOptional(doc.svgContent, true)
         )
     }
 }
