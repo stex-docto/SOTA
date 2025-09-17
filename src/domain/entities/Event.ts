@@ -36,7 +36,6 @@ export class EventEntity implements Event {
     static create(
         title: string,
         description: string,
-        talkRules: string,
         startDate: Date,
         endDate: Date,
         location: string,
@@ -50,7 +49,7 @@ export class EventEntity implements Event {
             eventId,
             title,
             description,
-            talkRules,
+            '',
             publicUrl,
             new Date(),
             startDate,

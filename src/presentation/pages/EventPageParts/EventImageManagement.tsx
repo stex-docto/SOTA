@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { VStack, Heading, Text, Button, FileUpload, Card } from '@chakra-ui/react'
+import { Text, Button, FileUpload, Card } from '@chakra-ui/react'
 import { EventEntity, SvgContent } from '@domain'
-import { useDependencies } from '../hooks/useDependencies'
+import { useDependencies } from '../../hooks/useDependencies.ts'
 import { HiUpload } from 'react-icons/hi'
 import { toaster } from '@presentation/ui'
 
@@ -109,16 +109,13 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
         svgValidation?.toString() || event.svgContent?.toString() || undefined
 
     return (
-        <VStack gap={4} align="stretch">
-            <Heading size="md" colorPalette="blue">
-                Event Image
-            </Heading>
-            <Card.Root
-                maxW="sm"
-                overflow="hidden"
-                bg={{ base: 'gray.50', _dark: 'gray.800' }}
-                padding={2}
-            >
+        <Card.Root
+            maxW="sm"
+            overflow="hidden"
+            bg={{ base: 'gray.50', _dark: 'gray.800' }}
+            padding={2}
+        >
+            <Card.Body title="Event image">
                 {displayContent ? (
                     <img
                         src={`data:image/svg+xml;base64,${btoa(displayContent)}`}
@@ -139,61 +136,61 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
                         No image uploaded yet
                     </Text>
                 )}
-                {isAdmin && (
-                    <Card.Footer padding={0} paddingTop={1}>
-                        {!svgValidation && (
-                            <FileUpload.Root
-                                accept={['.svg,image/svg+xml']}
-                                maxFiles={1}
-                                onFileAccept={handleFileChange}
-                            >
-                                <FileUpload.HiddenInput />
-                                <FileUpload.Trigger asChild>
-                                    <Button variant="outline" size="sm">
-                                        <HiUpload /> Upload an SVG image.
-                                    </Button>
-                                </FileUpload.Trigger>
-                                <FileUpload.ClearTrigger />
-                            </FileUpload.Root>
-                        )}
+            </Card.Body>
+            {isAdmin && (
+                <Card.Footer padding={0} paddingTop={1}>
+                    {!svgValidation && (
+                        <FileUpload.Root
+                            accept={['.svg,image/svg+xml']}
+                            maxFiles={1}
+                            onFileAccept={handleFileChange}
+                        >
+                            <FileUpload.HiddenInput />
+                            <FileUpload.Trigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <HiUpload /> Upload an SVG image.
+                                </Button>
+                            </FileUpload.Trigger>
+                            <FileUpload.ClearTrigger />
+                        </FileUpload.Root>
+                    )}
 
-                        {svgValidation && (
-                            <Button
-                                colorPalette="blue"
-                                onClick={handleUploadSvg}
-                                disabled={isUploading}
-                                loading={isUploading}
-                            >
-                                {event.svgContent ? 'Replace Image' : 'Upload Image'}
-                            </Button>
-                        )}
+                    {svgValidation && (
+                        <Button
+                            colorPalette="blue"
+                            onClick={handleUploadSvg}
+                            disabled={isUploading}
+                            loading={isUploading}
+                        >
+                            {event.svgContent ? 'Replace Image' : 'Upload Image'}
+                        </Button>
+                    )}
 
-                        {svgValidation && (
-                            <Button
-                                variant="outline"
-                                colorPalette="red"
-                                onClick={handleCancel}
-                                disabled={isUploading}
-                                loading={isUploading}
-                            >
-                                Cancel
-                            </Button>
-                        )}
+                    {svgValidation && (
+                        <Button
+                            variant="outline"
+                            colorPalette="red"
+                            onClick={handleCancel}
+                            disabled={isUploading}
+                            loading={isUploading}
+                        >
+                            Cancel
+                        </Button>
+                    )}
 
-                        {event.svgContent && !svgValidation && (
-                            <Button
-                                variant="outline"
-                                colorPalette="red"
-                                onClick={handleRemoveSvg}
-                                disabled={isUploading}
-                                loading={isUploading}
-                            >
-                                Remove Image
-                            </Button>
-                        )}
-                    </Card.Footer>
-                )}
-            </Card.Root>
-        </VStack>
+                    {event.svgContent && !svgValidation && (
+                        <Button
+                            variant="outline"
+                            colorPalette="red"
+                            onClick={handleRemoveSvg}
+                            disabled={isUploading}
+                            loading={isUploading}
+                        >
+                            Remove Image
+                        </Button>
+                    )}
+                </Card.Footer>
+            )}
+        </Card.Root>
     )
 }

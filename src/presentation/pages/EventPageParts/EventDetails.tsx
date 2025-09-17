@@ -3,12 +3,13 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import { EventEntity } from '@domain'
 import RoomManagement from '@presentation/components/RoomManagement.tsx'
-import EventImageManagement from '@presentation/components/EventImageManagement.tsx'
+import EventImageManagement from './EventImageManagement.tsx'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/presentation/hooks/useAuth'
 import { HiCalendar, HiMapPin } from 'react-icons/hi2'
 import moment from 'moment'
 import { FaArrowRightFromBracket, FaArrowRightToBracket } from 'react-icons/fa6'
+import { TalkRules } from '@presentation/pages/EventPageParts/TalkRules.tsx'
 
 interface EventDetailsProps {
     event: EventEntity
@@ -108,20 +109,8 @@ export function EventDetails({ event }: EventDetailsProps) {
                 <ReactMarkdown remarkPlugins={[remarkBreaks]}>{event.description}</ReactMarkdown>
             </Box>
 
-            {/* Talk Guidelines */}
-            <Heading size="md" colorPalette="green">
-                Talk Guidelines
-            </Heading>
-            <Box
-                colorPalette="green"
-                p={4}
-                bg={{ base: 'colorPalette.50', _dark: 'colorPalette.950' }}
-                borderRadius="lg"
-                borderWidth="1px"
-                borderColor={{ base: 'colorPalette.200', _dark: 'colorPalette.800' }}
-            >
-                <ReactMarkdown>{event.talkRules}</ReactMarkdown>
-            </Box>
+            {/* Talk Rules Management */}
+            <TalkRules event={event} isAdmin={isEventCreator} />
 
             {/* Room Management */}
             <RoomManagement eventId={event.id} edition={isEventCreator} />

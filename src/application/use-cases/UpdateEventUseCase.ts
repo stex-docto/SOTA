@@ -38,16 +38,16 @@ export class UpdateEventUseCase {
 
         // Validate and sanitize SVG content if provided
         let svgContent: SvgContent | null
-        if (command.svgContent) {
+        if (command.svgContent === undefined) {
+            svgContent = existingEvent.svgContent
+        } else {
             try {
-                svgContent = SvgContent.from(command.svgContent)
+                svgContent = command.svgContent ? SvgContent.from(command.svgContent) : null
             } catch (error) {
                 throw new Error(
                     `Invalid SVG content: ${error instanceof Error ? error.message : 'Unknown error'}`
                 )
             }
-        } else {
-            svgContent = existingEvent.svgContent
         }
 
         // Create updated event with new data but preserve original metadata

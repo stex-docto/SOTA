@@ -31,7 +31,6 @@ function CreateEventPage() {
             const result = await createEventUseCase.execute({
                 title: formData.title,
                 description: formData.description,
-                talkRules: formData.talkRules,
                 startDate: new Date(formData.startDate),
                 endDate: new Date(formData.endDate),
                 location: formData.location

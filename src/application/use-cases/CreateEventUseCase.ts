@@ -4,7 +4,6 @@ import { SignInUseCase } from '@/application'
 export interface CreateEventCommand {
     title: string
     description: string
-    talkRules: string
     startDate: Date
     endDate: Date
     location: string
@@ -27,7 +26,6 @@ export class CreateEventUseCase {
         const event = EventEntity.create(
             command.title,
             command.description,
-            command.talkRules,
             command.startDate,
             command.endDate,
             command.location,
