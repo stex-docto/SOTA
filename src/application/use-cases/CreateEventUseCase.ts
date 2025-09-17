@@ -1,9 +1,9 @@
-import { EventEntity, EventRepository, UserRepository } from '@domain'
+import { EventEntity, EventRepository } from '@domain'
+import { SignInUseCase } from '@/application'
 
 export interface CreateEventCommand {
     title: string
     description: string
-    talkRules: string
     startDate: Date
     endDate: Date
     location: string
@@ -16,21 +16,16 @@ export interface CreateEventResult {
 export class CreateEventUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(command: CreateEventCommand): Promise<CreateEventResult> {
-        // Verify user exists
-        const user = await this.userRepository.getCurrentUser()
-        if (!user) {
-            throw new Error('User not found')
-        }
+        const user = await this.signInUseCase.requireCurrentUser()
 
         // Create new event
         const event = EventEntity.create(
             command.title,
             command.description,
-            command.talkRules,
             command.startDate,
             command.endDate,
             command.location,

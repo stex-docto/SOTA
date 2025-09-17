@@ -1,4 +1,5 @@
-import { EventId, EventRepository, RoomId, UserRepository } from '@domain'
+import { EventId, EventRepository, RoomId } from '@domain'
+import { SignInUseCase } from '@/application'
 
 export interface DeleteRoomCommand {
     eventId: EventId
@@ -12,21 +13,18 @@ export interface DeleteRoomResult {
 export class DeleteRoomUseCase {
     constructor(
         private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository
+        private readonly signInUseCase: SignInUseCase
     ) {}
 
     async execute(command: DeleteRoomCommand): Promise<DeleteRoomResult> {
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated')
-        }
+        const user = await this.signInUseCase.requireCurrentUser()
 
         const event = await this.eventRepository.findById(command.eventId)
         if (!event) {
             throw new Error('Event not found')
         }
 
-        if (!event.createdBy.equals(currentUser.id)) {
+        if (!event.createdBy.equals(user.id)) {
             throw new Error('Only event creator can delete rooms')
         }
 

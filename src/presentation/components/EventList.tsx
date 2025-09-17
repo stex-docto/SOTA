@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { UserEventItem } from '@application'
-import { Badge, Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Badge, Card, Center, HStack, Text, VStack } from '@chakra-ui/react'
 import { HiHeart, HiMapPin, HiUser } from 'react-icons/hi2'
+import { TbCameraQuestion } from 'react-icons/tb'
 
 interface EventListProps {
     events: UserEventItem[]
@@ -45,8 +46,31 @@ function EventList({ events, isPastEvent = false, emptyMessage }: EventListProps
                         transition="all 0.2s ease"
                         cursor="pointer"
                     >
-                        <Card.Body p={6}>
-                            <HStack justify="space-between" align="flex-start">
+                        <Card.Body>
+                            <HStack justify="space-between" align="flex-start" gap={6}>
+                                {/* Event thumbnail SVG */}
+
+                                <Center alignSelf="center" width="7rem">
+                                    {eventItem.event.svgContent ? (
+                                        <img
+                                            src={`data:image/svg+xml;base64,${btoa(eventItem.event.svgContent.value)}`}
+                                            alt={eventItem.event.title}
+                                            style={{
+                                                height: 'auto',
+                                                objectFit: 'contain',
+                                                borderRadius: '8px',
+                                                flexShrink: 0
+                                            }}
+                                            onError={e => {
+                                                ;(e.target as HTMLImageElement).style.display =
+                                                    'none'
+                                            }}
+                                        />
+                                    ) : (
+                                        <TbCameraQuestion size={30} />
+                                    )}
+                                </Center>
+
                                 <VStack align="flex-start" gap={3} flex={1}>
                                     <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                                         {eventItem.event.title}

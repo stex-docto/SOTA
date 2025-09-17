@@ -1,4 +1,5 @@
 import { UserEntity, UserRepository } from '@/domain'
+import { SignInUseCase } from '@/application'
 
 export interface UpdateUserProfileCommand {
     displayName: string
@@ -9,13 +10,13 @@ export interface UpdateUserProfileResult {
 }
 
 export class UpdateUserProfileUseCase {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly signInUseCase: SignInUseCase
+    ) {}
 
     async execute(command: UpdateUserProfileCommand): Promise<UpdateUserProfileResult> {
-        const currentUser = await this.userRepository.getCurrentUser()
-        if (!currentUser) {
-            throw new Error('User must be authenticated to update profile')
-        }
+        const currentUser = await this.signInUseCase.requireCurrentUser()
 
         if (!command.displayName.trim()) {
             throw new Error('Display name cannot be empty')

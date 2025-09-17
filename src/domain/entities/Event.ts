@@ -1,4 +1,4 @@
-import { EventId, RoomEntity, RoomId, RoomSet, UserId } from '@/domain'
+import { EventId, UserId, RoomId, RoomEntity, RoomSet, SvgContent } from '@/domain'
 
 export interface Event {
     id: EventId
@@ -13,6 +13,7 @@ export interface Event {
     status: 'active' | 'inactive'
     createdBy: UserId
     rooms: RoomSet
+    svgContent: SvgContent | null
 }
 
 export class EventEntity implements Event {
@@ -28,13 +29,13 @@ export class EventEntity implements Event {
         public readonly location: string,
         public readonly status: 'active' | 'inactive',
         public readonly createdBy: UserId,
-        public readonly rooms: RoomSet = new RoomSet()
+        public readonly rooms: RoomSet = new RoomSet(),
+        public readonly svgContent: SvgContent | null
     ) {}
 
     static create(
         title: string,
         description: string,
-        talkRules: string,
         startDate: Date,
         endDate: Date,
         location: string,
@@ -48,7 +49,7 @@ export class EventEntity implements Event {
             eventId,
             title,
             description,
-            talkRules,
+            '',
             publicUrl,
             new Date(),
             startDate,
@@ -56,7 +57,8 @@ export class EventEntity implements Event {
             location,
             'active',
             createdBy,
-            new RoomSet()
+            new RoomSet(),
+            null
         )
     }
 
@@ -75,7 +77,8 @@ export class EventEntity implements Event {
             this.location,
             this.status,
             this.createdBy,
-            newRooms
+            newRooms,
+            this.svgContent
         )
     }
 
@@ -98,7 +101,8 @@ export class EventEntity implements Event {
             this.location,
             this.status,
             this.createdBy,
-            newRooms
+            newRooms,
+            this.svgContent
         )
     }
 
@@ -121,11 +125,30 @@ export class EventEntity implements Event {
             this.location,
             this.status,
             this.createdBy,
-            newRooms
+            newRooms,
+            this.svgContent
         )
     }
 
     getRooms(): RoomEntity[] {
         return this.rooms.toArray()
+    }
+
+    updateSvgContent(svgContent: string | null): EventEntity {
+        return new EventEntity(
+            this.id,
+            this.title,
+            this.description,
+            this.talkRules,
+            this.publicUrl,
+            this.createdDate,
+            this.startDate,
+            this.endDate,
+            this.location,
+            this.status,
+            this.createdBy,
+            this.rooms,
+            SvgContent.fromOptional(svgContent)
+        )
     }
 }

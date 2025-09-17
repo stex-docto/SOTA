@@ -21,6 +21,7 @@
         "@chakra-ui/react": "^3.25.0",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
+        "dompurify": "^3.2.6",
         "firebase": "^12.1.0",
         "framer-motion": "^12.23.12",
         "moment": "^2.30.1",

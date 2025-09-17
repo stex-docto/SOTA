@@ -111,15 +111,15 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     </Tabs.Trigger>
                 </Tabs.List>
 
-                <Tabs.Content value="details" pt={6}>
+                <Tabs.Content value="details">
                     <EventDetails event={event} />
                 </Tabs.Content>
 
-                <Tabs.Content value="upcoming" pt={6}>
+                <Tabs.Content value="upcoming">
                     <UpcomingTalks event={event} onEdit={handleEditTalk} />
                 </Tabs.Content>
 
-                <Tabs.Content value="past" pt={6}>
+                <Tabs.Content value="past">
                     <PastTalks event={event} onEdit={handleEditTalk} />
                 </Tabs.Content>
             </Tabs.Root>

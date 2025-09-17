@@ -17,7 +17,6 @@ import {
 export interface EventFormData {
     title: string
     description: string
-    talkRules: string
     startDate: string
     endDate: string
     location: string
@@ -34,26 +33,6 @@ export interface EventFormProps {
     subtitle: string
 }
 
-const defaultTalkRules = `### The Four Principles
-
-1. **Whoever comes are the right people** — The people who show up are exactly who need to be there.
-1. **Whatever happens is the only thing that could have happened** — Don't worry about what might have been; focus on what is.
-1. **When it starts is the right time to start** — Things begin when they're ready, not before.
-1. **When it's over, it's over** — When the energy for a topic is gone, move on.
-
----
-
-### The Law of Two Feet
-
-**Use your feet!** 
-
-If you're not learning or contributing, go somewhere else. No hard feelings.
-
-This creates engaged, passionate discussions where everyone participates by choice.
-
----
-_More on this, visit [Open Space Technology](https://openspaceworld.org/wp2/what-is/) principles for self-organizing conversations_`
-
 function EventForm({
     initialData = {},
     onSubmit,
@@ -65,12 +44,10 @@ function EventForm({
     subtitle
 }: EventFormProps) {
     const [descriptionPreview, setDescriptionPreview] = useState(false)
-    const [talkRulesPreview, setTalkRulesPreview] = useState(false)
 
     const [formData, setFormData] = useState<EventFormData>({
         title: initialData.title || '',
         description: initialData.description || '',
-        talkRules: initialData.talkRules || defaultTalkRules,
         startDate: initialData.startDate || '',
         endDate: initialData.endDate || '',
         location: initialData.location || ''
@@ -165,49 +142,6 @@ function EventForm({
                                         autoresize
                                     />
                                 )}
-                            </Field.Root>
-
-                            <Field.Root>
-                                <HStack justify="space-between" align="center" mb={2}>
-                                    <Field.Label>Talk Rules (Markdown supported)</Field.Label>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setTalkRulesPreview(!talkRulesPreview)}
-                                    >
-                                        {talkRulesPreview ? 'Edit' : 'Preview'}
-                                    </Button>
-                                </HStack>
-                                {talkRulesPreview ? (
-                                    <Box
-                                        colorPalette="gray"
-                                        p={4}
-                                        borderWidth="1px"
-                                        borderColor="colorPalette.200"
-                                        borderRadius="md"
-                                        bg={{ base: 'colorPalette.50', _dark: 'colorPalette.800' }}
-                                        minH="200px"
-                                        maxH="400px"
-                                        overflowY="auto"
-                                    >
-                                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                                            {formData.talkRules}
-                                        </ReactMarkdown>
-                                    </Box>
-                                ) : (
-                                    <Textarea
-                                        name="talkRules"
-                                        value={formData.talkRules}
-                                        onChange={handleInputChange}
-                                        placeholder="Rules for talk sessions..."
-                                        rows={4}
-                                        autoresize
-                                    />
-                                )}
-                                <Field.HelperText>
-                                    These guidelines will be shown to participants about how the
-                                    talk sessions work.
-                                </Field.HelperText>
                             </Field.Root>
 
                             <Field.Root required>

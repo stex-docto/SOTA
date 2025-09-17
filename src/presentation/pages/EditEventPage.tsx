@@ -45,7 +45,6 @@ function EditEventPage() {
                     setInitialFormData({
                         title: result.event.title,
                         description: result.event.description,
-                        talkRules: result.event.talkRules,
                         startDate: result.event.startDate.toISOString().slice(0, 16),
                         endDate: result.event.endDate.toISOString().slice(0, 16),
                         location: result.event.location
@@ -98,7 +97,6 @@ function EditEventPage() {
                 eventId: EventId.from(eventId),
                 title: formData.title,
                 description: formData.description,
-                talkRules: formData.talkRules,
                 startDate: new Date(formData.startDate),
                 endDate: new Date(formData.endDate),
                 location: formData.location
