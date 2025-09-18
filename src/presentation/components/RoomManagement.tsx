@@ -134,7 +134,7 @@ function RoomManagement({ eventId, edition = false }: RoomManagementProps) {
 
     return (
         <Box colorPalette="gray">
-            <VStack gap={6} align="stretch">
+            <VStack gap={4} align="stretch">
                 <HStack justify="space-between" align="center">
                     <Text fontSize="lg" fontWeight="semibold" colorPalette="gray">
                         Event Rooms

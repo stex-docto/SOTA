@@ -39,7 +39,7 @@ function RoomList({ rooms, isEventCreator, onEdit, onDelete }: RoomListProps) {
     }
 
     return (
-        <VStack gap={4} align="stretch">
+        <VStack gap={1} align="stretch">
             {rooms.map(room => (
                 <Card.Root
                     key={room.id.value}

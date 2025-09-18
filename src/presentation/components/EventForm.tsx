@@ -4,7 +4,6 @@ import remarkBreaks from 'remark-breaks'
 import {
     Box,
     Button,
-    Container,
     Field,
     Heading,
     HStack,
@@ -69,7 +68,7 @@ function EventForm({
     }
 
     return (
-        <Container>
+        <>
             {title && (
                 <VStack gap={2} mb={8} textAlign="center">
                     <Heading size="2xl" colorPalette="gray">
@@ -208,7 +207,7 @@ function EventForm({
                     </HStack>
                 </VStack>
             </Box>
-        </Container>
+        </>
     )
 }
 
