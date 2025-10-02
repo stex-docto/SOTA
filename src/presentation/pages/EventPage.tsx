@@ -111,8 +111,6 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     </Tabs.Trigger>
 
                     <Button>Test</Button>
-
-
                 </Tabs.List>
 
                 <Tabs.Content value="details">
