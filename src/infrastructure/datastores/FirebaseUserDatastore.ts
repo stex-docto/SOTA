@@ -1,4 +1,13 @@
-import { Credential, EventId, EventIdSet, UserEntity, UserId, UserRepository } from '@domain'
+import {
+    Credential,
+    CurrentUserListener,
+    EventId,
+    EventIdSet,
+    PublicUserListener,
+    UserEntity,
+    UserId,
+    UserRepository
+} from '@domain'
 import {
     Auth,
     createUserWithEmailAndPassword,
@@ -35,10 +44,11 @@ function mapCredential(credential: Credential): FirebaseCredential {
     }
 }
 
-type UserListener = (user: UserEntity | null) => Promise<void>
+type UserListeners = { listeners: Set<PublicUserListener>; unsubscribe: () => void }
 
 export class FirebaseUserDatastore implements UserRepository {
-    protected listeners = new Set<UserListener>()
+    protected currentUserListeners = new Set<CurrentUserListener>()
+    protected publicUsersListeners = new Map<UserId, UserListeners>()
     private currentUserUnsubscribe: (() => void) | null = null
 
     constructor(
@@ -92,20 +102,33 @@ export class FirebaseUserDatastore implements UserRepository {
         return user
     }
 
-    triggerListeners(user: UserEntity | null) {
-        this.listeners.forEach(listener => listener(user))
+    subscribeToCurrentUser(callback: CurrentUserListener): () => void {
+        this.currentUserListeners.add(callback)
+        return () => this.currentUserListeners.delete(callback)
     }
 
-    initListener() {
-        this.auth.onAuthStateChanged(async firebaseUser => {
-            this.triggerListeners(firebaseUser ? await this.getCurrentUser() : null)
-            this.subscribeToUserDoc(firebaseUser)
-        })
-    }
-
-    subscribeToCurrentUser(callback: UserListener): () => void {
-        this.listeners.add(callback)
-        return () => this.listeners.delete(callback)
+    subscribeToPublicUser(userId: UserId, callback: PublicUserListener): () => void {
+        let userListeners = this.publicUsersListeners.get(userId)
+        if (!userListeners) {
+            const listeners = new Set<PublicUserListener>()
+            userListeners = {
+                listeners,
+                unsubscribe: onSnapshot(this.getPublicUserRef(userId), async documentSnapshot => {
+                    const firebasePublicUser = documentSnapshot.data() as FirebasePublicUser
+                    const user = this.mapFromFirebase(userId, firebasePublicUser)
+                    listeners.forEach(l => l(user))
+                })
+            }
+            this.publicUsersListeners.set(userId, userListeners)
+        }
+        userListeners.listeners.add(callback)
+        return () => {
+            userListeners.listeners.delete(callback)
+            if (userListeners.listeners.size == 0) {
+                userListeners.unsubscribe()
+                this.publicUsersListeners.delete(userId)
+            }
+        }
     }
 
     async deleteCurrentUser(credential: Credential): Promise<void> {
@@ -134,7 +157,17 @@ export class FirebaseUserDatastore implements UserRepository {
                 throw error
             }
         }
-        console.log(`User ${this.auth.currentUser?.uid} connected`)
+    }
+
+    protected triggerCurrentUserListeners(user: UserEntity | null) {
+        this.currentUserListeners.forEach(l => l(user))
+    }
+
+    protected initListener() {
+        this.auth.onAuthStateChanged(async firebaseUser => {
+            this.triggerCurrentUserListeners(firebaseUser ? await this.getCurrentUser() : null)
+            this.subscribeToUserDoc(firebaseUser)
+        })
     }
 
     protected subscribeToUserDoc(user: User | null) {
@@ -143,11 +176,11 @@ export class FirebaseUserDatastore implements UserRepository {
         if (user) {
             const publicUnsubScribe = onSnapshot(
                 this.getPublicUserRef(UserId.from(user.uid)),
-                async () => this.triggerListeners(await this.getCurrentUser())
+                async () => this.triggerCurrentUserListeners(await this.getCurrentUser())
             )
             const privateUnsubScribe = onSnapshot(
                 this.getPrivateUserRef(UserId.from(user.uid)),
-                async () => this.triggerListeners(await this.getCurrentUser())
+                async () => this.triggerCurrentUserListeners(await this.getCurrentUser())
             )
             this.currentUserUnsubscribe = () => {
                 publicUnsubScribe()

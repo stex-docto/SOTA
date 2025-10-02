@@ -1,4 +1,4 @@
-import {Badge, Button, HStack, Tabs, Text, VStack} from '@chakra-ui/react'
+import { Badge, Button, HStack, Tabs, Text, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId, TalkEntity } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
@@ -112,9 +112,8 @@ function EventPageContent({ event }: { event: EventEntity }) {
 
                     <Button>Test</Button>
 
-                    <TalkCreationModal event={event} />
-                </Tabs.List>
 
+                </Tabs.List>
 
                 <Tabs.Content value="details">
                     <EventDetails event={event} />
@@ -128,6 +127,8 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     <PastTalks event={event} onEdit={handleEditTalk} />
                 </Tabs.Content>
             </Tabs.Root>
+
+            <TalkCreationModal event={event} />
 
             <TalkEditModal
                 event={event}

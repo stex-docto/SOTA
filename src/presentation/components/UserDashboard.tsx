@@ -30,7 +30,6 @@ function UserDashboard() {
 
             try {
                 const result = await getUserAllEventsUseCase.execute()
-                console.log(result.events)
                 setAllEvents(result.events)
             } catch (error) {
                 console.error('Failed to fetch user events:', error)

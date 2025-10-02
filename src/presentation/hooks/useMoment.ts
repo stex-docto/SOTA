@@ -1,24 +1,26 @@
 import { useEffect, useState } from 'react'
 import moment, { Moment } from 'moment'
 
+// Import locales
+import 'moment/dist/locale/en-gb'
+import 'moment/dist/locale/fr'
+
 // Initialize moment with browser locale
 const initializeMoment = () => {
     const browserLocale = navigator.language || navigator.languages?.[0] || 'en'
     console.log('Locale used for Moment', { browserLocale })
 
-    moment.defineLocale('en-us', {
-        parentLocale: 'en',
-        longDateFormat: {
-            LT: 'h:mm A',
-            LTS: 'h:mm:ss A',
-            L: 'MM/DD/YYYY',
-            LL: 'MMMM D, YYYY',
-            LLL: 'MMMM D, YYYY h:mm A',
-            LLLL: 'dddd, MMMM D, YYYY h:mm A'
-        }
-    })
+    // Try to set the browser locale, fallback to 'en' if not available
+    const localeLower = browserLocale.toLowerCase()
+    const locale = moment.locale(localeLower)
 
-    moment.locale(browserLocale.toLowerCase())
+    // If locale wasn't found, try without country code (e.g., 'en' instead of 'en-us')
+    if (locale === 'en' && localeLower !== 'en') {
+        const baseLocale = localeLower.split('-')[0]
+        moment.locale(baseLocale)
+    }
+
+    console.log('Active Moment locale:', moment.locale())
 }
 
 // Singleton time manager with global interval
