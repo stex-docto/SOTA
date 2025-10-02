@@ -38,11 +38,11 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
             <Dialog.Root open={open} onOpenChange={e => setOpen(e.open)}>
                 <Dialog.Trigger asChild>
                     <IconButton
-                        position="fixed"
-                        bottom={8}
+                        position={{ base: 'fixed', md: 'relative' }}
+                        bottom={16}
                         right={8}
-                        borderRadius="full"
-                        size="2xl"
+                        borderRadius={{ base: 'full', md: 'none' }}
+                        size={{ base: '2xl', md: 'md' }}
                         colorPalette="blue"
                         title="Submit a talk"
                     >

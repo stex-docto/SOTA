@@ -15,12 +15,12 @@ import { HiMapPin, HiMicrophone, HiPencil, HiSignal, HiUser } from 'react-icons/
 import { RoomEntity, TalkEntity, UserEntity } from '@domain'
 import { useMoment } from '../hooks/useMoment'
 import { useAuth } from '../hooks/useAuth'
-import { useDependencies } from '../hooks/useDependencies'
 import moment from 'moment'
 import { GiDuration } from 'react-icons/gi'
 import { CiCalendarDate } from 'react-icons/ci'
 import { useEffect, useState } from 'react'
 import { FaUserAstronaut } from 'react-icons/fa'
+import { useUsers } from '@presentation/hooks/useUsers.ts'
 
 interface TalkCardProps {
     talk: TalkEntity
@@ -31,12 +31,11 @@ interface TalkCardProps {
 export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
     const { now, toNow } = useMoment()
     const { currentUser } = useAuth()
-    const { getUserUseCase } = useDependencies()
+    const { getUser } = useUsers()
     const nowDate = now.toDate()
 
     // State for user info and pitch expand/collapse
     const [creator, setCreator] = useState<UserEntity | null>(null)
-    const [loadingUser, setLoadingUser] = useState(false)
     const [isExpanded, setIsExpanded] = useState(false)
 
     // Check if current user is the creator of this talk
@@ -44,21 +43,22 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
 
     // Fetch creator information
     useEffect(() => {
-        const fetchCreator = async () => {
-            if (loadingUser) return
-            setLoadingUser(true)
-            try {
-                const result = await getUserUseCase.execute({ userId: talk.createdBy })
-                setCreator(result.user)
-            } catch (error) {
-                console.error('Failed to fetch talk creator:', error)
-            } finally {
-                setLoadingUser(false)
-            }
-        }
+        let cancelled = false
 
-        fetchCreator()
-    }, [talk.createdBy, getUserUseCase, loadingUser])
+        getUser(talk.createdBy)
+            .then(result => {
+                if (!cancelled && result) {
+                    setCreator(result)
+                }
+            })
+            .catch(error => {
+                console.error('Failed to fetch talk creator:', error)
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [talk.createdBy, getUser])
 
     // Determine the actual status based on timing if variant is not explicitly set
     const getStatus = () => {

@@ -19,6 +19,7 @@ import moment from 'moment'
 
 import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
+import { useTalksForEvent } from '../hooks/useTalksForEvent'
 
 interface TalkFormData {
     name: string
@@ -48,6 +49,7 @@ export function TalkFormModal({
     onSubmit
 }: TalkFormModalProps) {
     const { getRoomsByEventUseCase } = useDependencies()
+    const { talks } = useTalksForEvent(event)
     const [formData, setFormData] = useState<TalkFormData>({
         name: '',
         pitch: '',
@@ -116,6 +118,13 @@ export function TalkFormModal({
     useEffect(() => {
         fetchRooms()
     }, [fetchRooms])
+
+    // Get talks for selected room, sorted by start time, excluding current talk being edited
+    const selectedRoomTalks = formData.roomId
+        ? talks
+              .filter(talk => talk.roomId.value == formData.roomId)
+              .sort((a, b) => a.startDateTime.getTime() - b.startDateTime.getTime())
+        : []
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -210,16 +219,6 @@ export function TalkFormModal({
                                 </Field.HelperText>
                             </Field.Root>
 
-                            <Field.Root required>
-                                <Field.Label>Start Time *</Field.Label>
-                                <Input
-                                    name="startDateTime"
-                                    type="datetime-local"
-                                    value={formData.startDateTime}
-                                    onChange={handleInputChange}
-                                />
-                            </Field.Root>
-
                             <Field.Root>
                                 <Field.Label>Expected Duration *</Field.Label>
                                 <HStack gap={2} flexWrap="wrap">
@@ -307,6 +306,75 @@ export function TalkFormModal({
                                         organizers can add rooms in the event management section.
                                     </Text>
                                 )}
+                            </Field.Root>
+
+                            {selectedRoomTalks.length > 0 && (
+                                <VStack
+                                    gap={3}
+                                    align="stretch"
+                                    colorPalette="blue"
+                                    p={4}
+                                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
+                                    borderWidth="1px"
+                                    borderColor={{
+                                        base: 'colorPalette.200',
+                                        _dark: 'colorPalette.800'
+                                    }}
+                                    borderRadius="md"
+                                >
+                                    <Text
+                                        fontSize="sm"
+                                        fontWeight="semibold"
+                                        color={{
+                                            base: 'colorPalette.700',
+                                            _dark: 'colorPalette.300'
+                                        }}
+                                    >
+                                        Scheduled talks in this room:
+                                    </Text>
+                                    <VStack gap={2} align="stretch">
+                                        {selectedRoomTalks.map(talk => (
+                                            <HStack
+                                                justify="space-between"
+                                                gap={2}
+                                                key={talk.id.value}
+                                                p={2}
+                                                bg={{
+                                                    base: 'colorPalette.100',
+                                                    _dark: 'colorPalette.800'
+                                                }}
+                                                borderRadius="sm"
+                                            >
+                                                <Text
+                                                    fontSize="sm"
+                                                    fontWeight="medium"
+                                                    truncate
+                                                    flex={1}
+                                                >
+                                                    {talk.name}
+                                                </Text>
+                                                <Text
+                                                    fontSize="xs"
+                                                    colorPalette="gray"
+                                                    flexShrink={0}
+                                                >
+                                                    {moment(talk.startDateTime).format('HH:mm')} -{' '}
+                                                    {moment(talk.endDateTime).format('HH:mm')}
+                                                </Text>
+                                            </HStack>
+                                        ))}
+                                    </VStack>
+                                </VStack>
+                            )}
+
+                            <Field.Root required>
+                                <Field.Label>Start Time *</Field.Label>
+                                <Input
+                                    name="startDateTime"
+                                    type="datetime-local"
+                                    value={formData.startDateTime}
+                                    onChange={handleInputChange}
+                                />
                             </Field.Root>
                         </VStack>
                     </Dialog.Body>

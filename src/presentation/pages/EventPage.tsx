@@ -1,4 +1,4 @@
-import { Badge, HStack, Tabs, VStack } from '@chakra-ui/react'
+import {Badge, Button, HStack, Tabs, Text, VStack} from '@chakra-ui/react'
 import { EventEntity, EventId, TalkEntity } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
@@ -86,12 +86,12 @@ function EventPageContent({ event }: { event: EventEntity }) {
         <VStack gap={4} align="stretch">
             <EventHeader event={event} />
 
-            <Tabs.Root value={currentTab} onValueChange={handleTabChange}>
+            <Tabs.Root value={currentTab} variant="enclosed" onValueChange={handleTabChange}>
                 <Tabs.List>
                     <Tabs.Trigger value="details">Event Details</Tabs.Trigger>
                     <Tabs.Trigger value="upcoming">
                         <HStack gap={2}>
-                            <span>Upcoming Talks</span>
+                            <Text>Upcoming Talks</Text>
                             {upcomingTalks.length + currentTalks.length > 0 && (
                                 <Badge colorPalette="blue" size="sm">
                                     {upcomingTalks.length + currentTalks.length}
@@ -101,7 +101,7 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     </Tabs.Trigger>
                     <Tabs.Trigger value="past">
                         <HStack gap={2}>
-                            <span>Past Talks</span>
+                            <Text>Past Talks</Text>
                             {pastTalks.length > 0 && (
                                 <Badge colorPalette="gray" size="sm">
                                     {pastTalks.length}
@@ -109,7 +109,12 @@ function EventPageContent({ event }: { event: EventEntity }) {
                             )}
                         </HStack>
                     </Tabs.Trigger>
+
+                    <Button>Test</Button>
+
+                    <TalkCreationModal event={event} />
                 </Tabs.List>
+
 
                 <Tabs.Content value="details">
                     <EventDetails event={event} />
@@ -123,8 +128,6 @@ function EventPageContent({ event }: { event: EventEntity }) {
                     <PastTalks event={event} onEdit={handleEditTalk} />
                 </Tabs.Content>
             </Tabs.Root>
-
-            <TalkCreationModal event={event} />
 
             <TalkEditModal
                 event={event}
