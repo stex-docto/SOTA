@@ -1,7 +1,7 @@
-import { Box, Text, VStack } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 import { EventEntity, TalkEntity } from '@domain'
 import { useTalksForEvent } from '../../hooks/useTalksForEvent'
-import { TalkCard } from '../../components/TalkCard'
+import { TalkList } from '../../components/TalkList'
 
 interface PastTalksProps {
     event: EventEntity
@@ -9,7 +9,7 @@ interface PastTalksProps {
 }
 
 export function PastTalks({ event, onEdit }: PastTalksProps) {
-    const { pastTalks, talksMap, loading } = useTalksForEvent(event)
+    const { pastTalks, loading } = useTalksForEvent(event)
 
     if (loading) {
         return (
@@ -20,26 +20,6 @@ export function PastTalks({ event, onEdit }: PastTalksProps) {
     }
 
     return (
-        <VStack gap={6} align="stretch">
-            {pastTalks.length > 0 ? (
-                <VStack gap={4} align="stretch">
-                    {pastTalks.map(talk => {
-                        const talkWithRoom = talksMap.get(talk.id)
-                        return (
-                            <TalkCard
-                                key={talk.id.value}
-                                talk={talk}
-                                room={talkWithRoom?.room}
-                                onEdit={onEdit}
-                            />
-                        )
-                    })}
-                </VStack>
-            ) : (
-                <Box textAlign="center" py={8}>
-                    <Text colorPalette="gray">No past talks yet.</Text>
-                </Box>
-            )}
-        </VStack>
+        <TalkList talks={pastTalks} onEdit={onEdit} emptyMessage="No past talks yet." past={true} />
     )
 }

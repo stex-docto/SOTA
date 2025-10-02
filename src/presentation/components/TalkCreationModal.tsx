@@ -6,14 +6,23 @@ import { useState } from 'react'
 import { TalkFormData, TalkFormModal } from './TalkFormModal'
 import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
+import { OpenChangeDetails } from '@zag-js/dialog'
 
 interface TalkCreationModalProps {
     event: EventEntity
 }
 
 function TalkCreationModal({ event }: TalkCreationModalProps) {
-    const { createTalkUseCase } = useDependencies()
+    const { createTalkUseCase, signInUseCase } = useDependencies()
     const [open, setOpen] = useState(false)
+
+    const onOpenChange: ((details: OpenChangeDetails) => void) | undefined = e => {
+        if (e.open) {
+            signInUseCase.requireCurrentUser().then(() => setOpen(e.open))
+        } else {
+            setOpen(e.open)
+        }
+    }
 
     const handleSubmit = async (formData: TalkFormData) => {
         await createTalkUseCase.execute({
@@ -28,21 +37,20 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
         toaster.create({
             title: 'Talk Submitted Successfully',
             description: 'Your talk has been created.',
-            type: 'success',
-            duration: 5000
+            type: 'success'
         })
     }
 
     return (
         <>
-            <Dialog.Root open={open} onOpenChange={e => setOpen(e.open)}>
+            <Dialog.Root open={open} onOpenChange={onOpenChange}>
                 <Dialog.Trigger asChild>
                     <IconButton
-                        position="fixed"
+                        position={{ base: 'fixed' }}
                         bottom={8}
                         right={8}
-                        borderRadius="full"
-                        size="2xl"
+                        borderRadius={{ base: 'full' }}
+                        size={{ base: '2xl' }}
                         colorPalette="blue"
                         title="Submit a talk"
                     >

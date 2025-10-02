@@ -1,5 +1,8 @@
 import { Credential, UserEntity, UserId } from '@/domain'
 
+export type CurrentUserListener = (user: UserEntity | null) => Promise<void>
+export type PublicUserListener = (user: UserEntity) => Promise<void>
+
 export interface UserRepository {
     getUser(uid: UserId): Promise<UserEntity | null>
 
@@ -7,7 +10,9 @@ export interface UserRepository {
 
     saveUser(user: UserEntity): Promise<UserEntity>
 
-    subscribeToCurrentUser(callback: (user: UserEntity | null) => Promise<void>): () => void
+    subscribeToCurrentUser(callback: CurrentUserListener): () => void
+
+    subscribeToPublicUser(userId: UserId, callback: PublicUserListener): () => void
 
     deleteCurrentUser(credential: Credential): Promise<void>
 

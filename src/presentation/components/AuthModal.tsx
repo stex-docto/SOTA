@@ -3,8 +3,8 @@ import { useDependencies } from '../hooks/useDependencies'
 import { useAuth } from '../hooks/useAuth'
 import { useSignInProvider } from '../hooks/useSignInProvider'
 import { Credential } from '@/domain'
-import { CredentialDisplay, SignInForm, UserActions, UserProfile } from './auth'
-import { CloseButton, Dialog, IconButton, VStack } from '@chakra-ui/react'
+import { CredentialDisplay, SignInForm, UserProfile } from './auth'
+import { Button, CloseButton, Dialog, IconButton, VStack } from '@chakra-ui/react'
 import { OpenChangeDetails } from '@zag-js/dialog'
 import { toaster } from '@presentation/ui/toaster-config'
 import { FaUserAstronaut } from 'react-icons/fa'
@@ -52,8 +52,8 @@ export function AuthModal() {
                 </IconButton>
             </Dialog.Trigger>
 
-            <Dialog.Backdrop />
-            <Dialog.Positioner>
+            <Dialog.Backdrop zIndex={9999} />
+            <Dialog.Positioner zIndex={10000}>
                 <Dialog.Content maxW="500px" w="90%">
                     <Dialog.Header>
                         <Dialog.Title>Device Connection</Dialog.Title>
@@ -72,30 +72,29 @@ export function AuthModal() {
                                             title: 'Sign In Error',
                                             description:
                                                 error || 'An error occurred during sign in',
-                                            type: 'error',
-                                            duration: 5000
+                                            type: 'error'
                                         })
                                     }}
                                 />
                             </VStack>
                         ) : (
                             <VStack align="stretch" gap={6}>
+                                <UserProfile currentUser={currentUser} />
                                 {credential && (
                                     <CredentialDisplay
                                         credential={credential}
                                         currentUser={currentUser}
+                                        onSignOut={() => setCredential(null)}
                                     />
                                 )}
-
-                                <UserProfile currentUser={currentUser} />
-
-                                <UserActions
-                                    onSignOut={() => setCredential(null)}
-                                    onDeleteAccount={() => setCredential(null)}
-                                />
                             </VStack>
                         )}
                     </Dialog.Body>
+                    <Dialog.Footer>
+                        <Dialog.ActionTrigger asChild>
+                            <Button variant="outline">Close</Button>
+                        </Dialog.ActionTrigger>
+                    </Dialog.Footer>
                 </Dialog.Content>
             </Dialog.Positioner>
         </Dialog.Root>

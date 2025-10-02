@@ -47,8 +47,7 @@ export function EventActions({ event, isEventCreator }: EventActionsProps) {
                     error instanceof Error
                         ? error.message
                         : 'Failed to save/unsave event. Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         } finally {
             setIsSaving(false)
@@ -76,8 +75,7 @@ export function EventActions({ event, isEventCreator }: EventActionsProps) {
                     error instanceof Error
                         ? error.message
                         : 'Failed to delete event. Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         } finally {
             setIsDeleting(false)

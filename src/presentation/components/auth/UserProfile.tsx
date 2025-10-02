@@ -32,8 +32,7 @@ export function UserProfile({ currentUser }: UserProfileProps) {
             toaster.create({
                 title: 'Profile Updated',
                 description: 'Your display name has been saved.',
-                type: 'success',
-                duration: 3000
+                type: 'success'
             })
         } catch (error) {
             console.error('Failed to save profile:', error)
@@ -43,8 +42,7 @@ export function UserProfile({ currentUser }: UserProfileProps) {
                     error instanceof Error
                         ? error.message
                         : 'Failed to save profile. Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         } finally {
             setIsSavingProfile(false)

@@ -59,14 +59,12 @@ export function TalkRules({ event, isAdmin }: TalkRulesProps) {
             setIsEditing(false)
             toaster.success({
                 title: 'Talk rules updated',
-                description: 'The talk rules have been successfully updated',
-                duration: 2000
+                description: 'The talk rules have been successfully updated'
             })
         } catch (error) {
             toaster.error({
                 title: 'Error',
-                description: error instanceof Error ? error.message : 'Failed to update talk rules',
-                duration: 2000
+                description: error instanceof Error ? error.message : 'Failed to update talk rules'
             })
         } finally {
             setIsUpdating(false)
