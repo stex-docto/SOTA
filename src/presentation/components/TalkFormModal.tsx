@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     CloseButton,
     createListCollection,
@@ -12,14 +11,14 @@ import {
     Textarea,
     VStack
 } from '@chakra-ui/react'
-import { EventEntity, RoomEntity, TalkEntity } from '@domain'
-import { HiMicrophone } from 'react-icons/hi2'
-import React, { useCallback, useEffect, useState } from 'react'
+import {EventEntity, RoomEntity, TalkEntity} from '@domain'
+import {HiMicrophone} from 'react-icons/hi2'
+import React, {useCallback, useEffect, useState} from 'react'
 import moment from 'moment'
 
-import { toaster } from '@presentation/ui/toaster-config'
-import { useDependencies } from '../hooks/useDependencies'
-import { useTalksForEvent } from '../hooks/useTalksForEvent'
+import {toaster} from '@presentation/ui/toaster-config'
+import {useDependencies} from '../hooks/useDependencies'
+import {useTalksForEvent} from '../hooks/useTalksForEvent'
 
 interface TalkFormData {
     name: string
@@ -38,6 +37,9 @@ interface TalkFormModalProps {
     submitText: string
     onSubmit: (formData: TalkFormData) => Promise<void>
 }
+
+// Round time interval in minutes
+const ROUND_TIME_INTERVAL = 5
 
 export function TalkFormModal({
     event,
@@ -58,7 +60,12 @@ export function TalkFormModal({
         roomId: ''
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [error, setError] = useState<string>('')
+    const [errors, setErrors] = useState<{
+        name?: string
+        startDateTime?: string
+        roomId?: string
+        collision?: string
+    }>({})
     const [rooms, setRooms] = useState<RoomEntity[]>([])
     const [loadingRooms, setLoadingRooms] = useState(false)
 
@@ -90,12 +97,19 @@ export function TalkFormModal({
                 roomId: ''
             })
         }
-        setError('')
+        setErrors({})
     }, [editTalk])
 
     useEffect(() => {
         resetForm()
     }, [event.id, editTalk, open, resetForm])
+
+    // Clear collision error when form data changes
+    useEffect(() => {
+        if (errors.collision) {
+            setErrors(prev => ({ ...prev, collision: undefined }))
+        }
+    }, [formData.startDateTime, formData.expectedDurationMinutes, formData.roomId])
 
     const fetchRooms = useCallback(async () => {
         setLoadingRooms(true)
@@ -122,26 +136,90 @@ export function TalkFormModal({
     // Get talks for selected room, sorted by start time, excluding current talk being edited
     const selectedRoomTalks = formData.roomId
         ? talks
-              .filter(talk => talk.roomId.value == formData.roomId)
+              .filter(talk => {
+                  // Filter by room
+                  if (talk.roomId.value !== formData.roomId) return false
+                  // Exclude the talk being edited
+                  if (editTalk && talk.id.equals(editTalk.id)) return false
+                  // Only show talks that ended less than 30 minutes ago or are in the future
+                  const thirtyMinutesAgo = moment().subtract(30, 'minutes').toDate()
+                  return talk.endDateTime >= thirtyMinutesAgo;
+
+              })
               .sort((a, b) => a.startDateTime.getTime() - b.startDateTime.getTime())
         : []
+
+    // Check for time collision with existing talks
+    const checkCollision = (): TalkEntity | null => {
+        if (!formData.startDateTime || !formData.roomId) return null
+
+        const startTime = moment(formData.startDateTime).toDate()
+        const endTime = moment(formData.startDateTime)
+            .add(formData.expectedDurationMinutes, 'minutes')
+            .toDate()
+
+        // Check if this talk overlaps with any existing talk in the same room
+        return (
+            selectedRoomTalks.find(talk => {
+                return startTime < talk.endDateTime && endTime > talk.startDateTime
+            }) || null
+        )
+    }
+
+    const collidingTalk = checkCollision()
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target
+
+        let processedValue = value
+
+        // Round start time to next 5 minutes
+        if (name === 'startDateTime' && value) {
+            const selectedTime = moment(value)
+            const minutes = selectedTime.minutes()
+            const roundedMinutes = Math.ceil(minutes / ROUND_TIME_INTERVAL) * ROUND_TIME_INTERVAL
+            const roundedTime = selectedTime.clone().minutes(roundedMinutes).seconds(0)
+            processedValue = roundedTime.format('YYYY-MM-DDTHH:mm')
+        }
+
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: processedValue
         }))
+
+        // Clear field-specific error when user starts typing
+        if (errors[name as keyof typeof errors]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: undefined
+            }))
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setError('')
+        const newErrors: typeof errors = {}
 
-        if (!formData.name.trim() || !formData.startDateTime || !formData.roomId) {
-            setError('Please fill in all required fields')
+        // Validate required fields
+        if (!formData.name.trim()) {
+            newErrors.name = 'Title is required'
+        }
+        if (!formData.startDateTime) {
+            newErrors.startDateTime = 'Start time is required'
+        }
+        if (!formData.roomId) {
+            newErrors.roomId = 'Room selection is required'
+        }
+
+        // Check for collision
+        if (collidingTalk) {
+            newErrors.collision = `This slot overlaps with "${collidingTalk.name}" (${moment(collidingTalk.startDateTime).format('LT')} - ${moment(collidingTalk.endDateTime).format('LT')})`
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
             return
         }
 
@@ -152,9 +230,12 @@ export function TalkFormModal({
             resetForm()
         } catch (error) {
             console.error('Failed to submit talk:', error)
-            const errorMessage =
-                error instanceof Error ? error.message : 'Failed to submit talk. Please try again.'
-            setError(errorMessage)
+            toaster.create({
+                title: 'Failed to submit talk',
+                description: error instanceof Error ? error.message : 'Please try again.',
+                type: 'error',
+                duration: 5000
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -178,22 +259,7 @@ export function TalkFormModal({
                     </Dialog.Header>
                     <Dialog.Body>
                         <VStack gap={6} align="stretch">
-                            {error && (
-                                <Box
-                                    colorPalette="red"
-                                    p={4}
-                                    bg={{ base: 'colorPalette.50', _dark: 'colorPalette.900' }}
-                                    borderWidth="1px"
-                                    borderColor="colorPalette.200"
-                                    borderRadius="md"
-                                >
-                                    <Text colorPalette="red" fontWeight="medium">
-                                        {error}
-                                    </Text>
-                                </Box>
-                            )}
-
-                            <Field.Root required>
+                            <Field.Root required invalid={!!errors.name}>
                                 <Field.Label>Title *</Field.Label>
                                 <Input
                                     name="name"
@@ -201,6 +267,7 @@ export function TalkFormModal({
                                     onChange={handleInputChange}
                                     placeholder="Enter your talk title"
                                 />
+                                {errors.name && <Field.ErrorText>{errors.name}</Field.ErrorText>}
                             </Field.Root>
 
                             <Field.Root>
@@ -223,8 +290,8 @@ export function TalkFormModal({
                                 <Field.Label>Expected Duration *</Field.Label>
                                 <HStack gap={2} flexWrap="wrap">
                                     {[
-                                        { value: 5, label: '5min' },
-                                        { value: 15, label: '15min' },
+                                        { value: 10, label: '10min' },
+                                        { value: 20, label: '20min' },
                                         { value: 30, label: '30min' },
                                         { value: 60, label: '1hour' }
                                     ].map(({ value, label }) => (
@@ -253,14 +320,18 @@ export function TalkFormModal({
                                 </HStack>
                             </Field.Root>
 
-                            <Field.Root required>
+                            <Field.Root required invalid={!!errors.roomId}>
                                 <Field.Label>Preferred Room *</Field.Label>
                                 <Select.Root
                                     collection={roomsCollection}
                                     value={[formData.roomId]}
-                                    onValueChange={e =>
+                                    onValueChange={e => {
                                         setFormData(prev => ({ ...prev, roomId: e.value[0] || '' }))
-                                    }
+                                        // Clear roomId error when user selects a room
+                                        if (errors.roomId) {
+                                            setErrors(prev => ({ ...prev, roomId: undefined }))
+                                        }
+                                    }}
                                     disabled={loadingRooms || rooms.length === 0}
                                 >
                                     <Select.HiddenSelect />
@@ -300,11 +371,12 @@ export function TalkFormModal({
                                         </Select.Content>
                                     </Select.Positioner>
                                 </Select.Root>
-                                {rooms.length === 0 && !loadingRooms && (
-                                    <Text fontSize="sm" colorPalette="gray">
+                                {errors.roomId && <Field.ErrorText>{errors.roomId}</Field.ErrorText>}
+                                {rooms.length === 0 && !loadingRooms && !errors.roomId && (
+                                    <Field.HelperText>
                                         No rooms have been created for this event yet. Event
                                         organizers can add rooms in the event management section.
-                                    </Text>
+                                    </Field.HelperText>
                                 )}
                             </Field.Root>
 
@@ -367,14 +439,24 @@ export function TalkFormModal({
                                 </VStack>
                             )}
 
-                            <Field.Root required>
+                            <Field.Root required invalid={!!errors.startDateTime || !!errors.collision}>
                                 <Field.Label>Start Time *</Field.Label>
                                 <Input
                                     name="startDateTime"
                                     type="datetime-local"
+                                    step={60 * ROUND_TIME_INTERVAL}
                                     value={formData.startDateTime}
                                     onChange={handleInputChange}
                                 />
+                                <Field.HelperText>
+                                    Time will be automatically rounded to the next {ROUND_TIME_INTERVAL}-minute interval for easier organization.
+                                </Field.HelperText>
+                                {errors.startDateTime && (
+                                    <Field.ErrorText>{errors.startDateTime}</Field.ErrorText>
+                                )}
+                                {errors.collision && (
+                                    <Field.ErrorText>{errors.collision}</Field.ErrorText>
+                                )}
                             </Field.Root>
                         </VStack>
                     </Dialog.Body>

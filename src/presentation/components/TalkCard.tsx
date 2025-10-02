@@ -136,14 +136,12 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                         templateColumns={`repeat(auto-fill, minmax(${attributeMaxWidth}, min-content))`}
                     >
                         <GridItem>
-                            <Tag.Root maxW={attributeMaxWidth}>
+                            <Tag.Root maxW={attributeMaxWidth} title={moment(talk.startDateTime).format( 'L LT'  )}>
                                 <Tag.StartElement>
                                     <CiCalendarDate />
                                 </Tag.StartElement>
-                                <Tag.Label>
-                                    {moment(talk.startDateTime).format(
-                                        now.isSame(talk.startDateTime, 'date') ? 'LT' : 'L LT'
-                                    )}
+                                <Tag.Label >
+                                    {moment(talk.startDateTime).format( 'LT'  )}
                                 </Tag.Label>
                             </Tag.Root>
                         </GridItem>

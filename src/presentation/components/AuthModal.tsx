@@ -52,8 +52,8 @@ export function AuthModal() {
                 </IconButton>
             </Dialog.Trigger>
 
-            <Dialog.Backdrop />
-            <Dialog.Positioner>
+            <Dialog.Backdrop zIndex={9999} />
+            <Dialog.Positioner zIndex={10000}>
                 <Dialog.Content maxW="500px" w="90%">
                     <Dialog.Header>
                         <Dialog.Title>Device Connection</Dialog.Title>

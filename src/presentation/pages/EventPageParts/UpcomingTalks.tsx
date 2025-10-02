@@ -3,6 +3,7 @@ import { EventEntity, TalkEntity } from '@domain'
 import { useMoment } from '../../hooks/useMoment'
 import { useTalksForEvent } from '../../hooks/useTalksForEvent'
 import { TalkCard } from '../../components/TalkCard'
+import moment from 'moment'
 
 interface UpcomingTalksProps {
     event: EventEntity
@@ -15,6 +16,22 @@ export function UpcomingTalks({ event, onEdit }: UpcomingTalksProps) {
 
     const nowDate = now.toDate()
 
+    // Group talks by date
+    const groupedTalks = [...currentTalks, ...upcomingTalks].reduce(
+        (groups, talk) => {
+            const dateKey = moment(talk.startDateTime).format('YYYY-MM-DD')
+            if (!groups[dateKey]) {
+                groups[dateKey] = []
+            }
+            groups[dateKey].push(talk)
+            return groups
+        },
+        {} as Record<string, TalkEntity[]>
+    )
+
+    // Sort date keys
+    const sortedDates = Object.keys(groupedTalks).sort()
+
     if (loading) {
         return (
             <Box textAlign="center" py={8}>
@@ -26,16 +43,38 @@ export function UpcomingTalks({ event, onEdit }: UpcomingTalksProps) {
     return (
         <VStack gap={6} align="stretch">
             {currentTalks.length + upcomingTalks.length > 0 ? (
-                <VStack gap={4} align="stretch">
-                    {[...currentTalks, ...upcomingTalks].map(talk => {
-                        const talkWithRoom = talksMap.get(talk.id)
+                <VStack gap={6} align="stretch">
+                    {sortedDates.map(dateKey => {
+                        const talks = groupedTalks[dateKey]
+                        const date = moment(dateKey)
+                        const isToday = now.isSame(date, 'day')
+
                         return (
-                            <TalkCard
-                                key={talk.id.value}
-                                talk={talk}
-                                room={talkWithRoom?.room}
-                                onEdit={onEdit}
-                            />
+                            <VStack key={dateKey} gap={3} align="stretch">
+                                <Text
+                                    fontSize="lg"
+                                    fontWeight="semibold"
+                                    colorPalette="blue"
+                                    borderBottomWidth="2px"
+                                    borderColor="colorPalette.200"
+                                    pb={2}
+                                >
+                                    {isToday ? 'Today' : date.format('dddd, MMMM D, YYYY')}
+                                </Text>
+                                <VStack gap={3} align="stretch">
+                                    {talks.map(talk => {
+                                        const talkWithRoom = talksMap.get(talk.id)
+                                        return (
+                                            <TalkCard
+                                                key={talk.id.value}
+                                                talk={talk}
+                                                room={talkWithRoom?.room}
+                                                onEdit={onEdit}
+                                            />
+                                        )
+                                    })}
+                                </VStack>
+                            </VStack>
                         )
                     })}
                 </VStack>
