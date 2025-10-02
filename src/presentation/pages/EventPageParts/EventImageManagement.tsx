@@ -27,8 +27,7 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
         if (file.type !== 'image/svg+xml' && !file.name.toLowerCase().endsWith('.svg')) {
             toaster.error({
                 title: 'Invalid SVG content',
-                description: 'File type is not SVG',
-                duration: 2000
+                description: 'File type is not SVG'
             })
         }
 
@@ -36,8 +35,7 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
         if (file.size > 1024 * 1024) {
             toaster.error({
                 title: 'Invalid SVG content',
-                description: 'SVG file must be smaller than 1MB',
-                duration: 2000
+                description: 'SVG file must be smaller than 1MB'
             })
         }
 
@@ -49,8 +47,7 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
             setSvgValidation(null)
             toaster.error({
                 title: 'Invalid SVG content',
-                description: error instanceof Error ? error.message : '',
-                duration: 2000
+                description: error instanceof Error ? error.message : ''
             })
         }
     }
@@ -74,14 +71,12 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
         } catch (error) {
             toaster.error({
                 title: 'Error',
-                description: error instanceof Error ? error.message : 'Failed to upload SVG',
-                duration: 2000
+                description: error instanceof Error ? error.message : 'Failed to upload SVG'
             })
         } finally {
             toaster.success({
                 title: '',
-                description: 'The event URL has been copied to your clipboard',
-                duration: 2000
+                description: 'The event URL has been copied to your clipboard'
             })
             setIsUploading(false)
         }
@@ -97,8 +92,7 @@ export default function EventImageManagement({ event, isAdmin }: EventImageManag
         } catch (error) {
             toaster.error({
                 title: 'Error',
-                description: error instanceof Error ? error.message : 'Failed to upload SVG',
-                duration: 2000
+                description: error instanceof Error ? error.message : 'Failed to upload SVG'
             })
         } finally {
             setIsUploading(false)

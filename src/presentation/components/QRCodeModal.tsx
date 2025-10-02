@@ -25,16 +25,14 @@ function QRCodeModal({ url, title }: QRCodeModalProps) {
             toaster.create({
                 title: 'URL copied!',
                 description: 'The event URL has been copied to your clipboard',
-                type: 'success',
-                duration: 2000
+                type: 'success'
             })
         } catch (err) {
             console.error('Failed to copy URL:', err)
             toaster.create({
                 title: 'Copy failed',
                 description: 'Unable to copy URL to clipboard',
-                type: 'error',
-                duration: 3000
+                type: 'error'
             })
         }
     }

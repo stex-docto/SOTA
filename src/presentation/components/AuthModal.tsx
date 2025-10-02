@@ -72,8 +72,7 @@ export function AuthModal() {
                                             title: 'Sign In Error',
                                             description:
                                                 error || 'An error occurred during sign in',
-                                            type: 'error',
-                                            duration: 5000
+                                            type: 'error'
                                         })
                                     }}
                                 />

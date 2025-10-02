@@ -29,8 +29,7 @@ export function TalkEditModal({ event, editTalk, open, onOpenChange }: TalkEditM
             toaster.create({
                 title: 'Talk Updated Successfully',
                 description: 'Your talk has been updated.',
-                type: 'success',
-                duration: 5000
+                type: 'success'
             })
         } catch (error) {
             console.error('Failed to update talk:', error)
@@ -40,8 +39,7 @@ export function TalkEditModal({ event, editTalk, open, onOpenChange }: TalkEditM
             toaster.create({
                 title: 'Update Failed',
                 description: errorMessage,
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
 
             // Don't close modal on error, let user try again

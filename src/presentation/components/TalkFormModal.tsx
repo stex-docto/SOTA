@@ -11,14 +11,14 @@ import {
     Textarea,
     VStack
 } from '@chakra-ui/react'
-import {EventEntity, RoomEntity, TalkEntity} from '@domain'
-import {HiMicrophone} from 'react-icons/hi2'
-import React, {useCallback, useEffect, useState} from 'react'
+import { EventEntity, RoomEntity, TalkEntity } from '@domain'
+import { HiMicrophone } from 'react-icons/hi2'
+import React, { useCallback, useEffect, useState } from 'react'
 import moment from 'moment'
 
-import {toaster} from '@presentation/ui/toaster-config'
-import {useDependencies} from '../hooks/useDependencies'
-import {useTalksForEvent} from '../hooks/useTalksForEvent'
+import { toaster } from '@presentation/ui/toaster-config'
+import { useDependencies } from '../hooks/useDependencies'
+import { useTalksForEvent } from '../hooks/useTalksForEvent'
 
 interface TalkFormData {
     name: string
@@ -56,7 +56,7 @@ export function TalkFormModal({
         name: '',
         pitch: '',
         startDateTime: '',
-        expectedDurationMinutes: 15,
+        expectedDurationMinutes: 20,
         roomId: ''
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -109,7 +109,12 @@ export function TalkFormModal({
         if (errors.collision) {
             setErrors(prev => ({ ...prev, collision: undefined }))
         }
-    }, [formData.startDateTime, formData.expectedDurationMinutes, formData.roomId])
+    }, [
+        formData.startDateTime,
+        formData.expectedDurationMinutes,
+        formData.roomId,
+        errors.collision
+    ])
 
     const fetchRooms = useCallback(async () => {
         setLoadingRooms(true)
@@ -121,8 +126,7 @@ export function TalkFormModal({
             toaster.create({
                 title: 'Failed to load rooms',
                 description: 'Unable to load available rooms. Please try again.',
-                type: 'error',
-                duration: 3000
+                type: 'error'
             })
         } finally {
             setLoadingRooms(false)
@@ -143,8 +147,7 @@ export function TalkFormModal({
                   if (editTalk && talk.id.equals(editTalk.id)) return false
                   // Only show talks that ended less than 30 minutes ago or are in the future
                   const thirtyMinutesAgo = moment().subtract(30, 'minutes').toDate()
-                  return talk.endDateTime >= thirtyMinutesAgo;
-
+                  return talk.endDateTime >= thirtyMinutesAgo
               })
               .sort((a, b) => a.startDateTime.getTime() - b.startDateTime.getTime())
         : []
@@ -233,8 +236,7 @@ export function TalkFormModal({
             toaster.create({
                 title: 'Failed to submit talk',
                 description: error instanceof Error ? error.message : 'Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         } finally {
             setIsSubmitting(false)
@@ -371,7 +373,9 @@ export function TalkFormModal({
                                         </Select.Content>
                                     </Select.Positioner>
                                 </Select.Root>
-                                {errors.roomId && <Field.ErrorText>{errors.roomId}</Field.ErrorText>}
+                                {errors.roomId && (
+                                    <Field.ErrorText>{errors.roomId}</Field.ErrorText>
+                                )}
                                 {rooms.length === 0 && !loadingRooms && !errors.roomId && (
                                     <Field.HelperText>
                                         No rooms have been created for this event yet. Event
@@ -439,7 +443,10 @@ export function TalkFormModal({
                                 </VStack>
                             )}
 
-                            <Field.Root required invalid={!!errors.startDateTime || !!errors.collision}>
+                            <Field.Root
+                                required
+                                invalid={!!errors.startDateTime || !!errors.collision}
+                            >
                                 <Field.Label>Start Time *</Field.Label>
                                 <Input
                                     name="startDateTime"
@@ -449,7 +456,8 @@ export function TalkFormModal({
                                     onChange={handleInputChange}
                                 />
                                 <Field.HelperText>
-                                    Time will be automatically rounded to the next {ROUND_TIME_INTERVAL}-minute interval for easier organization.
+                                    Time will be automatically rounded to the next{' '}
+                                    {ROUND_TIME_INTERVAL}-minute interval for easier organization.
                                 </Field.HelperText>
                                 {errors.startDateTime && (
                                     <Field.ErrorText>{errors.startDateTime}</Field.ErrorText>

@@ -1,4 +1,4 @@
-import { Badge, Button, HStack, Tabs, Text, VStack } from '@chakra-ui/react'
+import { Badge, HStack, Tabs, Text, VStack } from '@chakra-ui/react'
 import { EventEntity, EventId, TalkEntity } from '@domain'
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
@@ -109,8 +109,6 @@ function EventPageContent({ event }: { event: EventEntity }) {
                             )}
                         </HStack>
                     </Tabs.Trigger>
-
-                    <Button>Test</Button>
                 </Tabs.List>
 
                 <Tabs.Content value="details">

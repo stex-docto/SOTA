@@ -23,16 +23,14 @@ export function CredentialDisplay({ credential, currentUser, onSignOut }: Creden
             toaster.create({
                 title: 'Signed Out',
                 description: 'You have been signed out successfully.',
-                type: 'info',
-                duration: 3000
+                type: 'info'
             })
         } catch (error) {
             console.error('Logout failed:', error)
             toaster.create({
                 title: 'Sign Out Failed',
                 description: 'Failed to sign out. Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         }
     }
@@ -44,16 +42,14 @@ export function CredentialDisplay({ credential, currentUser, onSignOut }: Creden
             toaster.create({
                 title: 'Account Deleted',
                 description: 'Your account has been deleted successfully.',
-                type: 'info',
-                duration: 3000
+                type: 'info'
             })
         } catch (error) {
             console.error('Account deletion failed:', error)
             toaster.create({
                 title: 'Deletion Failed',
                 description: 'Failed to delete account. Please try again.',
-                type: 'error',
-                duration: 5000
+                type: 'error'
             })
         }
     }

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { TalkFormData, TalkFormModal } from './TalkFormModal'
 import { toaster } from '@presentation/ui/toaster-config'
 import { useDependencies } from '../hooks/useDependencies'
-import {OpenChangeDetails} from "@zag-js/dialog";
+import { OpenChangeDetails } from '@zag-js/dialog'
 
 interface TalkCreationModalProps {
     event: EventEntity
@@ -16,12 +16,10 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
     const { createTalkUseCase, signInUseCase } = useDependencies()
     const [open, setOpen] = useState(false)
 
-    const onOpenChange:  ((details: OpenChangeDetails) => void) | undefined = e => {
-        if (e.open){
-            signInUseCase.requireCurrentUser().then(
-                () => setOpen(e.open)
-            )
-        }else {
+    const onOpenChange: ((details: OpenChangeDetails) => void) | undefined = e => {
+        if (e.open) {
+            signInUseCase.requireCurrentUser().then(() => setOpen(e.open))
+        } else {
             setOpen(e.open)
         }
     }
@@ -39,8 +37,7 @@ function TalkCreationModal({ event }: TalkCreationModalProps) {
         toaster.create({
             title: 'Talk Submitted Successfully',
             description: 'Your talk has been created.',
-            type: 'success',
-            duration: 2000
+            type: 'success'
         })
     }
 
