@@ -1,14 +1,14 @@
-import {Card, Grid, GridItem, IconButton, Tag, Text, VStack} from '@chakra-ui/react'
+import { Card, Grid, GridItem, IconButton, Tag, Text, VStack } from '@chakra-ui/react'
 import ReactMarkdown from 'react-markdown'
-import {HiMapPin, HiPencil, HiUser} from 'react-icons/hi2'
-import {RoomEntity, TalkEntity, UserEntity} from '@domain'
-import {useMoment} from '../hooks/useMoment'
-import {useAuth} from '../hooks/useAuth'
+import { HiMapPin, HiPencil, HiUser } from 'react-icons/hi2'
+import { RoomEntity, TalkEntity, UserEntity } from '@domain'
+import { useMoment } from '../hooks/useMoment'
+import { useAuth } from '../hooks/useAuth'
 import moment from 'moment'
-import {GiDuration} from 'react-icons/gi'
-import {useEffect, useState} from 'react'
-import {FaUserAstronaut} from 'react-icons/fa'
-import {useDependencies} from '@presentation/hooks/useDependencies.ts'
+import { GiDuration } from 'react-icons/gi'
+import { useEffect, useState } from 'react'
+import { FaUserAstronaut } from 'react-icons/fa'
+import { useDependencies } from '@presentation/hooks/useDependencies.ts'
 
 interface TalkCardProps {
     talk: TalkEntity
@@ -16,10 +16,10 @@ interface TalkCardProps {
     onEdit?: (talk: TalkEntity) => void
 }
 
-export function TalkCard({talk, room, onEdit}: TalkCardProps) {
-    const {now} = useMoment()
-    const {currentUser} = useAuth()
-    const {getUserUseCase} = useDependencies()
+export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
+    const { now } = useMoment()
+    const { currentUser } = useAuth()
+    const { getUserUseCase } = useDependencies()
     const nowDate = now.toDate()
 
     // State for user info and pitch expand/collapse
@@ -62,7 +62,7 @@ export function TalkCard({talk, room, onEdit}: TalkCardProps) {
             opacity={isPast ? 0.8 : 1}
             cursor="pointer"
             onClick={handleCardClick}
-            _hover={{bg: 'gray.50', _dark: {bg: 'gray.800'}}}
+            _hover={{ bg: 'gray.50', _dark: { bg: 'gray.800' } }}
             transition="background-color 0.2s"
         >
             <Card.Body p={2}>
@@ -79,12 +79,11 @@ export function TalkCard({talk, room, onEdit}: TalkCardProps) {
                         colorPalette="gray"
                         templateColumns={`repeat(auto-fill, minmax(${attributeMaxWidth}, min-content))`}
                     >
-
                         {room && (
                             <GridItem>
                                 <Tag.Root maxW={attributeMaxWidth}>
                                     <Tag.StartElement>
-                                        <HiMapPin/>
+                                        <HiMapPin />
                                     </Tag.StartElement>
                                     <Tag.Label>{room.name}</Tag.Label>
                                 </Tag.Root>
@@ -94,7 +93,7 @@ export function TalkCard({talk, room, onEdit}: TalkCardProps) {
                         <GridItem>
                             <Tag.Root maxW={attributeMaxWidth}>
                                 <Tag.StartElement>
-                                    <GiDuration/>
+                                    <GiDuration />
                                 </Tag.StartElement>
                                 <Tag.Label>
                                     {moment
@@ -110,21 +109,22 @@ export function TalkCard({talk, room, onEdit}: TalkCardProps) {
                                 title={isCreator ? "You're the creator" : 'creator'}
                             >
                                 <Tag.StartElement>
-                                    {isCreator ? <FaUserAstronaut/> : <HiUser/>}
+                                    {isCreator ? <FaUserAstronaut /> : <HiUser />}
                                 </Tag.StartElement>
                                 <Tag.Label>{creator?.displayName || 'Anonymous User'}</Tag.Label>
                             </Tag.Root>
                         </GridItem>
-
-
                     </Grid>
-                    {isExpanded &&
+                    {isExpanded && (
                         <>
-                            {talk.pitch ? <ReactMarkdown>{talk.pitch}</ReactMarkdown>
-                                : <Text color="fg.subtle">No pitch ¯\_(ツ)_/¯, hope title is enough 😅</Text>
-                            }
-                            {isCreator && onEdit &&
-
+                            {talk.pitch ? (
+                                <ReactMarkdown>{talk.pitch}</ReactMarkdown>
+                            ) : (
+                                <Text color="fg.subtle">
+                                    No pitch ¯\_(ツ)_/¯, hope title is enough 😅
+                                </Text>
+                            )}
+                            {isCreator && onEdit && (
                                 <IconButton
                                     alignSelf="end"
                                     variant="solid"
@@ -132,15 +132,13 @@ export function TalkCard({talk, room, onEdit}: TalkCardProps) {
                                     onClick={() => onEdit(talk)}
                                     title="Edit talk"
                                 >
-                                    <HiPencil/>
+                                    <HiPencil />
                                 </IconButton>
-
-                            }
+                            )}
                         </>
-                    }
+                    )}
                 </VStack>
             </Card.Body>
-
         </Card.Root>
     )
 }
