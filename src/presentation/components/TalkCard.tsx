@@ -1,6 +1,6 @@
 import { Card, Grid, GridItem, IconButton, Tag, Text, VStack } from '@chakra-ui/react'
 import ReactMarkdown from 'react-markdown'
-import { HiMapPin, HiPencil, HiUser } from 'react-icons/hi2'
+import { HiMapPin, HiMiniChevronDown, HiMiniChevronUp, HiPencil, HiUser } from 'react-icons/hi2'
 import { RoomEntity, TalkEntity, UserEntity } from '@domain'
 import { useMoment } from '../hooks/useMoment'
 import { useAuth } from '../hooks/useAuth'
@@ -81,7 +81,7 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                     >
                         {room && (
                             <GridItem>
-                                <Tag.Root maxW={attributeMaxWidth}>
+                                <Tag.Root maxW={attributeMaxWidth} title={room.name}>
                                     <Tag.StartElement>
                                         <HiMapPin />
                                     </Tag.StartElement>
@@ -91,7 +91,12 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                         )}
 
                         <GridItem>
-                            <Tag.Root maxW={attributeMaxWidth}>
+                            <Tag.Root
+                                maxW={attributeMaxWidth}
+                                title={moment
+                                    .duration(talk.getDurationMinutes(), 'minutes')
+                                    .humanize()}
+                            >
                                 <Tag.StartElement>
                                     <GiDuration />
                                 </Tag.StartElement>
@@ -106,7 +111,11 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                         <GridItem>
                             <Tag.Root
                                 maxW={attributeMaxWidth}
-                                title={isCreator ? "You're the creator" : 'creator'}
+                                title={
+                                    isCreator
+                                        ? "You're the creator"
+                                        : creator?.displayName || 'Anonymous user'
+                                }
                             >
                                 <Tag.StartElement>
                                     {isCreator ? <FaUserAstronaut /> : <HiUser />}
@@ -114,7 +123,12 @@ export function TalkCard({ talk, room, onEdit }: TalkCardProps) {
                                 <Tag.Label>{creator?.displayName || 'Anonymous User'}</Tag.Label>
                             </Tag.Root>
                         </GridItem>
+                        <GridItem>
+                            {talk.pitch && isExpanded && <HiMiniChevronUp title="Fold pitch" />}
+                            {talk.pitch && !isExpanded && <HiMiniChevronDown title="Open pitch" />}
+                        </GridItem>
                     </Grid>
+
                     {isExpanded && (
                         <>
                             {talk.pitch ? (
